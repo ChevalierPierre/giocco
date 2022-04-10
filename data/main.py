@@ -7,14 +7,13 @@ and in the prepare module.
 """
 
 from . import prepare,tools
-from .states import splash, intro, game
+from .states import splash, game
 
 
 def main():
     """Add states to control here."""
     run_it = tools.Control(prepare.ORIGINAL_CAPTION)
     state_dict = {"SPLASH" : splash.Splash(),
-                  "INTRO"  : intro.Intro(),
                   "GAME"   : game.Game()}
     run_it.setup_states(state_dict, "SPLASH")
     run_it.main()

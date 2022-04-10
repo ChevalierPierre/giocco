@@ -11,7 +11,7 @@ class Splash(tools._State):
     """This State is updated while our game shows the splash screen."""
     def __init__(self):
         tools._State.__init__(self)
-        self.next = "INTRO"
+        self.next = "GAME"
         self.timeout = 5
         self.cover = pg.Surface((prepare.SCREEN_SIZE)).convert()
         self.cover.fill(0)

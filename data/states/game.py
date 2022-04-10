@@ -11,13 +11,13 @@ class Game(tools._State):
     """This state could represent the actual gameplay phase."""
     def __init__(self):
         tools._State.__init__(self)
-        self.next = "INTRO"
+        self.next = "SPLASH"
         self.bgm = prepare.MUSIC["Anitek_-_07_-_Contact"]
         self.font = pg.font.Font(prepare.FONTS["Fixedsys500c"], 50)
         text = ["This is the game.", "Music should be playing",
-                "to demonstrate", "that the intro movie",
+                "to demonstrate", "that the splash screen",
                 "has relinquished control", "of the mixer module.", "",
-                "Press escape to return", "to the intro movie."]
+                "Press escape to return", "to the splash screen."]
         self.rendered_text = self.make_text_list(self.font, text,
                                                  pg.Color("white"), 50, 50)
         self.escape = self.render_font(self.font, "Press Escape",
@@ -52,7 +52,7 @@ class Game(tools._State):
         return rendered_text
 
     def get_event(self, event):
-        """Go back to intro on escape key."""
+        """Go back on escape key."""
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 self.done = True

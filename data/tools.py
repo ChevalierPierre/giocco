@@ -162,11 +162,6 @@ def load_all_fonts(directory, accept=(".ttf",)):
     return load_all_music(directory, accept)
 
 
-def load_all_movies(directory, accept=(".mpg",)):
-    """Create a dictionary of paths to movie files in given directory
-    if their extensions are in accept."""
-    return load_all_music(directory, accept)
-
 
 def load_all_sfx(directory, accept=(".wav", ".mp3", ".ogg", ".mdi")):
     """Load all sfx of extensions found in accept.  Unfortunately it is
