@@ -9,7 +9,7 @@ from . import tools
 
 
 SCREEN_SIZE = (800, 600)
-ORIGINAL_CAPTION = "Home"
+ORIGINAL_CAPTION = "Into the wood"
 
 
 #Initialization

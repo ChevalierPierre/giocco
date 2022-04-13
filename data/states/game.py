@@ -11,16 +11,17 @@ class Game(tools._State):
     """This state could represent the actual gameplay phase."""
     def __init__(self):
         tools._State.__init__(self)
-        self.next = "SPLASH"
-        self.bgm = prepare.MUSIC["Anitek_-_07_-_Contact"]
+        self.next = None
+        self.image = prepare.GFX['background']
+        self.rect = self.image.get_rect(center=prepare.SCREEN_RECT.center)
+        self.bgm = prepare.MUSIC["Quintessence"]
         self.font = pg.font.Font(prepare.FONTS["Fixedsys500c"], 50)
-        text = ["This is the game.", "Music should be playing",
-                "to demonstrate", "that the splash screen",
-                "has relinquished control", "of the mixer module.", "",
-                "Press escape to return", "to the splash screen."]
+        text = ["Les gros gnards ont", "pris possession de la", "forêt des bois lardés.",
+                "Sortez vivant du sous-bois", "avant que vos amis",
+                "ne reçoivent un e-gnard", "de votre disparition.", ""]
         self.rendered_text = self.make_text_list(self.font, text,
                                                  pg.Color("white"), 50, 50)
-        self.escape = self.render_font(self.font, "Press Escape",
+        self.escape = self.render_font(self.font, "Appuie sur Entrer",
                                        pg.Color("yellow"),
                                        (prepare.SCREEN_RECT.centerx, 550))
         self.blink = False
@@ -51,15 +52,18 @@ class Game(tools._State):
             rendered_text.append(msg_data)
         return rendered_text
 
+    def end_game(self):
+        self.quit = True
+
     def get_event(self, event):
         """Go back on escape key."""
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
-                self.done = True
+            if event.key == pg.K_RETURN:
+                self.quit = True
 
     def draw(self, surface):
         """Blit all elements to surface."""
-        surface.fill(pg.Color("lightslategrey"))
+        surface.blit(self.image,self.rect)
         for msg in self.rendered_text:
             surface.blit(*msg)
         if self.blink:

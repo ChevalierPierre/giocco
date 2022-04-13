@@ -5,7 +5,7 @@ for States.  Also contained here are resource loading functions.
 
 import os
 import pygame as pg
-
+from . import prepare
 
 class Control(object):
     """Control class for entire project. Contains the game loop, and contains
@@ -96,6 +96,16 @@ class _State(object):
         self.next = None
         self.previous = None
         self.persist = {}
+        self.rendered = None
+        self.next_list = None
+        self.last_option = None
+        self.background_music = pg.mixer.music.load(prepare.MUSIC["The Brighter The Stars"])
+        self.button_sound = prepare.SFX["resources_sound_button"]
+        self.button_hover = prepare.SFX["resources_sound_button_hover"]
+        self.button_volume = .2
+        self.button_hover_volume = .1
+        self.background_music_volume = .3
+        self.selected_index = 0
 
     def get_event(self, event):
         """Processes events that were passed from the main event loop.
@@ -123,6 +133,64 @@ class _State(object):
         msg = font.render(msg, 1, color)
         rect = msg.get_rect(center=center)
         return msg, rect
+
+    def pre_render_options(self):
+        font_deselect = pg.font.Font(prepare.FONTS["Fixedsys500c"], 50)
+        font_selected = pg.font.Font(prepare.FONTS["Fixedsys500c"], 75)
+        rendered_msg = {"des":[],"sel":[]}
+        for option in self.options:
+            d_rend = font_deselect.render(option, 1, (255,255,255))
+            d_rect = d_rend.get_rect()
+            s_rend = font_selected.render(option, 1, (255,0,0))
+            s_rect = s_rend.get_rect()
+            rendered_msg["des"].append((d_rend,d_rect))
+            rendered_msg["sel"].append((s_rend,s_rect))
+        self.rendered = rendered_msg
+
+    def mouse_menu_click(self, event):
+        if event.type == pg.MOUSEBUTTONDOWN and event.button == 1:
+            for i,opt in enumerate(self.rendered["des"]):
+                if opt[1].collidepoint(pg.mouse.get_pos()):
+                    self.selected_index = i
+                    self.select_option(i)
+                    break
+    
+    def select_option(self, i):
+        '''select menu option via keys or mouse'''
+        if i == len(self.next_list):
+            self.quit = True
+        else:
+            self.button_sound.sound.play()
+            self.next = self.next_list[i]
+            self.done = True
+            self.selected_index = 0
+
+    def change_selected_option(self, op=0):
+        '''change highlighted menu option'''
+        for i,opt in enumerate(self.rendered["des"]):
+            if opt[1].collidepoint(pg.mouse.get_pos()):
+                self.selected_index = i
+        if op:
+            self.selected_index += op
+            max_ind = len(self.rendered['des'])-1
+            if self.selected_index < 0:
+                self.selected_index = max_ind
+            elif self.selected_index > max_ind:
+                self.selected_index = 0
+            self.button_hover.sound.play()
+
+    def mouse_hover_sound(self):
+        for i,opt in enumerate(self.rendered["des"]):
+            if opt[1].collidepoint(pg.mouse.get_pos()):
+                if self.last_option != opt:
+                    self.button_hover.sound.play()
+                    self.last_option = opt
+    
+    def make_text(self,message,color,center,size):
+        font = pg.font.Font(prepare.FONTS["Fixedsys500c"], size)
+        text = font.render(message,True,color)
+        rect = text.get_rect(center=center)
+        return text,rect
 
 
 ### Resource loading functions.
