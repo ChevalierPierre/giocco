@@ -1,7 +1,7 @@
 
 import os
 import pygame as pg
-from .states import menu, options, controls, audio, splash, keybinding, getkey
+from .states import menu, play, options, controls, audio, splash, keybinding, getkey
 
 class Control():
     def __init__(self, fullscreen, size):
@@ -23,6 +23,7 @@ class Control():
         self.done = False
         self.state_dict = {
             "MENU"     : menu.Menu(self.screen_rect),
+            "PLAY"     : play.Play(self.screen_rect),
             "CONTROLS" : controls.Controls(self.screen_rect),
             "OPTIONS"  : options.Options(self.screen_rect),
             "AUDIO"    : audio.Audio(self.screen_rect),

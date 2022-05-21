@@ -18,6 +18,9 @@ class KeyBinding(tools.States):
         
         self.key_up_text, self.key_up_text_rect = self.make_text('UP', (75,75,75), (self.screen_rect.centerx - 90, 140), 20)
         self.key_down_text, self.key_down_text_rect = self.make_text('DOWN', (75,75,75), (self.screen_rect.centerx - 90, 175), 20)
+        self.key_left_text, self.key_left_text_rect = self.make_text('LEFT', (75,75,75), (self.screen_rect.centerx - 90, 210), 20)
+        self.key_right_text, self.key_right_text_rect = self.make_text('RIGHT', (75,75,75), (self.screen_rect.centerx - 90, 245), 20)
+        self.key_action_text, self.key_action_text_rect = self.make_text('ACTION', (75,75,75), (self.screen_rect.centerx - 90, 280), 20)
 
         
     def set_buttons(self):
@@ -41,14 +44,48 @@ class KeyBinding(tools.States):
             'fontsize': 15,
             'command' : self.down_bind
         }
-        
+        self.left_button_settings = {
+            'text' : '{}'.format(pg.key.name(self.controller_dict['left'])),
+            'hover' : (255,255,255),
+            'font' : None,
+            'fg' : (0,0,0),
+            'bg' : (155,155,155),
+            'border' : False,
+            'fontsize': 15,
+            'command' : self.left_bind
+        }
+        self.right_button_settings = {
+            'text' : '{}'.format(pg.key.name(self.controller_dict['right'])),
+            'hover' : (255,255,255),
+            'font' : None,
+            'fg' : (0,0,0),
+            'bg' : (155,155,155),
+            'border' : False,
+            'fontsize': 15,
+            'command' : self.right_bind
+        }
+    
+        self.action_button_settings = {
+            'text' : '{}'.format(pg.key.name(self.controller_dict['action'])),
+            'hover' : (255,255,255),
+            'font' : None,
+            'fg' : (0,0,0),
+            'bg' : (155,155,155),
+            'border' : False,
+            'fontsize': 15,
+            'command' : self.action_bind
+        }
+
         btn_width = 100
         btn_height = 25
         centerX = self.screen_rect.centerx - btn_width / 2
         centerY = self.screen_rect.centery - btn_width / 2
         self.up_keybinding = button.Button((centerX,125,btn_width,btn_height), **self.up_button_settings)
         self.down_keybinding = button.Button((centerX,160,btn_width,btn_height), **self.down_button_settings)
-        self.buttons = [self.up_keybinding, self.down_keybinding]
+        self.left_keybinding = button.Button((centerX,195,btn_width,btn_height), **self.left_button_settings)
+        self.right_keybinding = button.Button((centerX,230,btn_width,btn_height), **self.right_button_settings)
+        self.action_keybinding = button.Button((centerX,265,btn_width,btn_height), **self.action_button_settings)
+        self.buttons = [self.up_keybinding, self.down_keybinding, self.left_keybinding, self.right_keybinding, self.action_keybinding]
 
     def up_bind(self):
         self.action = 'up'
@@ -60,7 +97,25 @@ class KeyBinding(tools.States):
         self.action = 'down'
         self.next = 'GETKEY'
         self.done = True
+
+    def left_bind(self):
+        self.set_buttons()
+        self.action = 'left'
+        self.next = 'GETKEY'
+        self.done = True
     
+    def right_bind(self):
+        self.set_buttons()
+        self.action = 'right'
+        self.next = 'GETKEY'
+        self.done = True
+
+    def action_bind(self):
+        self.set_buttons()
+        self.action = 'action'
+        self.next = 'GETKEY'
+        self.done = True
+
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
             self.quit = True
@@ -92,6 +147,9 @@ class KeyBinding(tools.States):
         screen.blit(self.title,self.title_rect)
         screen.blit(self.key_up_text,self.key_up_text_rect)
         screen.blit(self.key_down_text,self.key_down_text_rect)
+        screen.blit(self.key_left_text,self.key_left_text_rect)
+        screen.blit(self.key_right_text,self.key_right_text_rect)
+        screen.blit(self.key_action_text,self.key_action_text_rect)
         for button in self.buttons:
             button.render(screen)
         for i,opt in enumerate(self.rendered["des"]):

@@ -9,7 +9,7 @@ class Menu(tools.States):
         tools.States.__init__(self)
         self.screen_rect = screen_rect
         self.options = ['Play', 'Options', 'Quit']
-        self.next_list = ['SPLASH', 'OPTIONS']
+        self.next_list = ['PLAY', 'OPTIONS']
         self.title, self.title_rect = self.make_text('Pong', (75,75,75), (self.screen_rect.centerx, 75), 150)
         self.pre_render_options()
         self.from_bottom = 200

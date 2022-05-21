@@ -89,6 +89,9 @@ class States:
         self.controller_dict = {
             'up'   : pg.K_UP,
             'down' : pg.K_DOWN,
+            'left' : pg.K_LEFT,
+            'right' : pg.K_RIGHT,
+            'action' : pg.K_f,
             'pause': pg.K_p,
             'back' : pg.K_ESCAPE
         }
