@@ -1,60 +1,58 @@
-"""
-The splash screen of the game. The first thing the user sees.
-"""
 
 import pygame as pg
+from .. import tools
 
-from .. import prepare, tools
-
-
-class Splash(tools._State):
-    """This State is updated while our game shows the splash screen."""
-    def __init__(self):
-        tools._State.__init__(self)
+class Splash(tools.States):
+    def __init__(self, screen_rect):
+        tools.States.__init__(self)
+        self.screen_rect = screen_rect
         self.next = "MENU"
-        self.timeout = 5
-        self.cover = pg.Surface((prepare.SCREEN_SIZE)).convert()
+        self.timeout = 3
+        self.start_time = 0
+
+        self.cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.cover.fill(0)
         self.cover_alpha = 256
-        self.alpha_step  = 2
-        self.image = prepare.GFX['background']
-        self.rect = self.image.get_rect(center=prepare.SCREEN_RECT.center)
-        self.font = pg.font.Font(prepare.FONTS["Fixedsys500c"], 120)
-        text = ["Attention", "",
-                "aux", "", 
-                "gnards."]
-        self.rendered_text = self.make_text_list(self.font, text,
-                                                 pg.Color("White"), 100, 60)
+        self.alpha_step = 3
 
-    def make_text_list(self, font, strings, color, start_y, y_space):
-        """
-        Takes a list of strings and returns a list of
-        (rendered_surface, rect) tuples. The rects are centered on the screen
-        and their y coordinates begin at starty, with y_space pixels between
-        each line.
-        """
+        self.image = pg.image.load('resources/graphics/splash_page.png').convert_alpha()
+        text = ["Brought to you by",'metulburr']
+        self.rendered_text = self.make_text_list("Fixedsys500c",50,text,(0,0,0),320,50)
+
+    def make_text_list(self,font,size,strings,color,start_y,y_space):
         rendered_text = []
         for i,string in enumerate(strings):
-            msg_center = (prepare.SCREEN_RECT.centerx, start_y+i*y_space)
-            msg_data = self.render_font(font, string, color, msg_center)
-            rendered_text.append(msg_data)
+            msg = self.render_font(font,size,string,color)
+            rect = msg.get_rect(center=(self.screen_rect.centerx,start_y+i*y_space))
+            rendered_text.append((msg,rect))
         return rendered_text
-    
-    def update(self, surface, keys, current_time, time_delta):
-        """Updates the splash screen."""
+
+    def render_font(self,font,size,msg,color=(255,255,255)):
+        selected_font = tools.Font.load('impact.ttf', size)
+        return selected_font.render(msg,1,color)
+
+    def update(self,surface,keys):
         pg.mouse.set_visible(False)
-        self.current_time = current_time
-        surface.blit(self.image,self.rect)
-        for msg in self.rendered_text:
-            surface.blit(*msg)
+        self.current_time = pg.time.get_ticks()
         self.cover.set_alpha(self.cover_alpha)
         self.cover_alpha = max(self.cover_alpha-self.alpha_step,0)
-        surface.blit(self.cover,(0,0))
         if self.current_time-self.start_time > 1000.0*self.timeout:
             self.done = True
+            
+    def render(self, screen):
+        screen.blit(self.image, (0,0))
+        screen.blit(self.cover,(0,0))
+        for msg in self.rendered_text:
+            screen.blit(*msg)
 
-    def get_event(self, event):
-        """Get events from Control. Currently changes to next state on any key
-        press."""
-        if event.type == pg.KEYDOWN:
+    def get_event(self,event, keys):
+        if event.type == pg.QUIT:
+            self.quit = True
+        elif event.type == pg.KEYDOWN:
             self.done = True
+            
+    def cleanup(self):
+        pass
+
+    def entry(self):
+        pass
