@@ -7,7 +7,7 @@ class Control():
     def __init__(self, fullscreen, size):
         pg.mixer.pre_init(44100, -16, 1, 512)
         pg.init()
-        pg.display.set_caption("Pong")
+        pg.display.set_caption("Giocco")
         self.screensize = (int(size[0]), int(size[1]))
         #self.screensize = (int(size.split('x')[0]), int(size.split('x')[1]))
         #self.screensize = (800,600)

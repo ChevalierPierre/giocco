@@ -35,6 +35,8 @@ class Play(tools.States):
                 self.reset()
             elif event.key == self.controller_dict['pause']:
                 self.pause = not self.pause
+            elif event.key == self.controller_dict['action']:
+                print("antonin")
         elif event.type == self.background_music.track_end:
             self.background_music.track = (self.background_music.track+1) % len(self.background_music.tracks)
             pg.mixer.music.load(self.background_music.tracks[self.background_music.track]) 

@@ -16,7 +16,7 @@ class Splash(tools.States):
         self.alpha_step = 3
 
         self.image = pg.image.load('resources/graphics/splash_page.png').convert_alpha()
-        text = ["Brought to you by",'metulburr']
+        text = ["Brought to you by",'the Moria dwarfs']
         self.rendered_text = self.make_text_list("Fixedsys500c",50,text,(0,0,0),320,50)
 
     def make_text_list(self,font,size,strings,color,start_y,y_space):

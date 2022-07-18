@@ -88,10 +88,11 @@ class KeyBinding(tools.States):
         self.buttons = [self.up_keybinding, self.down_keybinding, self.left_keybinding, self.right_keybinding, self.action_keybinding]
 
     def up_bind(self):
+        self.set_buttons()
         self.action = 'up'
         self.next = 'GETKEY'
         self.done = True
-        
+
     def down_bind(self):
         self.set_buttons()
         self.action = 'down'
