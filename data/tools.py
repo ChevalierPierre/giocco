@@ -5,6 +5,18 @@ import os
 import shutil
 import random
 
+KEY_ACTION = ''
+KEY_VALUE = ''
+CONTROLLER_DICT = {
+    'up': pg.K_UP,
+    'down': pg.K_DOWN,
+    'left': pg.K_LEFT,
+    'right': pg.K_RIGHT,
+    'action': pg.K_f,
+    'pause': pg.K_p,
+    'back': pg.K_ESCAPE
+}
+
 def clean_files():
     '''remove all pyc files and __pycache__ direcetories in subdirectory'''
     for root, dirs, files in os.walk('.'):
@@ -86,17 +98,9 @@ class States:
         self.selected_index = 0
         
         self.action = None
-        self.controller_dict = {
-            'up'   : pg.K_UP,
-            'down' : pg.K_DOWN,
-            'left' : pg.K_LEFT,
-            'right' : pg.K_RIGHT,
-            'action' : pg.K_f,
-            'pause': pg.K_p,
-            'back' : pg.K_ESCAPE
-        }
+
     def update_controller_dict(self, keyname, event):
-        self.controller_dict[keyname] = event.key
+        CONTROLLER_DICT[keyname] = event.key
         
     def mouse_hover_sound(self):
         for i,opt in enumerate(self.rendered["des"]):

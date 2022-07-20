@@ -18,18 +18,18 @@ class GetKey(tools.States):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYDOWN:
-            if event.key == self.controller_dict['back']:
+            if event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
                 self.next = 'MENU'
             else:
-                self.update_controller_dict(self.action, event)
+                self.update_controller_dict(tools.KEY_ACTION, event)
                 self.next = 'KEYBINDING'
                 self.done = True
         self.mouse_menu_click(event)
 
     def update(self, now, keys):
-        self.title, self.title_rect = self.make_text('Change key binding for "{}"'.format(self.action), (75,75,75), (self.screen_rect.centerx, 75), 50)
+        self.title, self.title_rect = self.make_text('Change key binding for "{}"'.format(tools.KEY_ACTION), (75,75,75), (self.screen_rect.centerx, 75), 50)
         #pg.mouse.set_visible(True)
         self.mouse_hover_sound()
 

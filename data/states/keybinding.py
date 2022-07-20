@@ -15,7 +15,7 @@ class KeyBinding(tools.States):
         self.from_bottom = 400
         self.spacer = 75
         self.set_buttons()
-        
+
         self.key_up_text, self.key_up_text_rect = self.make_text('UP', (75,75,75), (self.screen_rect.centerx - 90, 140), 20)
         self.key_down_text, self.key_down_text_rect = self.make_text('DOWN', (75,75,75), (self.screen_rect.centerx - 90, 175), 20)
         self.key_left_text, self.key_left_text_rect = self.make_text('LEFT', (75,75,75), (self.screen_rect.centerx - 90, 210), 20)
@@ -25,7 +25,7 @@ class KeyBinding(tools.States):
         
     def set_buttons(self):
         self.up_button_settings = {
-            'text' : '{}'.format(pg.key.name(self.controller_dict['up'])),
+            'text' : '{}'.format(pg.key.name(tools.CONTROLLER_DICT['up'])),
             'hover' : (255,255,255),
             'font' : None,
             'fg' : (0,0,0),
@@ -35,7 +35,7 @@ class KeyBinding(tools.States):
             'command' : self.up_bind
         }
         self.down_button_settings = {
-            'text' : '{}'.format(pg.key.name(self.controller_dict['down'])),
+            'text' : '{}'.format(pg.key.name(tools.CONTROLLER_DICT['down'])),
             'hover' : (255,255,255),
             'font' : None,
             'fg' : (0,0,0),
@@ -45,7 +45,7 @@ class KeyBinding(tools.States):
             'command' : self.down_bind
         }
         self.left_button_settings = {
-            'text' : '{}'.format(pg.key.name(self.controller_dict['left'])),
+            'text' : '{}'.format(pg.key.name(tools.CONTROLLER_DICT['left'])),
             'hover' : (255,255,255),
             'font' : None,
             'fg' : (0,0,0),
@@ -55,7 +55,7 @@ class KeyBinding(tools.States):
             'command' : self.left_bind
         }
         self.right_button_settings = {
-            'text' : '{}'.format(pg.key.name(self.controller_dict['right'])),
+            'text' : '{}'.format(pg.key.name(tools.CONTROLLER_DICT['right'])),
             'hover' : (255,255,255),
             'font' : None,
             'fg' : (0,0,0),
@@ -66,7 +66,7 @@ class KeyBinding(tools.States):
         }
     
         self.action_button_settings = {
-            'text' : '{}'.format(pg.key.name(self.controller_dict['action'])),
+            'text' : '{}'.format(pg.key.name(tools.CONTROLLER_DICT['action'])),
             'hover' : (255,255,255),
             'font' : None,
             'fg' : (0,0,0),
@@ -88,32 +88,27 @@ class KeyBinding(tools.States):
         self.buttons = [self.up_keybinding, self.down_keybinding, self.left_keybinding, self.right_keybinding, self.action_keybinding]
 
     def up_bind(self):
-        self.set_buttons()
-        self.action = 'up'
+        tools.KEY_ACTION = 'up'
         self.next = 'GETKEY'
         self.done = True
 
     def down_bind(self):
-        self.set_buttons()
-        self.action = 'down'
+        tools.KEY_ACTION = 'down'
         self.next = 'GETKEY'
         self.done = True
 
     def left_bind(self):
-        self.set_buttons()
-        self.action = 'left'
+        tools.KEY_ACTION = 'left'
         self.next = 'GETKEY'
         self.done = True
     
     def right_bind(self):
-        self.set_buttons()
-        self.action = 'right'
+        tools.KEY_ACTION = 'right'
         self.next = 'GETKEY'
         self.done = True
 
     def action_bind(self):
-        self.set_buttons()
-        self.action = 'action'
+        tools.KEY_ACTION = 'action'
         self.next = 'GETKEY'
         self.done = True
 
@@ -128,7 +123,7 @@ class KeyBinding(tools.States):
             elif event.key == pg.K_RETURN:
                 self.select_option(self.selected_index)
                 
-            elif event.key == self.controller_dict['back']:
+            elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
                 self.next = 'MENU'
@@ -166,4 +161,5 @@ class KeyBinding(tools.States):
         pass
 
     def entry(self):
-        pass
+        self.set_buttons()
+

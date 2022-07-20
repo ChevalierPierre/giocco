@@ -49,7 +49,7 @@ class Audio(tools.States):
                 self.select_option(self.selected_index)
                 
                 
-            elif event.key == self.controller_dict['back']:
+            elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
                 self.next = 'MENU'
