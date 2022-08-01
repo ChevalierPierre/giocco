@@ -49,16 +49,6 @@ class Play(tools.States):
             pg.mixer.music.load(self.background_music.tracks[self.background_music.track]) 
             pg.mixer.music.play()
         self.culprit.get_event(event)
-                    
-    def movement(self, keys):           
-        if keys[tools.CONTROLLER_DICT['up']]:
-            self.culprit.move(0, -1)
-        if keys[tools.CONTROLLER_DICT['down']]:
-            self.culprit.move(0, 1)
-        if keys[tools.CONTROLLER_DICT['left']]:
-            self.culprit.move(-1, 0)
-        if keys[tools.CONTROLLER_DICT['right']]:
-            self.culprit.move(1, 0)
 
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
@@ -69,8 +59,7 @@ class Play(tools.States):
             self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
                                                               (255, 255, 255), (self.screen_rect.centerx, 25), 50)
             self.culprit.update(now, self.screen_rect)
-            #self.movement(keys)
-            #self.interact(keys, now)
+            self.interact(keys, now)
         else:
             self.pause_text, self.pause_rect = self.make_text("PAUSED",
                 (255,255,255), self.screen_rect.center, 50)

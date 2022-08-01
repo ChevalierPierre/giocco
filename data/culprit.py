@@ -37,12 +37,8 @@ class Culprit:
         self.hit = tools.Sound('whoosh.wav')
         self.hit.sound.set_volume(.1)
 
-    def move(self, x, y):
-        self.rect.x += x * self.speed
-        self.rect.y += y * self.speed
-
     def interact(self):
-        self.surface.fill((50,50,50))
+        print("interact")
 
     def get_event(self, event):
         """
