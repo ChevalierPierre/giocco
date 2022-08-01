@@ -19,7 +19,7 @@ class Options(tools.States):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYDOWN:
-            if event.key in [pg.K_UP, pg.K_w]:
+            if event.key in [pg.K_UP, pg.K_z]:
                 self.change_selected_option(-1)
             elif event.key in [pg.K_DOWN, pg.K_s]:
                 self.change_selected_option(1)
