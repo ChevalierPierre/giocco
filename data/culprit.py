@@ -8,6 +8,11 @@ DIRECT_DICT = {tools.CONTROLLER_DICT['left']: (-1, 0),
                tools.CONTROLLER_DICT['up']: (0, -1),
                tools.CONTROLLER_DICT['down']: (0, 1)}
 
+OPPOSITE_DICT = {tools.CONTROLLER_DICT['left']: "right",
+                 tools.CONTROLLER_DICT['right']: "left",
+                 tools.CONTROLLER_DICT['up']: "bottom",
+                 tools.CONTROLLER_DICT['down']: "top"}
+
 class Culprit:
     def __init__(self, x, y, width, height, facing=tools.CONTROLLER_DICT['up']):
         self.width = width
@@ -19,6 +24,9 @@ class Culprit:
         self.speed = 1
         self.animate_timer = 0.0
         self.animate_fps = 7
+        self.mask = self.make_mask()
+        self.collision_direction = None
+        self.first_collision_per_frame = None
         self.direction = facing
         self.old_direction = None
         self.direction_stack = []
@@ -49,19 +57,31 @@ class Culprit:
         elif event.type == pg.KEYUP:
             self.pop_direction(event.key)
 
-    def update(self, now, screen_rect):
+    def render(self, screen):
+        screen.blit(self.image, self.rect)
+
+    def update(self, now, screen_rect, obstacles):
         """
         Updates our player appropriately every frame.
         """
         self.adjust_images(now)
+        self.collision_direction = None
         if self.direction_stack:
-            direction_vector = DIRECT_DICT[self.direction]
-            self.rect.x += self.speed*direction_vector[0]
-            self.rect.y += self.speed*direction_vector[1]
-            self.rect.clamp_ip(screen_rect)
+            self.movement(obstacles, 0)
+            self.movement(obstacles, 1)
 
-    def render(self, screen):
-        screen.blit(self.image, self.rect)
+    def movement(self, obstacles, i):
+        """Move player and then check for collisions; adjust as necessary."""
+        change = self.speed*DIRECT_DICT[self.direction][i]
+        self.rect[i] += change
+        collisions = pg.sprite.spritecollide(self, obstacles, False)
+        callback = pg.sprite.collide_mask
+        collide = pg.sprite.spritecollideany(self, collisions, callback)
+        if collide and not self.collision_direction:
+            self.collision_direction = self.get_collision_direction(collide)
+        while collide:
+            self.rect[i] += (1 if change<0 else -1)
+            collide = pg.sprite.spritecollideany(self, collisions, callback)
 
     def add_direction(self, key):
         """
@@ -103,7 +123,6 @@ class Culprit:
             self.redraw = True
         self.make_image(now)
 
-
     def make_frame_dict(self):
         """
         Create a dictionary of direction keys to frame cycles. We can use
@@ -116,6 +135,44 @@ class Culprit:
                        tools.CONTROLLER_DICT['down']: itertools.cycle([frames[3], flips[3]]),
                        tools.CONTROLLER_DICT['up']: itertools.cycle([frames[2], flips[2]])}
         return walk_cycles
+
+    def make_mask(self):
+        """
+        Create a collision mask slightly smaller than our sprite so that
+        the sprite's head can overlap obstacles; adding depth.
+        """
+        mask_surface = pg.Surface(self.rect.size).convert_alpha()
+        mask_surface.fill((0,0,0,0))
+        mask_surface.fill(pg.Color("white"), (10,20,30,30))
+        mask = pg.mask.from_surface(mask_surface)
+        return mask
+
+    def get_collision_direction(self, other_sprite):
+        """Find what side of an object the player is running into."""
+        dx = self.get_finite_difference(other_sprite, 0, self.speed)
+        dy = self.get_finite_difference(other_sprite, 1, self.speed)
+        abs_x, abs_y = abs(dx), abs(dy)
+        if abs_x > abs_y:
+            return ("right" if dx>0 else "left")
+        elif abs_x < abs_y:
+            return ("bottom" if dy>0 else "top")
+        else:
+            return OPPOSITE_DICT[self.direction]
+
+    def get_finite_difference(self, other_sprite, index, delta=1):
+        """
+        Find the finite difference in area of mask collision with the
+        rects position incremented and decremented in axis index.
+        """
+        base_offset = [other_sprite.rect.x-self.rect.x,
+                       other_sprite.rect.y-self.rect.y]
+        offset_high = base_offset[:]
+        offset_low = base_offset[:]
+        offset_high[index] += delta
+        offset_low[index] -= delta
+        first_term = self.mask.overlap_area(other_sprite.mask, offset_high)
+        second_term = self.mask.overlap_area(other_sprite.mask, offset_low)
+        return first_term - second_term
 
 
 def split_sheet(sheet, size, columns, rows):
@@ -134,3 +191,4 @@ def split_sheet(sheet, size, columns, rows):
             row.append(sheet.subsurface(rect))
         subsurfaces.append(row)
     return subsurfaces
+
