@@ -85,10 +85,11 @@ class Play(tools.States):
 
     def make_obstacles(self):
         """Prepare some obstacles for our player to collide with."""
-        obstacles = [block_.Block((400,400)), block_.Block((300,270)), block_.Block((150,170))]
-        for i in range(9):
+        obstacles = []
+        for i in range(15):
             obstacles.append(block_.Block((i*50,0)))
-            obstacles.append(block_.Block((450,50*i)))
-            obstacles.append(block_.Block((50+i*50,450)))
+            obstacles.append(block_.Block((50+i*50,550)))
+        for i in range(11):
+            obstacles.append(block_.Block((750,50*i)))
             obstacles.append(block_.Block((0,50+50*i)))
         return pg.sprite.Group(obstacles)

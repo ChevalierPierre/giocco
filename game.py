@@ -4,7 +4,6 @@ import pygame as pg
 from data.main import main
 import data.tools
 import argparse
-import sys
 
 parser = argparse.ArgumentParser(description='Pong Arguments')
 parser.add_argument('-c','--clean', action='store_true', 
