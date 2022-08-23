@@ -21,7 +21,6 @@ class Audio(tools.States):
         self.bg_music_modify(0)
         
     def bg_music_modify(self, amount, sound=None):
-            
         self.background_music_volume += amount
         if self.background_music_volume > .9:
             self.background_music_volume = 1.0
