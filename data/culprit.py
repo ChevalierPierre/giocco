@@ -4,14 +4,14 @@ import itertools
 from . import tools
 
 DIRECT_DICT = {tools.CONTROLLER_DICT['left']: (-1, 0),
-               tools.CONTROLLER_DICT['right']: (1, 0),
-               tools.CONTROLLER_DICT['up']: (0, -1),
-               tools.CONTROLLER_DICT['down']: (0, 1)}
-
+                       tools.CONTROLLER_DICT['right']: (1, 0),
+                       tools.CONTROLLER_DICT['up']: (0, -1),
+                       tools.CONTROLLER_DICT['down']: (0, 1)}
 OPPOSITE_DICT = {tools.CONTROLLER_DICT['left']: "right",
-                 tools.CONTROLLER_DICT['right']: "left",
-                 tools.CONTROLLER_DICT['up']: "bottom",
-                 tools.CONTROLLER_DICT['down']: "top"}
+                              tools.CONTROLLER_DICT['right']: "left",
+                              tools.CONTROLLER_DICT['up']: "bottom",
+                              tools.CONTROLLER_DICT['down']: "top"}
+KEY_CHANGE = False
 
 class Culprit:
     def __init__(self, x, y, width, height, facing=tools.CONTROLLER_DICT['up']):
@@ -21,7 +21,7 @@ class Culprit:
         self.rect = self.surface.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 1
+        self.speed = 3
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.mask = self.make_mask()
@@ -52,6 +52,7 @@ class Culprit:
         """
         Handle events pertaining to player control.
         """
+
         if event.type == pg.KEYDOWN:
             self.add_direction(event.key)
         elif event.type == pg.KEYUP:
@@ -118,6 +119,10 @@ class Culprit:
         Update the sprite's walkframes as the sprite's direction changes.
         """
         if self.direction != self.old_direction:
+            global KEY_CHANGE
+            if KEY_CHANGE:
+                self.walkframe_dict = self.make_frame_dict()
+                KEY_CHANGE = False
             self.walkframes = self.walkframe_dict[self.direction]
             self.old_direction = self.direction
             self.redraw = True
@@ -157,6 +162,10 @@ class Culprit:
         elif abs_x < abs_y:
             return ("bottom" if dy>0 else "top")
         else:
+            OPPOSITE_DICT = {tools.CONTROLLER_DICT['left']: "right",
+                                  tools.CONTROLLER_DICT['right']: "left",
+                                  tools.CONTROLLER_DICT['up']: "bottom",
+                                  tools.CONTROLLER_DICT['down']: "top"}
             return OPPOSITE_DICT[self.direction]
 
     def get_finite_difference(self, other_sprite, index, delta=1):
@@ -191,4 +200,18 @@ def split_sheet(sheet, size, columns, rows):
             row.append(sheet.subsurface(rect))
         subsurfaces.append(row)
     return subsurfaces
+
+def set_bindings():
+    global OPPOSITE_DICT
+    global DIRECT_DICT
+    global KEY_CHANGE
+    OPPOSITE_DICT = {   tools.CONTROLLER_DICT['left']: "right",
+                        tools.CONTROLLER_DICT['right']: "left",
+                        tools.CONTROLLER_DICT['up']: "bottom",
+                        tools.CONTROLLER_DICT['down']: "top"}
+    DIRECT_DICT = { tools.CONTROLLER_DICT['left']: (-1, 0),
+                    tools.CONTROLLER_DICT['right']: (1, 0),
+                    tools.CONTROLLER_DICT['up']: (0, -1),
+                    tools.CONTROLLER_DICT['down']: (0, 1)}
+    KEY_CHANGE = True
 

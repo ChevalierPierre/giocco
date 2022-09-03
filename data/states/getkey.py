@@ -2,7 +2,7 @@
 
 import pygame as pg
 from .. import tools
-
+from .. import culprit
 class GetKey(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
@@ -24,6 +24,7 @@ class GetKey(tools.States):
                 self.next = 'MENU'
             else:
                 self.update_controller_dict(tools.KEY_ACTION, event)
+                culprit.set_bindings()
                 self.next = 'KEYBINDING'
                 self.done = True
         self.mouse_menu_click(event)

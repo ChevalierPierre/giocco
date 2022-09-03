@@ -6,7 +6,6 @@ import shutil
 import random
 
 KEY_ACTION = ''
-KEY_VALUE = ''
 CONTROLLER_DICT = {
     'up': pg.K_UP,
     'down': pg.K_DOWN,
@@ -101,6 +100,7 @@ class States:
 
     def update_controller_dict(self, keyname, event):
         CONTROLLER_DICT[keyname] = event.key
+
         
     def mouse_hover_sound(self):
         for i,opt in enumerate(self.rendered["des"]):

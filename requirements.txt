@@ -1,5 +1,5 @@
-auto-py-to-exe
 pygame
 os
 random
 shutil
+py2exe

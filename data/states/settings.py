@@ -5,7 +5,6 @@ from .. import tools
 class Settings(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
-        print("settings")
         self.screen_rect = screen_rect
         self.options = ['Back']
         self.next_list = ['MENU']
