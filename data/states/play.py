@@ -2,7 +2,7 @@ import pygame as pg
 from .. import tools
 from .. import culprit as culprit_
 from .. import block as block_
-
+from .. import parser
 
 class Play(tools.States):
     def __init__(self, screen_rect): 
@@ -15,17 +15,19 @@ class Play(tools.States):
         self.cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.cover.fill(0)
         self.cover.set_alpha(200)
-        #game specific content
         self.bg_color = (50,50,50)
         self.pause = False
         self.score = 0
+        #game specific content
         culprit_width = 50
         culprit_height = 50
         culprit_y = self.screen_rect.centery - (culprit_height // 2)
         padding = 25  # padding from wall
         culprit_x = screen_rect.width - culprit_width - padding
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
-        self.obstacles = self.make_obstacles()
+        instance = parser.Parser()
+        self.obstacles = instance.parse()
+        #self.obstacles = self.make_obstacles()
 
     def reset(self):
         self.pause = False

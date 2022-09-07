@@ -52,9 +52,9 @@ class Audio(tools.States):
                 #self.button_sound.sound.play()
                 self.done = True
                 self.next = 'MENU'
-            elif event.key in [pg.K_PLUS, pg.K_EQUALS]:
+            elif event.key in [pg.K_PLUS, pg.K_EQUALS]:  # equals makes it work
                 self.bg_music_modify(.1, 'play')
-            elif event.key in [pg.K_MINUS, pg.K_UNDERSCORE]:
+            elif event.key in [pg.K_MINUS, pg.K_6]:  # 6 makes it work
                 self.bg_music_modify(-.1, 'play')
         self.mouse_menu_click(event)
 

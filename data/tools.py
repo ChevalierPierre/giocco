@@ -55,7 +55,6 @@ class Music:
     def __init__(self, volume):
         self.path = os.path.join('resources', 'music')
         self.setup(volume)
-
         
     def setup(self, volume):
         self.track_end = pg.USEREVENT+1
@@ -68,6 +67,20 @@ class Music:
         pg.mixer.music.set_endevent(self.track_end)
         pg.mixer.music.load(self.tracks[0])
 
+class Maps:
+    def __init__(self):
+        self.maps = []
+        self.path = os.path.join('resources', 'maps')
+        self.map_list = os.listdir(self.path)
+
+    def get_list(self):
+        with open(os.path.join('resources', 'maps', random.choice(self.map_list)), 'r') as f:
+            new_map = []
+            for line in f:
+                if line[0] == "#" or line[0] == " ":
+                    continue
+                new_map.append(line)
+        return new_map
 
 
 class States:

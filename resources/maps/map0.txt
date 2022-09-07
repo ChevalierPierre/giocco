@@ -1,0 +1,18 @@
+###################
+##	MAP N°1      ##
+###################
+# O = Obstacles
+# C = Culprit
+# P = Police
+OOOOOOOOOOOOOOOO
+O              O
+O          O   O
+O  OOO     O   O
+O          O   O
+O              O
+O   O          O
+O   O     OOO  O
+O   O          O
+O              O
+O              O
+OOOOOOOOOOOOOOOO

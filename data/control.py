@@ -33,7 +33,6 @@ class Control():
         }
         self.state_name = "SPLASH"
         self.state = self.state_dict[self.state_name]
-        
 
     def event_loop(self):
         for event in pg.event.get():
