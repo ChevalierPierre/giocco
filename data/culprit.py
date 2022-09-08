@@ -39,12 +39,6 @@ class Culprit:
         self.adjust_images()
         self.rect = self.image.get_rect(center=(x,y))
 
-    def sound_init(self):
-        self.collide = tools.Sound('boing.wav')
-        self.collide.sound.set_volume(.5)
-        self.hit = tools.Sound('whoosh.wav')
-        self.hit.sound.set_volume(.1)
-
     def get_event(self, event):
         """
         Handle events pertaining to player control.
