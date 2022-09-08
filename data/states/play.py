@@ -25,9 +25,9 @@ class Play(tools.States):
         padding = 25  # padding from wall
         culprit_x = screen_rect.width - culprit_width - padding
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
-        instance = parser.Parser()
-        self.obstacles = instance.parse()
-        #self.obstacles = self.make_obstacles()
+        self.instance = parser.Parser()
+        self.obstacles = self.instance.parse()
+        self.last_action = 0
 
     def reset(self):
         self.pause = False
@@ -52,7 +52,10 @@ class Play(tools.States):
 
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
-            self.culprit.interact()
+            if now - 3000 > self.last_action:
+                self.instance = parser.Parser()
+                self.obstacles = self.instance.parse()
+                self.last_action = now
 
     def update(self, now, keys):
         if not self.pause:

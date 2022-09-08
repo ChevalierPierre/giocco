@@ -1,18 +1,18 @@
 ###################
-##	MAP N°0      ##
+##	MAP N°1      ##
 ###################
 # O = Obstacles
 # field = magma
 # boss map = yes
 OOOOOOOOOOOOOOOO
-OOOOOOOOOOOOOOOO
-OOOOOOOOOOOOOOOO
+O              O
+O          O   O
 O  OOOOOOOOO   O
 O    O     O   O
 O    O         O
 O   O OOOOO    O
-O   OOOOOOOOO  O
-OOOOOOO        O
-O     OOOOOOOOOO
-O     O        O
+O   O     OOO  O
+OO  OOO        O
+OO    O        O
+OOO   O        O
 OOOOOOOOOOOOOOOO

@@ -45,9 +45,6 @@ class Culprit:
         self.hit = tools.Sound('whoosh.wav')
         self.hit.sound.set_volume(.1)
 
-    def interact(self):
-        print("interact")
-
     def get_event(self, event):
         """
         Handle events pertaining to player control.
