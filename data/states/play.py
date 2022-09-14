@@ -27,7 +27,7 @@ class Play(tools.States):
         culprit_x = screen_rect.width - culprit_width - padding
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles = self.floor_instance.maps_array[0][0].parse_map()
+        self.obstacles = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
 
     def reset(self):
