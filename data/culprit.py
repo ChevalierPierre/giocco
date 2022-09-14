@@ -21,7 +21,7 @@ class Culprit:
         self.rect = self.surface.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 3
+        self.speed = 10
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.mask = self.make_mask()

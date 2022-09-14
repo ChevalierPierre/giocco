@@ -29,14 +29,12 @@ def surroundingCells(rand_wall, maze):
 
 	return s_cells
 
-def main():
+def genMaze(height, width):
 	## Main code
 	# Init variables
 	wall = 'w'
 	cell = 'c'
 	unvisited = 'u'
-	height = 12
-	width = 16
 	maze = []
 
 
@@ -235,19 +233,4 @@ def main():
 		for j in range(0, width):
 			if (maze[i][j] == 'u'):
 				maze[i][j] = 'w'
-
-	"""# Set entrance and exit
-	for i in range(0, width):
-		if (maze[1][i] == 'c'):
-			maze[0][i] = 'c'
-			break
-
-	for i in range(width-1, 0, -1):
-		if (maze[height-2][i] == 'c'):
-			maze[height-1][i] = 'c'
-			break"""
-
-	# Print final maze
-	#printMaze(maze)
-
 	return maze

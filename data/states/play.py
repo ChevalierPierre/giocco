@@ -2,7 +2,8 @@ import pygame as pg
 from .. import tools
 from .. import culprit as culprit_
 from .. import block as block_
-from .. import parser
+from .. import floor
+from .. import map
 
 class Play(tools.States):
     def __init__(self, screen_rect): 
@@ -25,8 +26,8 @@ class Play(tools.States):
         padding = 25  # padding from wall
         culprit_x = screen_rect.width - culprit_width - padding
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
-        self.instance = parser.Parser()
-        self.obstacles = self.instance.parse()
+        self.floor_instance = floor.Floor()
+        self.obstacles = self.floor_instance.maps_array[0][0].parse_map()
         self.last_action = 0
 
     def reset(self):
@@ -53,8 +54,8 @@ class Play(tools.States):
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
             if now - 3000 > self.last_action:
-                self.instance = parser.Parser()
-                self.obstacles = self.instance.parse()
+                """self.instance = parser.Parser()
+                self.obstacles = self.instance.parse()"""
                 self.last_action = now
 
     def update(self, now, keys):
