@@ -1,5 +1,2 @@
 pygame
-os
-random
-shutil
 py2exe
