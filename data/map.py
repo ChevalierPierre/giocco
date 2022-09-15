@@ -2,17 +2,16 @@ import pygame as pg
 from . import tools
 from . import block
 
+
 class Map:
-    def __init__(self) -> None:
+    def __init__(self):
         maps = tools.Maps()
         self.map = maps.get_list()
         self.parse_map()
-        # self.obstacles = 
         # porte
         # vide
         # enemy
         # power ups
-        #self.floor_instance = floor_instance
 
     def parse_map(self):
         obstacles = []

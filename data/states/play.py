@@ -45,6 +45,10 @@ class Play(tools.States):
                 self.reset()
             elif event.key == tools.CONTROLLER_DICT['pause']:
                 self.pause = not self.pause
+                if self.pause:
+                    pg.mixer.music.pause()
+                if not self.pause:
+                    pg.mixer.music.unpause()
         elif event.type == self.background_music.track_end:
             self.background_music.track = (self.background_music.track+1) % len(self.background_music.tracks)
             pg.mixer.music.load(self.background_music.tracks[self.background_music.track])
@@ -88,14 +92,3 @@ class Play(tools.States):
         
     def entry(self):
         pg.mixer.music.play()
-
-    def make_obstacles(self):
-        """Prepare some obstacles for our player to collide with."""
-        obstacles = []
-        for i in range(15):
-            obstacles.append(block_.Block((i*50,0)))
-            obstacles.append(block_.Block((50+i*50,550)))
-        for i in range(11):
-            obstacles.append(block_.Block((750,50*i)))
-            obstacles.append(block_.Block((0,50+50*i)))
-        return pg.sprite.Group(obstacles)
