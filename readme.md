@@ -1,1 +1,4 @@
-### Python scene manager with Pygame, ongoing project...
+# Giocco
+
+### pip3 install -r requirements.txt
+### python3 game.py
