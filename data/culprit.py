@@ -21,7 +21,7 @@ class Culprit:
         self.rect = self.surface.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 10
+        self.speed = 3
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.mask = self.make_mask()
@@ -37,13 +37,12 @@ class Culprit:
         self.sprite.set_colorkey(pg.Color("magenta"))
         self.walkframe_dict = self.make_frame_dict()
         self.adjust_images()
-        self.rect = self.image.get_rect(center=(x,y))
+        #self.rect = self.image.get_rect(center=(x,y))
 
     def get_event(self, event):
         """
         Handle events pertaining to player control.
         """
-
         if event.type == pg.KEYDOWN:
             self.add_direction(event.key)
         elif event.type == pg.KEYUP:
@@ -124,7 +123,7 @@ class Culprit:
         Create a dictionary of direction keys to frame cycles. We can use
         transform functions to reduce the size of the sprite sheet needed.
         """
-        frames = split_sheet(self.sprite, (self.width, self.height), 4, 1)[0]
+        frames = tools.split_sheet(self.sprite, (self.width, self.height), 4, 1)[0]
         flips = [pg.transform.flip(frame, True, False) for frame in frames]
         walk_cycles = {tools.CONTROLLER_DICT['left']: itertools.cycle(frames[0:2]),
                        tools.CONTROLLER_DICT['right']: itertools.cycle(flips[0:2]),
@@ -174,23 +173,6 @@ class Culprit:
         second_term = self.mask.overlap_area(other_sprite.mask, offset_low)
         return first_term - second_term
 
-
-def split_sheet(sheet, size, columns, rows):
-    """
-    Divide a loaded sprite sheet into subsurfaces.
-
-    The argument size is the width and height of each frame (w,h)
-    columns and rows are the integer number of cells horizontally and
-    vertically.
-    """
-    subsurfaces = []
-    for y in range(rows):
-        row = []
-        for x in range(columns):
-            rect = pg.Rect((x * size[0], y * size[1]), size)
-            row.append(sheet.subsurface(rect))
-        subsurfaces.append(row)
-    return subsurfaces
 
 def set_bindings():
     global OPPOSITE_DICT

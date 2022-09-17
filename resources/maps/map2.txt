@@ -5,15 +5,17 @@
 # field = magma
 # boss map = yes
 # D = Door
-OOOOOOOOOOOODOOO
-O              O
-O              D
-O              O
-O              O
-O              O
-O              O
-D              O
-O              O
-O              O
-O              O
-OOOOODOOOOOOOOOO
+OOOOOOOOOOOOOOOOOO
+OOOOOOOOOOOOODOOOO
+OO              OO
+OO              DO
+OO              OO
+OO              OO
+OO              OO
+OO              OO
+OD              OO
+OO              OO
+OO              OO
+OO              OO
+OOOOOODOOOOOOOOOOO
+OOOOOOOOOOOOOOOOOO

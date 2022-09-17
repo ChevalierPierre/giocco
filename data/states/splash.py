@@ -15,9 +15,9 @@ class Splash(tools.States):
         self.cover_alpha = 256
         self.alpha_step = 3
 
-        self.image = pg.image.load('resources/graphics/splash_page.png').convert_alpha()
-        text = ["Brought to you by",'the Moria dwarfs']
-        self.rendered_text = self.make_text_list("Fixedsys500c",50,text,(0,0,0),320,50)
+        self.image = pg.image.load('resources/graphics/splash_page2.png').convert_alpha()
+        text = ["Giocco"]
+        self.rendered_text = self.make_text_list("Megadeth.ttf",150,text,(2,58,77),520,50)
 
     def make_text_list(self,font,size,strings,color,start_y,y_space):
         rendered_text = []
@@ -28,7 +28,7 @@ class Splash(tools.States):
         return rendered_text
 
     def render_font(self,font,size,msg,color=(255,255,255)):
-        selected_font = tools.Font.load('impact.ttf', size)
+        selected_font = tools.Font.load(font, size)
         return selected_font.render(msg,1,color)
 
     def update(self,surface,keys):
@@ -36,7 +36,7 @@ class Splash(tools.States):
         self.current_time = pg.time.get_ticks()
         self.cover.set_alpha(self.cover_alpha)
         self.cover_alpha = max(self.cover_alpha-self.alpha_step,0)
-        if self.current_time-self.start_time > 1000.0*self.timeout:
+        if self.current_time-self.start_time > 4000.0*self.timeout:
             self.done = True
             
     def render(self, screen):

@@ -16,7 +16,9 @@ class Floor:
         for i in range(len(self.maps_array)):  # 12 rows
             for j in range(len(self.maps_array[0]) - 1):  # 16 columns
                 if self.maps_array[i][j] == "c":
-                    self.maps_array[i][j] = map.Map()
+                    # check if top, bottom, right, left cells have a wall or a path.
+                    # add this information as parameter to Map constructor
+                    self.maps_array[i][j] = map.Map([None, None, None, None])
 
     def get_existing_map(self):
         random.seed(datetime.now())

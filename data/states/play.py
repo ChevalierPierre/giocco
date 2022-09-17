@@ -24,10 +24,10 @@ class Play(tools.States):
         culprit_height = 50
         culprit_y = self.screen_rect.centery - (culprit_height // 2)
         padding = 25  # padding from wall
-        culprit_x = screen_rect.width - culprit_width - padding
+        culprit_x = screen_rect.width // 2 - culprit_width - padding
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
 
     def reset(self):
@@ -57,16 +57,19 @@ class Play(tools.States):
 
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
-            if now - 3000 > self.last_action:
-                """self.instance = parser.Parser()
-                self.obstacles = self.instance.parse()"""
+            if now - 1000 > self.last_action:
+                for do in self.doors:
+                    if pg.sprite.collide_mask(self.culprit, do):
+                        print("map change")
                 self.last_action = now
 
     def update(self, now, keys):
         if not self.pause:
             self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
-                                                              (255, 255, 255), (self.screen_rect.centerx, 25), 50)
+                                                              (255, 255, 255), (25, 25), 50)
             self.culprit.update(now, self.screen_rect, self.obstacles)
+            for do in self.doors:
+                do.update(now)
             self.interact(keys, now)
         else:
             self.pause_text, self.pause_rect = self.make_text("PAUSED",
@@ -75,9 +78,11 @@ class Play(tools.States):
 
     def render(self, screen):
         screen.fill(self.bg_color)
-        screen.blit(self.score_text, self.score_rect)
         for ob in self.obstacles:
             ob.render(screen)
+        for do in self.doors:
+            do.render(screen)
+        screen.blit(self.score_text, self.score_rect)
         self.culprit.render(screen)
         if self.pause:
             screen.blit(self.cover,(0,0))

@@ -17,7 +17,7 @@ class Block(pg.sprite.Sprite):
     def make_image(self):
         """Let's not forget aesthetics."""
         image = pg.Surface((50,50)).convert_alpha()
-        image.fill([random.randint(0, 255) for _ in range(3)])
+        #image.fill([random.randint(0, 255) for _ in range(3)])
         image.blit(self.shade_mask, (0,0))
         return image
 
