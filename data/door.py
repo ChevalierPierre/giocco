@@ -14,6 +14,7 @@ class Door(pg.sprite.Sprite):
         self.door_mask = tools.Image.load("portal.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
         self.interact_image = pg.Surface((2,2)).convert_alpha()
+        self.location = location
         self.rect = self.image.get_rect(topleft=location)
         self.interact_rect = self.interact_image.get_rect(topleft=location)
         self.doorframes = self.make_frame_dict()

@@ -65,24 +65,42 @@ class Play(tools.States):
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
             if now - 500 > self.last_action:
-                for do in self.doors:
+                loop_doors = self.doors
+                for do in loop_doors:
                     if pg.sprite.collide_mask(self.culprit, do):
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
                         self.obstacles, self.doors = instance.parse_map()
                         if leads_to == "top":
-                            self.culprit.rect.x = self.screen_rect.width // 2 - 25
-                            self.culprit.rect.y = self.screen_rect.height // 1.20 - 25
+                            for doo in self.doors:
+                                if doo.location[1] == 550:
+                                    self.culprit.rect.x = doo.location[0]
+                                    self.culprit.rect.y = doo.location[1]
+                                    break
+                            self.culprit.direction = tools.CONTROLLER_DICT['up']
                         elif leads_to == "bottom":
-                            self.culprit.rect.x = self.screen_rect.width // 2 - 25
-                            self.culprit.rect.y = self.screen_rect.height // 7 - 25
+                            for doo in self.doors:
+                                if doo.location[1] == 0:
+                                    self.culprit.rect.x = doo.location[0]
+                                    self.culprit.rect.y = doo.location[1]
+                                    break
+                            self.culprit.direction = tools.CONTROLLER_DICT['down']
                         elif leads_to == "right":
-                            self.culprit.rect.x = self.screen_rect.width // 10 - 25
-                            self.culprit.y = self.screen_rect.height // 2 - 25
+                            for doo in self.doors:
+                                if doo.location[0] == 0:
+                                    self.culprit.rect.x = doo.location[0]
+                                    self.culprit.rect.y = doo.location[1]
+                                    break
+                            self.culprit.direction = tools.CONTROLLER_DICT['right']
                         elif leads_to == "left":
-                            self.culprit.rect.x = self.screen_rect.width // 1.12 - 25
-                            self.culprit.rect.y = self.screen_rect.height // 2 - 25
+                            for doo in self.doors:
+                                if doo.location[0] == 750:
+                                    self.culprit.rect.x = doo.location[0]
+                                    self.culprit.rect.y = doo.location[1]
+                                    break
+                            self.culprit.direction = tools.CONTROLLER_DICT['left']
                         self.adjust_score(1)
+                        break
                 self.last_action = now
 
     def update(self, now, keys):
