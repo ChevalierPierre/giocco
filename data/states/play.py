@@ -32,6 +32,14 @@ class Play(tools.States):
     def reset(self):
         self.pause = False
         self.score = 0
+        culprit_width = 50
+        culprit_height = 50
+        culprit_y = self.screen_rect.height // 2 - culprit_height // 2
+        culprit_x = self.screen_rect.width // 2 - culprit_width // 2
+        self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
+        self.floor_instance = floor.Floor()
+        self.obstacles, self.doors = self.floor_instance.entry_map.parse_map()
+        self.last_action = 0
     
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
@@ -56,7 +64,7 @@ class Play(tools.States):
 
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
-            if now - 1000 > self.last_action:
+            if now - 500 > self.last_action:
                 for do in self.doors:
                     if pg.sprite.collide_mask(self.culprit, do):
                         leads_to = do.leads_to
@@ -74,6 +82,7 @@ class Play(tools.States):
                         elif leads_to == "left":
                             self.culprit.rect.x = self.screen_rect.width // 1.12 - 25
                             self.culprit.rect.y = self.screen_rect.height // 2 - 25
+                        self.adjust_score(1)
                 self.last_action = now
 
     def update(self, now, keys):

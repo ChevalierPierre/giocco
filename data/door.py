@@ -11,7 +11,7 @@ class Door(pg.sprite.Sprite):
         self.leads_to = leads_to
         self.animate_timer = 0.0
         self.animate_fps = 7
-        self.door_mask = tools.Image.load("portal.png").convert()
+        self.door_mask = tools.Image.load("portal.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
         self.interact_image = pg.Surface((2,2)).convert_alpha()
         self.rect = self.image.get_rect(topleft=location)
