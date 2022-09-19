@@ -5,9 +5,10 @@ import random
 
 class Door(pg.sprite.Sprite):
     """Something to change maps."""
-    def __init__(self, location):
+    def __init__(self, location, leads_to):
         """The location argument is where I will be located."""
         pg.sprite.Sprite.__init__(self)
+        self.leads_to = leads_to
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.door_mask = tools.Image.load("portal.png").convert()

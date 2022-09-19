@@ -22,9 +22,8 @@ class Play(tools.States):
         #game specific content
         culprit_width = 50
         culprit_height = 50
-        culprit_y = self.screen_rect.centery - (culprit_height // 2)
-        padding = 25  # padding from wall
-        culprit_x = screen_rect.width // 2 - culprit_width - padding
+        culprit_y = self.screen_rect.height // 2 - culprit_height // 2
+        culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
         self.obstacles, self.doors = self.floor_instance.entry_map.parse_map()
@@ -60,7 +59,21 @@ class Play(tools.States):
             if now - 1000 > self.last_action:
                 for do in self.doors:
                     if pg.sprite.collide_mask(self.culprit, do):
-                        print("map change")
+                        leads_to = do.leads_to
+                        instance = self.floor_instance.change_map(leads_to)
+                        self.obstacles, self.doors = instance.parse_map()
+                        if leads_to == "top":
+                            self.culprit.rect.x = self.screen_rect.width // 2 - 25
+                            self.culprit.rect.y = self.screen_rect.height // 1.20 - 25
+                        elif leads_to == "bottom":
+                            self.culprit.rect.x = self.screen_rect.width // 2 - 25
+                            self.culprit.rect.y = self.screen_rect.height // 7 - 25
+                        elif leads_to == "right":
+                            self.culprit.rect.x = self.screen_rect.width // 10 - 25
+                            self.culprit.y = self.screen_rect.height // 2 - 25
+                        elif leads_to == "left":
+                            self.culprit.rect.x = self.screen_rect.width // 1.12 - 25
+                            self.culprit.rect.y = self.screen_rect.height // 2 - 25
                 self.last_action = now
 
     def update(self, now, keys):
