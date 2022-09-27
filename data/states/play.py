@@ -26,7 +26,7 @@ class Play(tools.States):
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
 
     def reset(self):
@@ -38,7 +38,7 @@ class Play(tools.States):
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
     
     def get_event(self, event, keys):
@@ -70,10 +70,10 @@ class Play(tools.States):
                     if pg.sprite.collide_mask(self.culprit, do):
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.obstacles, self.doors = instance.parse_map()
+                        self.obstacles, self.doors, self.floor_exit = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
-                                if doo.location[1] == 550:
+                                if doo.location[1] == self.screen_rect.height - 50:
                                     self.culprit.rect.x = doo.location[0]
                                     self.culprit.rect.y = doo.location[1]
                                     break
@@ -94,13 +94,16 @@ class Play(tools.States):
                             self.culprit.direction = tools.CONTROLLER_DICT['right']
                         elif leads_to == "left":
                             for doo in self.doors:
-                                if doo.location[0] == 750:
+                                if doo.location[0] == self.screen_rect.width - 50:
                                     self.culprit.rect.x = doo.location[0]
                                     self.culprit.rect.y = doo.location[1]
                                     break
                             self.culprit.direction = tools.CONTROLLER_DICT['left']
                         self.adjust_score(1)
                         break
+                for ex in self.floor_exit:
+                    if pg.sprite.collide_mask(self.culprit, ex):
+                        self.reset()
                 self.last_action = now
 
     def update(self, now, keys):
@@ -122,6 +125,8 @@ class Play(tools.States):
             ob.render(screen)
         for do in self.doors:
             do.render(screen)
+        for ex in self.floor_exit:
+            ex.render(screen)
         screen.blit(self.score_text, self.score_rect)
         self.culprit.render(screen)
         if self.pause:

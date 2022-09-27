@@ -2,7 +2,7 @@
 
 ## Imports
 import random
-
+from datetime import datetime
 ## Functions
 def printMaze(maze, height, width):
 	for i in range(0, height):
@@ -31,6 +31,8 @@ def surroundingCells(rand_wall, maze):
 
 def genMaze(height, width):
 	## Main code
+	random.seed(datetime.now())
+
 	# Init variables
 	wall = 'w'
 	cell = 'c'

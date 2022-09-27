@@ -1,13 +1,17 @@
 ###################
 ##	MAP N°1      ##
 ###################
+# O = Obstacles
+# field = magma
+# boss map = yes
+# D = Door
 OOOOOOOOOOOOOOOOOO
 OOOOOOOOOOOOODOOOO
 OO              OO
 OO              DO
 OO              OO
 OO              OO
-OO              OO
+OO      E       OO
 OO              OO
 OD              OO
 OO              OO

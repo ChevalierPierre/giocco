@@ -6,28 +6,31 @@ from datetime import datetime
 class Floor:
     def __init__(self):
         self.maps_array = maze.genMaze(12, 16)
-        self.parse_floor()
-        self.floor_number = None
         self.current_map = [None, None]
-        self.entry_map = self.get_existing_map()
-        self.exit_map = None
-        self.boss_map = None
+        self.parse_floor()
+        self.get_existing_map()
 
     def parse_floor(self):
         for i in range(len(self.maps_array)):
             for j in range(len(self.maps_array[0]) - 1):
-                if self.maps_array[i][j] != "w":
+                if self.maps_array[i][j] == "c":
                     doors = self.check_doors(i,j)
                     self.maps_array[i][j] = map.Map(doors)
 
     def get_existing_map(self):
         random.seed(datetime.now())
+        condition = True
         while True:
             x = random.randint(0, len(self.maps_array[0]) - 1)
             y = random.randint(0, len(self.maps_array) - 1)
-            if self.maps_array[y][x] != "w":
+            if self.maps_array[y][x] != "w" and condition:
                 self.current_map = [y,x]
-                return self.maps_array[y][x]
+                self.entry_map = self.maps_array[y][x]
+                condition = False
+            elif self.maps_array[y][x] != "w" and [y,x] != self.current_map and self.maps_array[y][x] != self.entry_map:
+                doors = self.check_doors(y, x)
+                self.maps_array[y][x] = map.Map(doors, True)
+                return
 
     def change_map(self, leads_to):
         if leads_to == "top":
@@ -51,7 +54,7 @@ class Floor:
                     doors[2] = True
                 if self.maps_array[i][j + 1] != "w":
                     doors[3] = True
-            elif j == len(self.maps_array[0] - 1):
+            elif j == len(self.maps_array[0]) - 1:
                 if self.maps_array[i + 1][j] != "w":
                     doors[2] = True
                 if self.maps_array[i][j - 1] != "w":
@@ -69,7 +72,7 @@ class Floor:
                     doors[0] = True
                 if self.maps_array[i][j + 1] != "w":
                     doors[3] = True
-            elif j == len(self.maps_array[0] - 1):
+            elif j == len(self.maps_array[0]) - 1:
                 if self.maps_array[i - 1][j] != "w":
                     doors[0] = True
                 if self.maps_array[i][j - 1] != "w":

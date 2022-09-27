@@ -1,8 +1,6 @@
 import pygame as pg
 from . import tools
 
-import random
-
 
 class Block(pg.sprite.Sprite):
     """Something to run head-first into."""

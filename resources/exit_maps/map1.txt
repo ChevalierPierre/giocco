@@ -7,7 +7,7 @@ OO              OO
 OO              DO
 OO              OO
 OO              OO
-OO              OO
+OO      E       OO
 OO              OO
 OD              OO
 OO              OO

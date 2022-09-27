@@ -2,9 +2,7 @@
 ##	MAP N°1      ##
 ###################
 OOOOOOOOOOOOOOOOOO
-OOOOOOOOOOOOODOOOO
-OO              OO
-OO              DO
+OOOOOOOODOOOOOOOOO
 OO              OO
 OO              OO
 OO              OO
@@ -12,6 +10,8 @@ OO              OO
 OD              OO
 OO              OO
 OO              OO
+OO              DO
 OO              OO
-OOOOOODOOOOOOOOOOO
+OO              OO
+OOOOOOOOOOOODOOOOO
 OOOOOOOOOOOOOOOOOO

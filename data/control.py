@@ -9,8 +9,6 @@ class Control():
         pg.init()
         pg.display.set_caption("Giocco")
         self.screensize = (int(size[0]), int(size[1]))
-        #self.screensize = (int(size.split('x')[0]), int(size.split('x')[1]))
-        #self.screensize = (800,600)
         if fullscreen:
             self.screen = pg.display.set_mode(self.screensize, pg.FULLSCREEN)
         else:

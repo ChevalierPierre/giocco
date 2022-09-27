@@ -1,19 +1,17 @@
 import pygame as pg
-import itertools
 from . import tools
+import itertools
 
-class Door(pg.sprite.Sprite):
-    """Something to change maps."""
-    def __init__(self, location, leads_to):
+class Exits(pg.sprite.Sprite):
+    """Something to run head-first into."""
+    def __init__(self, location):
         """The location argument is where I will be located."""
         pg.sprite.Sprite.__init__(self)
-        self.leads_to = leads_to
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.door_mask = tools.Image.load("portal.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
         self.interact_image = pg.Surface((2,2)).convert_alpha()
-        self.location = location
         self.rect = self.image.get_rect(topleft=location)
         self.interact_rect = self.interact_image.get_rect(topleft=location)
         self.doorframes = self.make_frame_dict()
@@ -36,8 +34,8 @@ class Door(pg.sprite.Sprite):
         the sprite's head can overlap obstacles; adding depth.
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
-        mask_surface.fill((0,0,0,0))
-        mask_surface.fill(pg.Color("white"), (23,23,4,4))
+        mask_surface.fill((0, 0, 0, 0))
+        mask_surface.fill(pg.Color("white"), (23, 23, 4, 4))
         mask = pg.mask.from_surface(mask_surface)
         return mask
 
@@ -46,5 +44,5 @@ class Door(pg.sprite.Sprite):
 
     def update(self, now):
         self.adjust_images(now)
-        
+
 
