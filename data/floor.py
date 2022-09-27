@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Floor:
     def __init__(self):
-        self.maps_array = maze.genMaze(12, 16)
+        self.maps_array = maze.genMaze(4, 4)
         self.current_map = [None, None]
         self.parse_floor()
         self.get_existing_map()

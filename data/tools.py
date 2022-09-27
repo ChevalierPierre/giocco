@@ -36,6 +36,13 @@ class Image:
     def load(filename):
         p = os.path.join(Image.path, filename)
         return pg.image.load(os.path.abspath(p))
+    @staticmethod
+    def loaddir(dirname):
+        random.seed(datetime.now())
+        p = os.path.join(Image.path, dirname)
+        file_list = os.listdir(p)
+        true_p = os.path.join(p, random.choice(file_list))
+        return pg.image.load(os.path.abspath(true_p))
 
 class Font:
     path = 'resources/fonts'
@@ -70,18 +77,18 @@ class Music:
 class Maps:
     def __init__(self):
         self.maps = []
-        self.path = os.path.join('resources', 'maps')
+        self.path = os.path.join('resources', 'maps', 'standard_maps')
         self.map_list = os.listdir(self.path)
         self.exit_maps = []
-        self.exit_path = os.path.join('resources', 'exit_maps')
+        self.exit_path = os.path.join('resources', 'maps', 'exit_maps')
         self.exit_map_list = os.listdir(self.exit_path)
 
     def get_list(self, exit=False):
         random.seed(datetime.now())
         if exit:
-            fname = os.path.join('resources', 'exit_maps', random.choice(self.exit_map_list))
+            fname = os.path.join('resources', 'maps', 'exit_maps', random.choice(self.exit_map_list))
         else:
-            fname = os.path.join('resources', 'maps', random.choice(self.map_list))
+            fname = os.path.join('resources', 'maps', 'standard_maps', random.choice(self.map_list))
         with open(fname, 'r') as f:
             new_map = []
             for line in f:

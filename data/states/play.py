@@ -113,6 +113,8 @@ class Play(tools.States):
             self.culprit.update(now, self.screen_rect, self.obstacles)
             for do in self.doors:
                 do.update(now)
+            for ex in self.floor_exit:
+                ex.update(now)
             self.interact(keys, now)
         else:
             self.pause_text, self.pause_rect = self.make_text("PAUSED",
