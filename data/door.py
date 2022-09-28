@@ -1,15 +1,18 @@
 import pygame as pg
 import itertools
 from . import tools
-
+import os
 class Door(pg.sprite.Sprite):
     """Something to change maps."""
-    def __init__(self, location, leads_to):
+    def __init__(self, location, leads_to, color):
         """The location argument is where I will be located."""
         pg.sprite.Sprite.__init__(self)
         self.leads_to = leads_to
         self.animate_timer = 0.0
         self.animate_fps = 7
+        tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
+        self.pre_image = pg.Surface((50,50)).convert_alpha()
+        self.pre_image.blit(tile, (0,0))
         self.door_mask = tools.Image.load("portal.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
         self.interact_image = pg.Surface((2,2)).convert_alpha()
@@ -42,6 +45,7 @@ class Door(pg.sprite.Sprite):
         return mask
 
     def render(self, screen):
+        screen.blit(self.pre_image, self.rect)
         screen.blit(self.image, self.rect)
 
     def update(self, now):

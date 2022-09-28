@@ -1,14 +1,17 @@
 import pygame as pg
 from . import tools
 import itertools
-
+import os
 class Exits(pg.sprite.Sprite):
     """Something to run head-first into."""
-    def __init__(self, location):
+    def __init__(self, location, color):
         """The location argument is where I will be located."""
         pg.sprite.Sprite.__init__(self)
         self.animate_timer = 0.0
         self.animate_fps = 7
+        tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
+        self.pre_image = pg.Surface((50,50)).convert_alpha()
+        self.pre_image.blit(tile, (0,0))
         self.door_mask = tools.Image.load("portal.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
         self.interact_image = pg.Surface((2,2)).convert_alpha()
@@ -40,6 +43,7 @@ class Exits(pg.sprite.Sprite):
         return mask
 
     def render(self, screen):
+        screen.blit(self.pre_image, self.rect)
         screen.blit(self.image, self.rect)
 
     def update(self, now):

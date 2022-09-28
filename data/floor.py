@@ -5,6 +5,11 @@ from datetime import datetime
 
 class Floor:
     def __init__(self):
+        random.seed(datetime.now())
+        brick_list = ["black", "dark", "light", "red"]
+        tile_list = ["blue", "green", "grey", "red"]
+        self.floor_brick = random.choice(brick_list)
+        self.floor_tile = random.choice(tile_list)
         self.maps_array = maze.genMaze(4, 4)
         self.current_map = [None, None]
         self.parse_floor()
@@ -15,10 +20,9 @@ class Floor:
             for j in range(len(self.maps_array[0]) - 1):
                 if self.maps_array[i][j] == "c":
                     doors = self.check_doors(i,j)
-                    self.maps_array[i][j] = map.Map(doors)
+                    self.maps_array[i][j] = map.Map(doors, self.floor_tile, self.floor_brick)
 
     def get_existing_map(self):
-        random.seed(datetime.now())
         condition = True
         while True:
             x = random.randint(0, len(self.maps_array[0]) - 1)
@@ -29,7 +33,7 @@ class Floor:
                 condition = False
             elif self.maps_array[y][x] != "w" and [y,x] != self.current_map and self.maps_array[y][x] != self.entry_map:
                 doors = self.check_doors(y, x)
-                self.maps_array[y][x] = map.Map(doors, True)
+                self.maps_array[y][x] = map.Map(doors, self.floor_tile, self.floor_brick, True)
                 return
 
     def change_map(self, leads_to):

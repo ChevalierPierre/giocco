@@ -26,7 +26,7 @@ class Play(tools.States):
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit, self.floor_tiles = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
 
     def reset(self):
@@ -38,7 +38,7 @@ class Play(tools.States):
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit, self.floor_tiles = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
     
     def get_event(self, event, keys):
@@ -70,7 +70,7 @@ class Play(tools.States):
                     if pg.sprite.collide_mask(self.culprit, do):
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.obstacles, self.doors, self.floor_exit = instance.parse_map()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -123,6 +123,8 @@ class Play(tools.States):
 
     def render(self, screen):
         screen.fill(self.bg_color)
+        for ti in self.floor_tiles:
+            ti.render(screen)
         for ob in self.obstacles:
             ob.render(screen)
         for do in self.doors:
