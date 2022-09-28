@@ -1,0 +1,3 @@
+-faire une classe trap pour chaque trap différente
+-faire clignoter culprit quand il rentre en collision avec une trap
+-faire lentement disparaître culprit quand il rentre en collision avec une trap pour la troisième fois
