@@ -22,7 +22,7 @@ lib64
 
 # Installer logs
 pip-log.txt
-
+*.spec
 # Unit test / coverage reports
 .coverage
 .tox
