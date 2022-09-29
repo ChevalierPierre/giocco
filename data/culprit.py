@@ -1,6 +1,5 @@
 import pygame as pg
 import itertools
-
 from . import tools
 
 DIRECT_DICT = {tools.CONTROLLER_DICT['left']: (-1, 0),
@@ -13,15 +12,19 @@ OPPOSITE_DICT = {tools.CONTROLLER_DICT['left']: "right",
                               tools.CONTROLLER_DICT['down']: "top"}
 KEY_CHANGE = False
 
+
 class Culprit:
-    def __init__(self, x, y, width, height, facing=tools.CONTROLLER_DICT['up']):
+    def __init__(self, x, y, width, height, facing=tools.CONTROLLER_DICT['down']):
         self.width = width
         self.height = height
         self.surface = pg.Surface([width, height])
         self.rect = self.surface.get_rect()
         self.rect.x = x
         self.rect.y = y
-        self.speed = 7
+        self.speed = 4
+        self.life = 3
+        self.last_hurt = 0
+        self.hurt_show = False
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.mask = self.make_mask()
@@ -33,11 +36,10 @@ class Culprit:
         self.redraw = True
         self.image = None
         self.walkframes = None
-        self.sprite = tools.Image.load("skelly.png").convert()
+        self.sprite = tools.Image.load("skelly.png").convert_alpha()
         self.sprite.set_colorkey(pg.Color("magenta"))
         self.walkframe_dict = self.make_frame_dict()
         self.adjust_images()
-        #self.rect = self.image.get_rect(center=(x,y))
 
     def get_event(self, event):
         """
@@ -49,9 +51,13 @@ class Culprit:
             self.pop_direction(event.key)
 
     def render(self, screen):
-        screen.blit(self.image, self.rect)
+        if not self.hurt_show:
+            screen.blit(self.image, self.rect)
+        else:
+            cpy = self.image.copy()
+            cpy.blit(pg.Surface(self.image.get_size()).convert_alpha(), (0, 0), special_flags=pg.BLEND_RGBA_MULT)
 
-    def update(self, now, screen_rect, obstacles):
+    def update(self, now, screen_rect, obstacles, fire_traps):
         """
         Updates our player appropriately every frame.
         """
@@ -60,6 +66,32 @@ class Culprit:
         if self.direction_stack:
             self.movement(obstacles, 0)
             self.movement(obstacles, 1)
+        if now - 500 > self.last_hurt:
+            self.hurt(now, fire_traps)
+        if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 500:
+            self.hurt_show = True
+        else:
+            self.hurt_show = False
+
+    def reset(self, screen_rect):
+        self.direction_stack = []
+        culprit_width = 50
+        culprit_height = 50
+        culprit_y = screen_rect.height // 2 - culprit_height // 2
+        culprit_x = screen_rect.width // 2 - culprit_width // 2
+        self.rect.x = culprit_x
+        self.rect.y = culprit_y
+        self.direction = tools.CONTROLLER_DICT['down']
+        self.life = 3
+        self.speed = 4
+
+    def hurt(self, now, fire_traps):
+        collisions = pg.sprite.spritecollide(self, fire_traps, False)
+        callback = pg.sprite.collide_mask
+        collide = pg.sprite.spritecollideany(self, collisions, callback)
+        if collide:
+            self.life -= 1
+            self.last_hurt = now
 
     def movement(self, obstacles, i):
         """Move player and then check for collisions; adjust as necessary."""
@@ -137,7 +169,7 @@ class Culprit:
         the sprite's head can overlap obstacles; adding depth.
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
-        mask_surface.fill((0,0,0,0))
+        mask_surface.fill((0, 0, 0, 0))
         mask_surface.fill(pg.Color("white"), (10,20,30,30))
         mask = pg.mask.from_surface(mask_surface)
         return mask

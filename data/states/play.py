@@ -16,29 +16,22 @@ class Play(tools.States):
         self.cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.cover.fill(0)
         self.cover.set_alpha(200)
-        self.bg_color = (50,50,50)
         self.pause = False
         self.score = 0
-        #game specific content
         culprit_width = 50
         culprit_height = 50
         culprit_y = self.screen_rect.height // 2 - culprit_height // 2
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit, self.floor_tiles = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
 
     def reset(self):
         self.pause = False
-        self.score = 0
-        culprit_width = 50
-        culprit_height = 50
-        culprit_y = self.screen_rect.height // 2 - culprit_height // 2
-        culprit_x = self.screen_rect.width // 2 - culprit_width // 2
-        self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
+        self.culprit.reset(self.screen_rect)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit, self.floor_tiles = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
     
     def get_event(self, event, keys):
@@ -49,7 +42,7 @@ class Play(tools.States):
                 # self.button_sound.sound.play()
                 self.done = True
                 self.next = 'MENU'
-                self.reset()
+                #self.reset()
             elif event.key == tools.CONTROLLER_DICT['pause']:
                 self.pause = not self.pause
                 if self.pause:
@@ -70,7 +63,7 @@ class Play(tools.States):
                     if pg.sprite.collide_mask(self.culprit, do):
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles = instance.parse_map()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -108,11 +101,17 @@ class Play(tools.States):
 
     def update(self, now, keys):
         if not self.pause:
+            if self.culprit.life <= 0:
+                self.next = "MENU"
+                self.done = True
+                self.reset()
             self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
                                                               (255, 255, 255), (25, 25), 50)
-            self.culprit.update(now, self.screen_rect, self.obstacles)
+            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps)
             for do in self.doors:
                 do.update(now)
+            for ft in self.fire_traps:
+                ft.update(now)
             for ex in self.floor_exit:
                 ex.update(now)
             self.interact(keys, now)
@@ -122,7 +121,6 @@ class Play(tools.States):
         pg.mouse.set_visible(False)
 
     def render(self, screen):
-        screen.fill(self.bg_color)
         for ti in self.floor_tiles:
             ti.render(screen)
         for ob in self.obstacles:
@@ -131,6 +129,8 @@ class Play(tools.States):
             do.render(screen)
         for ex in self.floor_exit:
             ex.render(screen)
+        for ft in self.fire_traps:
+            ft.render(screen)
         screen.blit(self.score_text, self.score_rect)
         self.culprit.render(screen)
         if self.pause:
@@ -146,3 +146,4 @@ class Play(tools.States):
         
     def entry(self):
         pg.mixer.music.play()
+
