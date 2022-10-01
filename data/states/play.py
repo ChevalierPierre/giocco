@@ -12,10 +12,18 @@ class Play(tools.States):
             (255,255,255), (screen_rect.centerx,100), 50)
         self.pause_text, self.pause_rect = self.make_text("PAUSED",
             (255,255,255), screen_rect.center, 50)
+        self.game_over_text, self.game_over_rect = self.make_text("GAME OVER",
+            (255,255,255), screen_rect.center, 50)
         self.cover = pg.Surface((screen_rect.width, screen_rect.height))
+        self.death_cover = pg.Surface((screen_rect.width, screen_rect.height))
+        self.death_cover.fill(0)
+        self.death_alpha = 0
+        self.alpha_step = 1
+        self.death_cover.set_alpha(self.death_alpha)
         self.cover.fill(0)
         self.cover.set_alpha(200)
         self.pause = False
+        self.died = False
         self.score = 0
         culprit_width = 50
         culprit_height = 50
@@ -52,7 +60,8 @@ class Play(tools.States):
             self.background_music.track = (self.background_music.track+1) % len(self.background_music.tracks)
             pg.mixer.music.load(self.background_music.tracks[self.background_music.track])
             pg.mixer.music.play()
-        self.culprit.get_event(event)
+        if self.culprit.life > 0:
+            self.culprit.get_event(event)
 
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
@@ -91,10 +100,10 @@ class Play(tools.States):
                                     self.culprit.rect.y = doo.location[1]
                                     break
                             self.culprit.direction = tools.CONTROLLER_DICT['left']
-                        self.adjust_score(1)
                         break
                 for ex in self.floor_exit:
                     if pg.sprite.collide_mask(self.culprit, ex):
+                        self.adjust_score(1)
                         self.floor_instance = floor.Floor()
                         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps = self.floor_instance.entry_map.parse_map()
             self.last_action = now
@@ -102,9 +111,19 @@ class Play(tools.States):
     def update(self, now, keys):
         if not self.pause:
             if self.culprit.life <= 0:
-                self.die_sound.sound.play()
                 self.next = "MENU"
-                self.done = True
+                self.culprit.direction_stack = []
+                pg.mixer.music.stop()
+                self.background_music.setup(self.background_music_volume)
+                current_time = pg.time.get_ticks()
+                if not self.died:
+                    self.die_sound.sound.play()
+                    self.start_time = current_time
+                    self.died = True
+                self.death_cover.set_alpha(self.death_alpha)
+                self.death_alpha = self.death_alpha + self.alpha_step
+                if current_time - self.start_time > 4000.0:
+                    self.done = True
             elif self.culprit.last_hurt != self.check_hurt:
                 self.hurt_sound.sound.play()
                 self.check_hurt = self.culprit.last_hurt
@@ -136,19 +155,24 @@ class Play(tools.States):
             ft.render(screen)
         screen.blit(self.score_text, self.score_rect)
         self.culprit.render(screen)
+        if self.culprit.life <= 0:
+            screen.blit(self.death_cover, (0,0))
+            screen.blit(self.game_over_text, self.game_over_rect)
         if self.pause:
             screen.blit(self.cover,(0,0))
             screen.blit(self.pause_text, self.pause_rect)
         
     def adjust_score(self, point):
         self.score += point
-            
+
     def cleanup(self):
-        self.last_action = 0
-        self.check_hurt = self.culprit.last_hurt
         pg.mixer.music.stop()
         self.background_music.setup(self.background_music_volume)
+        self.last_action = 0
+        self.check_hurt = self.culprit.last_hurt
         self.score = 0
+        self.died = False
+        self.death_alpha = 0
         self.reset()
 
     def entry(self):
