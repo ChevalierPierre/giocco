@@ -104,8 +104,8 @@ class States:
         self.screen_rect = self.bogus_rect
         self.button_volume = .2
         self.button_hover_volume = .1
-        self.hurt_sound_volume = .3
-        self.die_sound_volume = .3
+        self.hurt_sound_volume = .1
+        self.die_sound_volume = .1
         self.hurt_sound = Sound('hurt.mp3')
         self.die_sound = Sound('die.mp3')
         self.button_sound = Sound('button.wav')
