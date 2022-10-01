@@ -36,7 +36,7 @@ class Splash(tools.States):
         self.current_time = pg.time.get_ticks()
         self.cover.set_alpha(self.cover_alpha)
         self.cover_alpha = max(self.cover_alpha-self.alpha_step,0)
-        if self.current_time-self.start_time > 4000.0*self.timeout:
+        if self.current_time-self.start_time > 2000.0*self.timeout:
             self.done = True
             
     def render(self, screen):

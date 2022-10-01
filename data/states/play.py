@@ -1,9 +1,8 @@
 import pygame as pg
 from .. import tools
 from .. import culprit as culprit_
-from .. import block as block_
 from .. import floor
-from .. import map
+
 
 class Play(tools.States):
     def __init__(self, screen_rect): 
@@ -26,6 +25,7 @@ class Play(tools.States):
         self.floor_instance = floor.Floor()
         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
+        self.check_hurt = self.culprit.last_hurt
 
     def reset(self):
         self.pause = False
@@ -42,7 +42,6 @@ class Play(tools.States):
                 # self.button_sound.sound.play()
                 self.done = True
                 self.next = 'MENU'
-                #self.reset()
             elif event.key == tools.CONTROLLER_DICT['pause']:
                 self.pause = not self.pause
                 if self.pause:
@@ -96,15 +95,19 @@ class Play(tools.States):
                         break
                 for ex in self.floor_exit:
                     if pg.sprite.collide_mask(self.culprit, ex):
-                        self.reset()
-                self.last_action = now
+                        self.floor_instance = floor.Floor()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps = self.floor_instance.entry_map.parse_map()
+            self.last_action = now
 
     def update(self, now, keys):
         if not self.pause:
             if self.culprit.life <= 0:
+                self.die_sound.sound.play()
                 self.next = "MENU"
                 self.done = True
-                self.reset()
+            elif self.culprit.last_hurt != self.check_hurt:
+                self.hurt_sound.sound.play()
+                self.check_hurt = self.culprit.last_hurt
             self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
                                                               (255, 255, 255), (25, 25), 50)
             self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps)
@@ -141,9 +144,14 @@ class Play(tools.States):
         self.score += point
             
     def cleanup(self):
+        self.last_action = 0
+        self.check_hurt = self.culprit.last_hurt
         pg.mixer.music.stop()
         self.background_music.setup(self.background_music_volume)
-        
+        self.score = 0
+        self.reset()
+
     def entry(self):
         pg.mixer.music.play()
 
+#set_cover alpha du splash screen inversé pour l'anim de mort
