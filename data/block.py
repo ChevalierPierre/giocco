@@ -2,6 +2,7 @@ import pygame as pg
 from . import tools
 import os
 
+
 class Block(pg.sprite.Sprite):
     """Something to run head-first into."""
     def __init__(self, location, color):

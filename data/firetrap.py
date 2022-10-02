@@ -5,7 +5,7 @@ import os
 
 
 class Firetrap(pg.sprite.Sprite):
-    """Something to change maps."""
+    """Traps erecting fire."""
 
     def __init__(self, location, color):
         """The location argument is where I will be located."""

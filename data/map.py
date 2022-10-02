@@ -5,6 +5,7 @@ from . import door
 from . import exits
 from . import tiles
 from . import firetrap
+from . import pittrap
 
 
 class Map:
@@ -25,6 +26,7 @@ class Map:
         floor_exit = []
         tile = []
         fire_traps = []
+        pit_traps = []
         for i in range(-1, len(self.map) - 1):
             for j in range(-1, len(self.map[0]) - 2):
                 if self.map[i + 1][j + 1] == "O":
@@ -46,4 +48,6 @@ class Map:
                     tile.append(tiles.Tiles((j * 50, i * 50), self.tile_color))
                 elif self.map[i + 1][j + 1] == "T":
                     fire_traps.append(firetrap.Firetrap((j * 50, i * 50), self.tile_color))
-        return (pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps))
+                elif self.map[i + 1][j + 1] == "P":
+                    pit_traps.append(pittrap.Pittrap((j * 50, i * 50)))
+        return (pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps))

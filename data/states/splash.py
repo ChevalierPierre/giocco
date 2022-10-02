@@ -2,6 +2,7 @@
 import pygame as pg
 from .. import tools
 
+
 class Splash(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)

@@ -57,7 +57,7 @@ class Culprit:
             cpy = self.image.copy()
             cpy.blit(pg.Surface(self.image.get_size()).convert_alpha(), (0, 0), special_flags=pg.BLEND_RGBA_MULT)
 
-    def update(self, now, screen_rect, obstacles, fire_traps):
+    def update(self, now, screen_rect, obstacles, fire_traps, pit_traps):
         """
         Updates our player appropriately every frame.
         """
@@ -67,7 +67,7 @@ class Culprit:
             self.movement(obstacles, 0)
             self.movement(obstacles, 1)
         if now - 500 > self.last_hurt:
-            self.hurt(now, fire_traps)
+            self.hurt(now, fire_traps, pit_traps)
         if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 500:
             self.hurt_show = True
         else:
@@ -85,11 +85,13 @@ class Culprit:
         self.life = 3
         self.speed = 4
 
-    def hurt(self, now, fire_traps):
-        collisions = pg.sprite.spritecollide(self, fire_traps, False)
+    def hurt(self, now, fire_traps, pit_traps):
+        collisions_fire = pg.sprite.spritecollide(self, fire_traps, False)
+        collisions_pit = pg.sprite.spritecollide(self, pit_traps, False)
         callback = pg.sprite.collide_mask
-        collide = pg.sprite.spritecollideany(self, collisions, callback)
-        if collide:
+        collide_fire = pg.sprite.spritecollideany(self, collisions_fire, callback)
+        collide_pit = pg.sprite.spritecollideany(self, collisions_pit, callback)
+        if collide_fire or collide_pit:
             self.life -= 1
             self.last_hurt = now
 
