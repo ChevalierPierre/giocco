@@ -31,7 +31,7 @@ class Play(tools.States):
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
         self.check_hurt = self.culprit.last_hurt
 
@@ -39,7 +39,7 @@ class Play(tools.States):
         self.pause = False
         self.culprit.reset(self.screen_rect)
         self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps = self.floor_instance.entry_map.parse_map()
+        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
     
     def get_event(self, event, keys):
@@ -71,7 +71,7 @@ class Play(tools.States):
                     if pg.sprite.collide_mask(self.culprit, do):
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps = instance.parse_map()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -105,7 +105,7 @@ class Play(tools.States):
                     if pg.sprite.collide_mask(self.culprit, ex):
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps = self.floor_instance.entry_map.parse_map()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
             self.last_action = now
 
     def update(self, now, keys):
@@ -129,13 +129,25 @@ class Play(tools.States):
                 self.check_hurt = self.culprit.last_hurt
             self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
                                                               (255, 255, 255), (25, 25), 50)
-            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps)
+            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
             for do in self.doors:
                 do.update(now)
             for ft in self.fire_traps:
                 ft.update(now)
             for ex in self.floor_exit:
                 ex.update(now)
+            for st in self.spike_traps:
+                st.update(now)
+            for bt in self.bear_traps:
+                bt.update(now)
+            for ptd in self.push_traps_down:
+                ptd.update(now)
+            for ptu in self.push_traps_up:
+                ptu.update(now)
+            for ptr in self.push_traps_right:
+                ptr.update(now)
+            for ptl in self.push_traps_left:
+                ptl.update(now)
             self.interact(keys, now)
         else:
             self.pause_text, self.pause_rect = self.make_text("PAUSED",
@@ -155,6 +167,18 @@ class Play(tools.States):
             ft.render(screen)
         for pt in self.pit_traps:
             pt.render(screen)
+        for st in self.spike_traps:
+            st.render(screen)
+        for bt in self.bear_traps:
+            bt.render(screen)
+        for ptd in self.push_traps_down:
+            ptd.render(screen)
+        for ptu in self.push_traps_up:
+            ptu.render(screen)
+        for ptr in self.push_traps_right:
+            ptr.render(screen)
+        for ptl in self.push_traps_left:
+            ptl.render(screen)
         screen.blit(self.score_text, self.score_rect)
         self.culprit.render(screen)
         if self.culprit.life <= 0:

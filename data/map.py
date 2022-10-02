@@ -6,6 +6,9 @@ from . import exits
 from . import tiles
 from . import firetrap
 from . import pittrap
+from . import spiketrap
+from . import beartrap
+from . import pushtrap
 
 
 class Map:
@@ -27,6 +30,12 @@ class Map:
         tile = []
         fire_traps = []
         pit_traps = []
+        spike_traps = []
+        bear_traps = []
+        push_traps_down = []
+        push_traps_up = []
+        push_traps_right = []
+        push_traps_left = []
         for i in range(-1, len(self.map) - 1):
             for j in range(-1, len(self.map[0]) - 2):
                 if self.map[i + 1][j + 1] == "O":
@@ -48,6 +57,18 @@ class Map:
                     tile.append(tiles.Tiles((j * 50, i * 50), self.tile_color))
                 elif self.map[i + 1][j + 1] == "T":
                     fire_traps.append(firetrap.Firetrap((j * 50, i * 50), self.tile_color))
+                elif self.map[i + 1][j + 1] == "S":
+                    spike_traps.append(spiketrap.Spiketrap((j * 50, i * 50), self.tile_color))
+                elif self.map[i + 1][j + 1] == "B":
+                    bear_traps.append(beartrap.Beartrap((j * 50, i * 50), self.tile_color))
                 elif self.map[i + 1][j + 1] == "P":
                     pit_traps.append(pittrap.Pittrap((j * 50, i * 50)))
-        return (pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps))
+                elif self.map[i + 1][j + 1] == "R":
+                    push_traps_right.append(pushtrap.Pushtrap((j * 50, i * 50), "right", self.tile_color))
+                elif self.map[i + 1][j + 1] == "L":
+                    push_traps_left.append(pushtrap.Pushtrap((j * 50, i * 50), "left", self.tile_color))
+                elif self.map[i + 1][j + 1] == "A":
+                    push_traps_up.append(pushtrap.Pushtrap((j * 50, i * 50), "front", self.tile_color))
+                elif self.map[i + 1][j + 1] == "Z":
+                    push_traps_down.append(pushtrap.Pushtrap((j * 50, i * 50), "bottom", self.tile_color))
+        return (pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps), pg.sprite.Group(spike_traps), pg.sprite.Group(bear_traps), pg.sprite.Group(push_traps_up), pg.sprite.Group(push_traps_down), pg.sprite.Group(push_traps_right), pg.sprite.Group(push_traps_left))

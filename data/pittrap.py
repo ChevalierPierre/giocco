@@ -1,5 +1,4 @@
 import pygame as pg
-import itertools
 from . import tools
 import os
 
@@ -13,7 +12,6 @@ class Pittrap(pg.sprite.Sprite):
         self.firetrap_mask = tools.Image.load(os.path.join("traps", "Pit_Trap_Spikes.png")).convert_alpha()
         self.image = self.make_image()
         self.rect = self.image.get_rect(topleft=location)
-        #self.mask = pg.mask.from_surface(self.image)
         self.mask = self.make_mask()
 
     def make_image(self):
