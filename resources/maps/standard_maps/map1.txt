@@ -6,6 +6,10 @@
 # E = exit
 # F = tile
 # T = fire trap
+# S = spike trap
+# B = bear trap
+# P = pit trap
+# R, L, A, Z = right left top bottom push trap
 OOOOOOOOOOOOOOOOOO
 OOOOOOOODOOOOOOOOO
 OOFAFFFFFFFFFFFFOO

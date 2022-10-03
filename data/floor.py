@@ -3,14 +3,17 @@ from . import map
 import random
 from datetime import datetime
 
+
 class Floor:
+    size = 3
     def __init__(self):
+        Floor.size += 1
         random.seed(datetime.now())
         brick_list = ["black", "dark", "light", "red"]
         tile_list = ["blue", "green", "grey", "red"]
         self.floor_brick = random.choice(brick_list)
         self.floor_tile = random.choice(tile_list)
-        self.maps_array = maze.genMaze(4, 4)
+        self.maps_array = maze.genMaze(Floor.size, Floor.size)
         self.current_map = [None, None]
         self.parse_floor()
         self.get_existing_map()

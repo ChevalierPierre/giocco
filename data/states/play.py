@@ -194,6 +194,7 @@ class Play(tools.States):
     def cleanup(self):
         pg.mixer.music.stop()
         self.background_music.setup(self.background_music_volume)
+        floor.Floor.size = 3
         self.last_action = 0
         self.check_hurt = self.culprit.last_hurt
         self.score = 0
