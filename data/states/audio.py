@@ -46,8 +46,6 @@ class Audio(tools.States):
                 self.change_selected_option(1)
             elif event.key == pg.K_RETURN:
                 self.select_option(self.selected_index)
-                
-                
             elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True

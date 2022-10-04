@@ -12,15 +12,12 @@ from . import pushtrap
 
 
 class Map:
-    def __init__(self, doors, tile_color, block_color, exit=False):
+    def __init__(self, doors, tile_color, block_color, exit=0):
         self.tile_color = tile_color
         self.block_color = block_color
         self.top_door, self.left_door, self.bottom_door, self.right_door = doors
         maps = tools.Maps()
-        if exit:
-            self.map = maps.get_list(True)
-        else:
-            self.map = maps.get_list()
+        self.map = maps.get_list(exit)
         self.parse_map()
 
     def parse_map(self):

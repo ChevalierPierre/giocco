@@ -1,6 +1,6 @@
-###################
-##    MAP N°2    ##
-###################
+##################
+##    MAP N°2   ##
+##################
 OOOOOOOOOOOOOOOOOO
 OOOOOOOODOOOOOOOOO
 OOFFFFFFFFFFFFFFOO

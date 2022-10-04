@@ -82,13 +82,18 @@ class Maps:
         self.exit_maps = []
         self.exit_path = os.path.join('resources', 'maps', 'exit_maps')
         self.exit_map_list = os.listdir(self.exit_path)
+        self.start_maps = []
+        self.start_path = os.path.join('resources', 'maps', 'start_maps')
+        self.start_map_list = os.listdir(self.start_path)
 
-    def get_list(self, exit=False):
+    def get_list(self, exit=0):
         random.seed(datetime.now())
-        if exit:
+        if exit == 1:
             fname = os.path.join('resources', 'maps', 'exit_maps', random.choice(self.exit_map_list))
-        else:
+        elif exit == 0:
             fname = os.path.join('resources', 'maps', 'standard_maps', random.choice(self.map_list))
+        elif exit == 2:
+            fname = os.path.join('resources', 'maps', 'start_maps', random.choice(self.start_map_list))
         with open(fname, 'r') as f:
             new_map = []
             for line in f:

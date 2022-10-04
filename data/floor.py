@@ -23,7 +23,7 @@ class Floor:
             for j in range(len(self.maps_array[0]) - 1):
                 if self.maps_array[i][j] == "c":
                     doors = self.check_doors(i,j)
-                    self.maps_array[i][j] = map.Map(doors, self.floor_tile, self.floor_brick)
+                    self.maps_array[i][j] = map.Map(doors, self.floor_tile, self.floor_brick, 0)
 
     def get_existing_map(self):
         condition = True
@@ -32,11 +32,13 @@ class Floor:
             y = random.randint(0, len(self.maps_array) - 1)
             if self.maps_array[y][x] != "w" and condition:
                 self.current_map = [y,x]
+                doors = self.check_doors(y, x)
+                self.maps_array[y][x] = map.Map(doors, self.floor_tile, self.floor_brick, 2)
                 self.entry_map = self.maps_array[y][x]
                 condition = False
             elif self.maps_array[y][x] != "w" and [y,x] != self.current_map and self.maps_array[y][x] != self.entry_map:
                 doors = self.check_doors(y, x)
-                self.maps_array[y][x] = map.Map(doors, self.floor_tile, self.floor_brick, True)
+                self.maps_array[y][x] = map.Map(doors, self.floor_tile, self.floor_brick, 1)
                 return
 
     def change_map(self, leads_to):
