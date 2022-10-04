@@ -1,14 +1,7 @@
 import pygame as pg
 from . import tools
-from . import block
-from . import door
-from . import exits
-from . import tiles
-from . import firetrap
-from . import pittrap
-from . import spiketrap
-from . import beartrap
-from . import pushtrap
+from .entities import block, door, exits, tiles
+from data.entities.traps import beartrap, firetrap, pittrap, pushtrap, spiketrap
 
 
 class Map:
@@ -36,10 +29,10 @@ class Map:
         for i in range(-1, len(self.map) - 1):
             for j in range(-1, len(self.map[0]) - 2):
                 if self.map[i + 1][j + 1] == "O":
-                    obstacles.append(block.Block((j*50,i*50), self.block_color))
+                    obstacles.append(block.Block((j * 50, i * 50), self.block_color))
                 elif self.map[i + 1][j + 1] == "D":
                     if i == 0 and self.top_door:
-                        doors.append(door.Door((j*50,i*50), "top", self.tile_color))
+                        doors.append(door.Door((j * 50, i * 50), "top", self.tile_color))
                     elif i == len(self.map) - 3 and self.bottom_door:
                         doors.append(door.Door((j * 50, i * 50), "bottom", self.tile_color))
                     elif j == 0 and self.left_door:

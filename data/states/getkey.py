@@ -2,7 +2,9 @@
 
 import pygame as pg
 from .. import tools
-from .. import culprit
+from ..entities import culprit
+
+
 class GetKey(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)

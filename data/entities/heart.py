@@ -1,23 +1,22 @@
 import pygame as pg
-from . import tools
-import os
+from data import tools
 
 
-
-class Tiles(pg.sprite.Sprite):
+class Heart(pg.sprite.Sprite):
     """Something to run head-first into."""
-    def __init__(self, location, color):
+    def __init__(self, location):
         """The location argument is where I will be located."""
-        pg.sprite.Sprite.__init__(self)
-        self.shade_mask = tools.Image.loaddir(os.path.join("tiles", color)).convert()
+        self.pos_x = location[0]
+        self.pos_y = location[1]
+        self.sprite = tools.Image.load("heart.png").convert_alpha()
         self.image = self.make_image()
         self.rect = self.image.get_rect(topleft=location)
-        self.mask = pg.mask.from_surface(self.image)
 
     def make_image(self):
         """Let's not forget aesthetics."""
-        image = pg.Surface((50,50)).convert_alpha()
-        image.blit(self.shade_mask, (0,0))
+        image = pg.Surface((36,36)).convert_alpha()
+        image.blit(self.sprite, (0,0))
+        image.set_colorkey((0, 0, 0))
         return image
 
     def render(self, screen):

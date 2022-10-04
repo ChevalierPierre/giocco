@@ -1,5 +1,5 @@
 import pygame as pg
-from . import tools
+from data import tools
 import os
 
 

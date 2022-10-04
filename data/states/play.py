@@ -1,7 +1,6 @@
 import pygame as pg
 from .. import tools
-from .. import culprit as culprit_
-from .. import floor
+from ..entities import culprit as culprit_, floor
 
 
 class Play(tools.States):
@@ -34,6 +33,7 @@ class Play(tools.States):
         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
         self.check_hurt = self.culprit.last_hurt
+
 
     def reset(self):
         self.pause = False

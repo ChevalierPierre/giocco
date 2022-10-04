@@ -1,10 +1,10 @@
 import pygame as pg
 import itertools
-from . import tools
+from data import tools
 import os
 
 
-class Spiketrap(pg.sprite.Sprite):
+class Beartrap(pg.sprite.Sprite):
     """Traps erecting fire."""
 
     def __init__(self, location, color):
@@ -15,24 +15,24 @@ class Spiketrap(pg.sprite.Sprite):
         tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
         self.pre_image = pg.Surface((50, 50)).convert_alpha()
         self.pre_image.blit(tile, (0, 0))
-        self.spiketrap_mask = tools.Image.load(os.path.join("traps", "Spike_Trap.png")).convert_alpha()
+        self.beartrap_mask = tools.Image.load(os.path.join("traps", "Bear_Trap.png")).convert_alpha()
         self.image = pg.Surface((50, 50)).convert_alpha()
         self.interact_image = pg.Surface((2, 2)).convert_alpha()
         self.location = location
         self.rect = self.image.get_rect(topleft=location)
         self.interact_rect = self.interact_image.get_rect(topleft=location)
-        self.spiketrap_frames = self.make_frame_dict()
+        self.beartrap_frames = self.make_frame_dict()
         self.mask = self.make_mask()
 
     def make_frame_dict(self):
-        frames = tools.split_sheet(self.spiketrap_mask, (50, 50), 14, 1)[0]
+        frames = tools.split_sheet(self.beartrap_mask, (50, 50), 4, 1)[0]
         cycles = itertools.cycle(frames)
         return cycles
 
     def adjust_images(self, now=0):
         elapsed = now - self.animate_timer > 1000.0 / self.animate_fps
         if elapsed:
-            self.image = next(self.spiketrap_frames)
+            self.image = next(self.beartrap_frames)
             self.animate_timer = now
 
     def make_mask(self):

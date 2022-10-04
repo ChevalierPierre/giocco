@@ -1,27 +1,29 @@
 import pygame as pg
-from . import tools
 import itertools
+from data import tools
 import os
-class Exits(pg.sprite.Sprite):
-    """Something to run head-first into."""
-    def __init__(self, location, color):
+class Door(pg.sprite.Sprite):
+    """Something to change maps."""
+    def __init__(self, location, leads_to, color):
         """The location argument is where I will be located."""
         pg.sprite.Sprite.__init__(self)
+        self.leads_to = leads_to
         self.animate_timer = 0.0
         self.animate_fps = 7
         tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
         self.pre_image = pg.Surface((50,50)).convert_alpha()
         self.pre_image.blit(tile, (0,0))
-        self.door_mask = tools.Image.load("exits.png").convert_alpha()
+        self.door_mask = tools.Image.load("portal.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
         self.interact_image = pg.Surface((2,2)).convert_alpha()
+        self.location = location
         self.rect = self.image.get_rect(topleft=location)
         self.interact_rect = self.interact_image.get_rect(topleft=location)
         self.doorframes = self.make_frame_dict()
         self.mask = self.make_mask()
 
     def make_frame_dict(self):
-        frames = tools.split_sheet(self.door_mask, (50, 50), 3, 2)[0]
+        frames = tools.split_sheet(self.door_mask, (50, 50), 4, 4)[0]
         door_cycles = itertools.cycle(frames)
         return door_cycles
 
@@ -37,8 +39,8 @@ class Exits(pg.sprite.Sprite):
         the sprite's head can overlap obstacles; adding depth.
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
-        mask_surface.fill((0, 0, 0, 0))
-        mask_surface.fill(pg.Color("white"), (5, 5, 40, 40))
+        mask_surface.fill((0,0,0,0))
+        mask_surface.fill(pg.Color("white"), (23,23,4,4))
         mask = pg.mask.from_surface(mask_surface)
         return mask
 
@@ -48,5 +50,5 @@ class Exits(pg.sprite.Sprite):
 
     def update(self, now):
         self.adjust_images(now)
-
+        
 
