@@ -106,10 +106,16 @@ class States:
         self.button_hover_volume = .1
         self.hurt_sound_volume = .1
         self.die_sound_volume = .1
+        self.whoosh_sound_volume = .1
+        self.low_whoosh_sound_volume = .1
+        self.low_whoosh_sound = Sound('low_whoosh.mp3')
+        self.whoosh_sound = Sound('whoosh.wav')
         self.hurt_sound = Sound('hurt.mp3')
         self.die_sound = Sound('die.mp3')
         self.button_sound = Sound('button.wav')
         self.button_hover = Sound('button_hover.wav')
+        self.low_whoosh_sound.sound.set_volume(self.low_whoosh_sound_volume)
+        self.whoosh_sound.sound.set_volume(self.whoosh_sound_volume)
         self.hurt_sound.sound.set_volume(self.hurt_sound_volume)
         self.die_sound.sound.set_volume(self.die_sound_volume)
         self.button_sound.sound.set_volume(self.button_volume)

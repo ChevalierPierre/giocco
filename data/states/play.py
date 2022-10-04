@@ -69,6 +69,7 @@ class Play(tools.States):
                 loop_doors = self.doors
                 for do in loop_doors:
                     if pg.sprite.collide_mask(self.culprit, do):
+                        self.whoosh_sound.sound.play()
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
                         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = instance.parse_map()
@@ -103,6 +104,7 @@ class Play(tools.States):
                         break
                 for ex in self.floor_exit:
                     if pg.sprite.collide_mask(self.culprit, ex):
+                        self.low_whoosh_sound.sound.play()
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
                         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()

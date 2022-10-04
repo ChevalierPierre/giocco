@@ -1,6 +1,5 @@
 import pygame as pg
-import os
-        
+from .. import tools
 class Button:
     def __init__(self, rect, **kwargs):
         self.rect = pg.Rect(rect)
@@ -27,7 +26,7 @@ class Button:
         if not filename:
             f = pg.font.SysFont('arial', size)
         else:
-            f = Font.load(self.font, size)
+            f = tools.Font.load(self.font, size)
         font = f.render(text, 1, self.text_color)
         rect = font.get_rect()
         return (font, rect)
