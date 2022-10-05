@@ -1,6 +1,6 @@
 import pygame as pg
-from . import tools
-from .entities import block, door, exits, tiles
+from data import tools
+from data.entities import block, door, exits, tiles
 from data.entities.traps import beartrap, firetrap, pittrap, pushtrap, spiketrap
 
 

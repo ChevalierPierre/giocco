@@ -1,5 +1,5 @@
 from data import maze
-from data import map
+from data.entities import map
 import random
 from datetime import datetime
 
