@@ -7,8 +7,8 @@ class Play(tools.States):
     def __init__(self, screen_rect): 
         tools.States.__init__(self)
         self.screen_rect = screen_rect
-        self.score_text, self.score_rect = self.make_text("SCOREBOARD_PLACEHOLDER",
-            (255,255,255), (screen_rect.centerx,100), 50)
+        self.score_text, self.score_rect = self.make_text('{}'.format(0),
+                                                          (255, 255, 255), (775, 25), 50)
         self.pause_text, self.pause_rect = self.make_text("PAUSED",
             (255,255,255), screen_rect.center, 50)
         self.game_over_text, self.game_over_rect = self.make_text("GAME OVER",
@@ -24,6 +24,7 @@ class Play(tools.States):
         self.pause = False
         self.died = False
         self.score = 0
+        self.oldscore = 0
         culprit_width = 50
         culprit_height = 50
         culprit_y = self.screen_rect.height // 2 - culprit_height // 2
@@ -33,7 +34,6 @@ class Play(tools.States):
         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
         self.check_hurt = self.culprit.last_hurt
-
 
     def reset(self):
         self.pause = False
@@ -129,8 +129,10 @@ class Play(tools.States):
             elif self.culprit.last_hurt != self.check_hurt:
                 self.hurt_sound.sound.play()
                 self.check_hurt = self.culprit.last_hurt
-            self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
-                                                              (255, 255, 255), (25, 25), 50)
+            if self.score != self.oldscore:
+                self.score_text, self.score_rect = self.make_text('{}'.format(self.score),
+                                                                  (255, 255, 255), (775, 25), 50)
+                self.oldscore = self.score
             self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
             for do in self.doors:
                 do.update(now)

@@ -85,7 +85,7 @@ class Culprit:
 
     def init_hearts(self):
         heart_list = []
-        heart_pos_x = 100
+        heart_pos_x = 14
         for i in range(self.life):
             heart_list.append(heart.Heart((heart_pos_x, 7)))
             heart_pos_x += 50
