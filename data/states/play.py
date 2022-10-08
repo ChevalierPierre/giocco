@@ -139,7 +139,10 @@ class Play(tools.States):
             for st in self.spike_traps:
                 st.update(now)
             for bt in self.bear_traps:
-                bt.update(now)
+                if self.culprit.collide_bear and bt.id == self.culprit.collide_bear.id:
+                    bt.update(now, self.culprit.collide_bear)
+                else:
+                    bt.update(now)
             for ptd in self.push_traps_down:
                 ptd.update(now)
             for ptu in self.push_traps_up:
