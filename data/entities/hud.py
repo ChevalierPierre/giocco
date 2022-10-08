@@ -8,11 +8,10 @@ class Hud(tools.States):
         # Score management
         self.score = score
         self.score_text, self.score_rect = self.make_text('{}'.format(self.score), (255, 255, 255), (750, 25), 50)
-
         # Heart management
         self.heart = culprit.life
         self.heart_image = self.display_heart()
-    
+
     def display_heart(self):
         heart_list = []
         heart_pos_x = 16
@@ -29,7 +28,9 @@ class Hud(tools.States):
             lp.render(screen)
 
     def update(self, culprit, score):
-        self.heart = culprit.life
-        self.heart_image = self.display_heart()
-        self.score = score
-        self.score_text, self.score_rect = self.make_text('{}'.format(self.score), (255, 255, 255), (750, 25), 50)
+        if self.heart != culprit.life:
+            self.heart = culprit.life
+            self.heart_image = self.display_heart()
+        if self.score != score:
+            self.score = score
+            self.score_text, self.score_rect = self.make_text('{}'.format(self.score), (255, 255, 255), (750, 25), 50)
