@@ -1,18 +1,21 @@
 import pygame as pg
 from .. import tools
 from ..entities import culprit as culprit_, floor
+from ..entities import hud
 
 
 class Play(tools.States):
     def __init__(self, screen_rect): 
         tools.States.__init__(self)
         self.screen_rect = screen_rect
+
         self.score_text, self.score_rect = self.make_text("SCOREBOARD_PLACEHOLDER",
             (255,255,255), (screen_rect.centerx,100), 50)
         self.pause_text, self.pause_rect = self.make_text("PAUSED",
             (255,255,255), screen_rect.center, 50)
         self.game_over_text, self.game_over_rect = self.make_text("GAME OVER",
             (255,255,255), screen_rect.center, 50)
+
         self.cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.death_cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.death_cover.fill(0)
@@ -29,6 +32,7 @@ class Play(tools.States):
         culprit_y = self.screen_rect.height // 2 - culprit_height // 2
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
+        self.hud = hud.Hud(self.culprit, self.score, self.screen_rect)
         self.floor_instance = floor.Floor()
         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
@@ -150,6 +154,7 @@ class Play(tools.States):
                 ptr.update(now)
             for ptl in self.push_traps_left:
                 ptl.update(now)
+            self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
             self.pause_text, self.pause_rect = self.make_text("PAUSED",
@@ -157,6 +162,7 @@ class Play(tools.States):
         pg.mouse.set_visible(False)
 
     def render(self, screen):
+        # Display Traps
         for ti in self.floor_tiles:
             ti.render(screen)
         for ob in self.obstacles:
@@ -181,7 +187,9 @@ class Play(tools.States):
             ptr.render(screen)
         for ptl in self.push_traps_left:
             ptl.render(screen)
-        screen.blit(self.score_text, self.score_rect)
+        # Display HUD
+        self.hud.render(screen)
+        # Display Culprit
         self.culprit.render(screen)
         if self.culprit.life <= 0:
             screen.blit(self.death_cover, (0,0))
