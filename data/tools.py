@@ -55,7 +55,10 @@ class Sound:
     def __init__(self, filename):
         self.path = os.path.join('resources', 'sound')
         self.fullpath = os.path.join(self.path, filename)
-        pg.mixer.init(frequency=22050, size=-16, channels=2, buffer=128)
+        try:
+            pg.mixer.init(frequency=22050, size=-16, channels=2, buffer=128)
+        except Exception as e:
+            print(e)
         self.sound = pg.mixer.Sound(self.fullpath)
         
 class Music:
