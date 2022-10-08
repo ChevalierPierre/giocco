@@ -1,7 +1,6 @@
 import pygame as pg
 import itertools
 from data import tools
-from data.entities import heart
 
 DIRECT_DICT = {tools.CONTROLLER_DICT['left']: (-1, 0),
                        tools.CONTROLLER_DICT['right']: (1, 0),
@@ -24,7 +23,6 @@ class Culprit:
         self.rect.y = y
         self.speed = 4
         self.life = 3
-        self.hearts = self.init_hearts()
         self.last_hurt = 0
         self.hurt_show = False
         self.animate_timer = 0.0
@@ -53,8 +51,6 @@ class Culprit:
             self.pop_direction(event.key)
 
     def render(self, screen):
-        for he in self.hearts:
-            he.render(screen)
         if not self.hurt_show:
             screen.blit(self.image, self.rect)
         else:
@@ -65,31 +61,17 @@ class Culprit:
         """
         Updates our player appropriately every frame.
         """
-        heart_len = len(self.hearts)
-        if heart_len > self.life:
-            del self.hearts[(self.life - heart_len):]
-        elif heart_len < self.life:
-            for i in range(heart_len - self.life):
-                self.hearts.append(heart.Heart((self.hearts[-1].pos_x + 50, self.hearts[-1].pos_y)))
         self.adjust_images(now)
         self.collision_direction = None
         if self.direction_stack:
             self.movement(obstacles, 0)
             self.movement(obstacles, 1)
-        if now - 500 > self.last_hurt:
+        if now - 1500 > self.last_hurt:
             self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left)
-        if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 500:
+        if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 600 or self.last_hurt + 660 < now < self.last_hurt + 820 or self.last_hurt + 880 < now < self.last_hurt + 1040 or self.last_hurt + 1100 < now < self.last_hurt + 1260 or self.last_hurt + 1320 < now < self.last_hurt + 1500:
             self.hurt_show = True
         else:
             self.hurt_show = False
-
-    def init_hearts(self):
-        heart_list = []
-        heart_pos_x = 14
-        for i in range(self.life):
-            heart_list.append(heart.Heart((heart_pos_x, 7)))
-            heart_pos_x += 50
-        return heart_list
 
     def reset(self, screen_rect):
         self.direction_stack = []
