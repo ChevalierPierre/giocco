@@ -41,6 +41,7 @@ class Play(tools.States):
         self.floor_instance = floor.Floor()
         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
+        self.culprit.hearts = self.culprit.init_hearts()
     
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
