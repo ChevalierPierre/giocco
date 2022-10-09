@@ -2,7 +2,7 @@ import pygame as pg
 import itertools
 from data import tools
 import os
-
+import random
 
 class Spiketrap(pg.sprite.Sprite):
     """Traps erecting fire."""
@@ -50,6 +50,8 @@ class Spiketrap(pg.sprite.Sprite):
         screen.blit(self.image, self.rect)
 
     def update(self, now):
+        if random.randint(0,2) == 0:
+            return
         self.adjust_images(now)
 
 
