@@ -14,9 +14,7 @@ class Exits(pg.sprite.Sprite):
         self.pre_image.blit(tile, (0,0))
         self.door_mask = tools.Image.load("exits.png").convert_alpha()
         self.image = pg.Surface((50,50)).convert_alpha()
-        self.interact_image = pg.Surface((2,2)).convert_alpha()
         self.rect = self.image.get_rect(topleft=location)
-        self.interact_rect = self.interact_image.get_rect(topleft=location)
         self.doorframes = self.make_frame_dict()
         self.mask = self.make_mask()
 

@@ -187,7 +187,7 @@ class Culprit:
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
         mask_surface.fill((0, 0, 0, 0))
-        mask_surface.fill(pg.Color("white"), (10,20,30,30))
+        mask_surface.fill(pg.Color("white"), (10,30,30,20))
         mask = pg.mask.from_surface(mask_surface)
         return mask
 

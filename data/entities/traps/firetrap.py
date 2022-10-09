@@ -17,10 +17,8 @@ class Firetrap(pg.sprite.Sprite):
         self.pre_image.blit(tile, (0, 0))
         self.firetrap_mask = tools.Image.load(os.path.join("traps", "Fire_Trap.png")).convert_alpha()
         self.image = pg.Surface((50, 50)).convert_alpha()
-        self.interact_image = pg.Surface((2, 2)).convert_alpha()
         self.location = location
         self.rect = self.image.get_rect(topleft=location)
-        self.interact_rect = self.interact_image.get_rect(topleft=location)
         self.firetrap_frames = self.make_frame_dict()
         self.mask = self.make_mask()
 
@@ -41,7 +39,8 @@ class Firetrap(pg.sprite.Sprite):
         the sprite's head can overlap obstacles; adding depth.
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
-        mask_surface.fill(pg.Color("white"), (5, 5, 40, 40))
+        mask_surface.fill((0, 0, 0, 0))
+        mask_surface.fill(pg.Color("white"), (5, 20, 40, 30))
         mask = pg.mask.from_surface(mask_surface)
         return mask
 

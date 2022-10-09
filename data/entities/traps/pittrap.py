@@ -26,6 +26,7 @@ class Pittrap(pg.sprite.Sprite):
         the sprite's head can overlap obstacles; adding depth.
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
+        mask_surface.fill((0, 0, 0, 0))
         mask_surface.fill(pg.Color("white"), (5, 5, 40, 40))
         mask = pg.mask.from_surface(mask_surface)
         return mask

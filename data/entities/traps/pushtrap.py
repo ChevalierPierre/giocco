@@ -20,11 +20,10 @@ class Pushtrap(pg.sprite.Sprite):
         elif direction == "right" or direction == "left":
             self.pushtrap_mask = tools.Image.load(os.path.join("traps", "Push_Trap_Right.png")).convert_alpha()
         self.image = pg.Surface((50, 50)).convert_alpha()
-        self.interact_image = pg.Surface((2, 2)).convert_alpha()
         self.location = location
         self.rect = self.image.get_rect(topleft=location)
-        self.interact_rect = self.interact_image.get_rect(topleft=location)
         self.pushtrap_frames = self.make_frame_dict(direction)
+        self.frame_count = 0
         self.mask = self.make_mask()
 
     def make_frame_dict(self, direction):
@@ -34,22 +33,23 @@ class Pushtrap(pg.sprite.Sprite):
         elif direction == "left":
             frames = [pg.transform.flip(frame, True, False) for frame in frames]
         cycles = itertools.cycle(frames)
-        return cycles
+        return frames
 
     def adjust_images(self, now=0):
         elapsed = now - self.animate_timer > 1000.0 / self.animate_fps
         if elapsed:
-            self.image = next(self.pushtrap_frames)
+            self.image = self.pushtrap_frames[self.frame_count]
             self.animate_timer = now
+            self.frame_count += 1
+            if self.frame_count == 4:
+                self.frame_count = 0
 
     def make_mask(self):
         """
         Create a collision mask slightly smaller than our sprite so that
         the sprite's head can overlap obstacles; adding depth.
         """
-        mask_surface = pg.Surface(self.rect.size).convert_alpha()
-        mask_surface.fill(pg.Color("white"), (5, 5, 40, 40))
-        mask = pg.mask.from_surface(mask_surface)
+        mask = pg.mask.from_surface(self.pushtrap_frames[self.frame_count])
         return mask
 
     def render(self, screen):
@@ -59,6 +59,7 @@ class Pushtrap(pg.sprite.Sprite):
     def update(self, now):
         if random.randint(0,2) == 0:
             return
+        self.mask = self.make_mask()
         self.adjust_images(now)
 
 
