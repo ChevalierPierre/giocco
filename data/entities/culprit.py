@@ -16,7 +16,7 @@ KEY_CHANGE = False
 class Culprit:
     def __init__(self, x, y, width, height, facing=tools.CONTROLLER_DICT['down']):
         # DATA
-        self.speed = 1
+        self.speed = 4
         self.life = 3
 
         # GRAPHICS
