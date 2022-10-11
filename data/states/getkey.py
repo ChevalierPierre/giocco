@@ -8,9 +8,10 @@ from ..entities import culprit
 class GetKey(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
+        self.name = "GETKEY"
         self.screen_rect = screen_rect
         self.options = ['Back']
-        self.next_list = ['MENU']
+        #self.next_list = [self.previous_state]
         self.title, self.title_rect = self.make_text('PLACEHOLDER', (75,75,75), (self.screen_rect.centerx, 75), 50)
         self.pre_render_options()
         self.from_bottom = 400
@@ -50,4 +51,10 @@ class GetKey(tools.States):
         pass
 
     def entry(self):
-        pass
+        for item in reversed(self.previous_state):
+            if item == "MENU":
+                self.next_list = ["MENU"]
+                return
+            elif item == "SETTINGS":
+                self.next_list = ["SETTINGS"]
+                return

@@ -6,6 +6,7 @@ from .. import tools
 class Splash(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
+        self.name = "SPLASH"
         self.screen_rect = screen_rect
         self.next = "MENU"
         self.timeout = 3

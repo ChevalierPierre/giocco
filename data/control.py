@@ -1,10 +1,11 @@
 
 import os
 import pygame as pg
-from .states import menu, play, options, controls, audio, splash, keybinding, getkey
+from .states import menu, play, options, settings, controls, audio, splash, keybinding, getkey
 
 class Control():
     def __init__(self, fullscreen, size):
+        self.historic = []
         pg.mixer.pre_init(44100, -16, 1, 512)
         pg.init()
         pg.display.set_caption("Giocco")
@@ -24,6 +25,7 @@ class Control():
             "PLAY"     : play.Play(self.screen_rect),
             "CONTROLS" : controls.Controls(self.screen_rect),
             "OPTIONS"  : options.Options(self.screen_rect),
+            "SETTINGS" : settings.Settings(self.screen_rect),
             "AUDIO"    : audio.Audio(self.screen_rect),
             "SPLASH"   : splash.Splash(self.screen_rect),
             "KEYBINDING" : keybinding.KeyBinding(self.screen_rect),
@@ -42,10 +44,13 @@ class Control():
 
     def change_state(self):
         if self.state.done:
+            self.historic += [self.state.name]
             self.state.cleanup()
             self.state_name = self.state.next
             self.state.done = False
             self.state = self.state_dict[self.state_name]
+            self.state.name = self.state_name
+            self.state.previous_state = self.historic
             self.state.entry()
 
     def run(self):

@@ -108,8 +108,7 @@ class Maps:
 
 class States:
     def __init__(self):
-        self.bogus_rect = pg.Surface([0,0]).get_rect()
-        self.screen_rect = self.bogus_rect
+        # AUDIO
         self.button_volume = .2
         self.button_hover_volume = .1
         self.hurt_sound_volume = .1
@@ -130,6 +129,11 @@ class States:
         self.button_hover.sound.set_volume(self.button_hover_volume)
         self.background_music_volume = .3
         self.background_music = Music(self.background_music_volume)
+
+        self.name = None
+        self.previous_state = []
+        self.bogus_rect = pg.Surface([0,0]).get_rect()
+        self.screen_rect = self.bogus_rect
         self.bg_color = (25,25,25)
         self.timer = 0.0
         self.quit = False

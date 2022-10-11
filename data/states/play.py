@@ -7,6 +7,7 @@ from ..entities import hud
 class Play(tools.States):
     def __init__(self, screen_rect): 
         tools.States.__init__(self)
+        self.name = "PLAY"
         self.screen_rect = screen_rect
         self.pause_text, self.pause_rect = self.make_text("PAUSED",
             (255,255,255), screen_rect.center, 50)
@@ -41,7 +42,11 @@ class Play(tools.States):
         self.floor_instance = floor.Floor()
         self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
         self.last_action = 0
-    
+        self.check_hurt = self.culprit.last_hurt
+        self.score = 0
+        self.died = False
+        self.death_alpha = 0
+
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
             self.quit = True
@@ -49,7 +54,7 @@ class Play(tools.States):
             if event.key == tools.CONTROLLER_DICT['back']:
                 # self.button_sound.sound.play()
                 self.done = True
-                self.next = 'MENU'
+                self.next = 'SETTINGS'
             elif event.key == tools.CONTROLLER_DICT['pause']:
                 self.pause = not self.pause
                 if self.pause:
@@ -201,13 +206,23 @@ class Play(tools.States):
     def cleanup(self):
         pg.mixer.music.stop()
         self.background_music.setup(self.background_music_volume)
-        floor.Floor.size = 3
-        self.last_action = 0
-        self.check_hurt = self.culprit.last_hurt
-        self.score = 0
-        self.died = False
-        self.death_alpha = 0
-        self.reset()
 
     def entry(self):
         pg.mixer.music.play()
+        for item in reversed(self.previous_state):
+            if item == "MENU":
+                self.next_list = ["MENU"]
+                self.pause = False
+                self.culprit.reset(self.screen_rect)
+                self.floor_instance = floor.Floor()
+                self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
+                self.last_action = 0
+                self.check_hurt = self.culprit.last_hurt
+                self.score = 0
+                self.died = False
+                self.death_alpha = 0
+                self.reset()
+                return
+            elif item == "SETTINGS":
+                self.next_list = ["SETTINGS"]
+                return

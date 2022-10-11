@@ -7,9 +7,10 @@ from ..GUI import button
 class KeyBinding(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
+        self.name = "KEYBINDING"
         self.screen_rect = screen_rect
         self.options = ['Back']
-        self.next_list = ['MENU']
+        #self.next_list = [self.previous_state]
         self.title, self.title_rect = self.make_text('Key Bindings', (75,75,75), (self.screen_rect.centerx, 75), 75)
         self.pre_render_options()
         self.from_bottom = 400
@@ -126,7 +127,13 @@ class KeyBinding(tools.States):
             elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
-                self.next = 'MENU'
+                for item in reversed(self.previous_state):
+                    if item == "MENU":
+                        self.next = "MENU"
+                        break
+                    elif item == "SETTINGS":
+                        self.next = "SETTINGS"
+                        break
         self.mouse_menu_click(event)
         for button in self.buttons:
             button.get_event(event)
@@ -162,4 +169,11 @@ class KeyBinding(tools.States):
 
     def entry(self):
         self.set_buttons()
+        for item in reversed(self.previous_state):
+            if item == "MENU":
+                self.next_list = ["MENU"]
+                return
+            elif item == "SETTINGS":
+                self.next_list = ["SETTINGS"]
+                return
 

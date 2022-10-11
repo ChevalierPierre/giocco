@@ -5,15 +5,15 @@ from .. import tools
 class Settings(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
+        self.name = "SETTINGS"
         self.screen_rect = screen_rect
-        self.options = ['Back']
-        self.next_list = ['MENU']
+        self.options = ['Resume', 'Controls', 'Audio', 'Menu']
+        self.next_list = ['PLAY', 'CONTROLS', 'AUDIO', 'MENU']
         self.title, self.title_rect = self.make_text('Settings', (75,75,75), (self.screen_rect.centerx, 75), 150)
         self.pre_render_options()
-        self.pre_render_listings()
-        self.from_bottom = 400
-        self.from_bottom_listings = 225
-        self.spacer = 25
+        #self.pre_render_listings()
+        self.from_bottom = 200
+        self.spacer = 75
     
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
@@ -28,7 +28,7 @@ class Settings(tools.States):
             elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
-                self.next = 'MENU'
+                self.next = 'PLAY'
         self.mouse_menu_click(event)
 
     def update(self, now, keys):
@@ -39,7 +39,6 @@ class Settings(tools.States):
     def render(self, screen):
         screen.fill(self.bg_color)
         screen.blit(self.title, self.title_rect)
-        screen.blit(self.ball_count, self.ball_count_rect)
         for i,opt in enumerate(self.rendered["des"]):
             opt[1].center = (self.screen_rect.centerx, self.from_bottom+i*self.spacer)
             if i == self.selected_index:
@@ -48,18 +47,6 @@ class Settings(tools.States):
                 screen.blit(rend_img,rend_rect)
             else:
                 screen.blit(opt[0],opt[1])
-        for i,opt in enumerate(self.rendered_listing['des']):
-            opt[1].center = (self.screen_rect.centerx, self.from_bottom_listings + i * self.spacer)
-            screen.blit(opt[0],opt[1])
-                
-    def pre_render_listings(self):
-        listing_text = tools.Font.load('impact.ttf', 25)
-        rendered_msg = {"des":[],"sel":[]}
-        for listing in self.listings:
-            text = listing_text.render(listing, 1, (255,255,255))
-            text_rect = text.get_rect()
-            rendered_msg["des"].append((text, text_rect))
-        self.rendered_listing = rendered_msg
 
     def cleanup(self):
         pass

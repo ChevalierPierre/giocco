@@ -11,7 +11,7 @@ class Audio(tools.States):
             '-/+'
         ]
         self.options = ['Back']
-        self.next_list = ['MENU']
+        #self.next_list = ["MENU"]
         self.title, self.title_rect = self.make_text('Audio', (75,75,75), (self.screen_rect.centerx, 75), 150)
         self.pre_render_options()
         self.pre_render_listings()
@@ -49,7 +49,13 @@ class Audio(tools.States):
             elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
-                self.next = 'MENU'
+                for item in reversed(self.previous_state):
+                    if item == "MENU":
+                        self.next = "MENU"
+                        break
+                    elif item == "SETTINGS":
+                        self.next = "SETTINGS"
+                        break
             elif event.key in [pg.K_PLUS, pg.K_EQUALS]:  # equals makes it work
                 self.bg_music_modify(.1, 'play')
             elif event.key in [pg.K_MINUS, pg.K_6]:  # 6 makes it work
@@ -90,4 +96,10 @@ class Audio(tools.States):
         pass
         
     def entry(self):
-        pass
+        for item in reversed(self.previous_state):
+            if item == "MENU":
+                self.next_list = ["MENU"]
+                return
+            elif item == "SETTINGS":
+                self.next_list = ["SETTINGS"]
+                return

@@ -8,7 +8,7 @@ class Controls(tools.States):
         tools.States.__init__(self)
         self.screen_rect = screen_rect
         self.options = ['Key Bindings', 'Back']
-        self.next_list = ['KEYBINDING', 'MENU']
+        #self.next_list = ['KEYBINDING', self.previous_state]
         self.title, self.title_rect = self.make_text('Controls', (75,75,75), (self.screen_rect.centerx, 75), 150)
         self.pre_render_options()
         self.from_bottom = 200
@@ -27,7 +27,13 @@ class Controls(tools.States):
             elif event.key == tools.CONTROLLER_DICT['back']:
                 #self.button_sound.sound.play()
                 self.done = True
-                self.next = 'MENU'
+                for item in reversed(self.previous_state):
+                    if item == "MENU":
+                        self.next = "MENU"
+                        break
+                    elif item == "SETTINGS":
+                        self.next = "SETTINGS"
+                        break
         self.mouse_menu_click(event)
 
     def update(self, now, keys):
@@ -51,4 +57,10 @@ class Controls(tools.States):
         pass
 
     def entry(self):
-        pass
+        for item in reversed(self.previous_state):
+            if item == "MENU":
+                self.next_list = ["KEYBINDING", "MENU"]
+                return
+            elif item == "SETTINGS":
+                self.next_list = ["KEYBINDING", "SETTINGS"]
+                return
