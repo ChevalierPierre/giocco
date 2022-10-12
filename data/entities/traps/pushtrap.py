@@ -32,7 +32,6 @@ class Pushtrap(pg.sprite.Sprite):
             frames = [pg.transform.flip(frame, False, True) for frame in frames]
         elif direction == "left":
             frames = [pg.transform.flip(frame, True, False) for frame in frames]
-        cycles = itertools.cycle(frames)
         return frames
 
     def adjust_images(self, now=0):

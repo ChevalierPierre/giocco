@@ -11,6 +11,7 @@ class Floor:
         random.seed(datetime.now())
         brick_list = ["black", "dark", "light", "red"]
         tile_list = ["blue", "green", "grey", "red"]
+
         self.floor_brick = random.choice(brick_list)
         self.floor_tile = random.choice(tile_list)
         self.maps_array = maze.genMaze(Floor.size, Floor.size)

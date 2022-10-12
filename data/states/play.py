@@ -17,13 +17,11 @@ class Play(tools.States):
         self.cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.death_cover = pg.Surface((screen_rect.width, screen_rect.height))
         self.death_cover.fill(0)
-        self.death_alpha = 0
         self.alpha_step = 1
+        self.death_alpha = 0
         self.death_cover.set_alpha(self.death_alpha)
         self.cover.fill(0)
         self.cover.set_alpha(200)
-        self.pause = False
-        self.died = False
         self.score = 0
         culprit_width = 50
         culprit_height = 50
@@ -31,27 +29,12 @@ class Play(tools.States):
         culprit_x = self.screen_rect.width // 2 - culprit_width // 2
         self.culprit = culprit_.Culprit(culprit_x, culprit_y, culprit_width, culprit_height)
         self.hud = hud.Hud(self.culprit, self.score, self.screen_rect)
-        self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
-        self.last_action = 0
-        self.check_hurt = self.culprit.last_hurt
-
-    def reset(self):
-        self.pause = False
-        self.culprit.reset(self.screen_rect)
-        self.floor_instance = floor.Floor()
-        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
-        self.last_action = 0
-        self.check_hurt = self.culprit.last_hurt
-        self.score = 0
-        self.died = False
-        self.death_alpha = 0
 
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
             self.quit = True
         elif event.type == pg.KEYDOWN:
-            if event.key == tools.CONTROLLER_DICT['back']:
+            if event.key == tools.CONTROLLER_DICT['back'] and self.culprit.life > 0:
                 # self.button_sound.sound.play()
                 self.done = True
                 self.next = 'SETTINGS'
@@ -123,10 +106,10 @@ class Play(tools.States):
                 pg.mixer.music.stop()
                 self.background_music.setup(self.background_music_volume)
                 current_time = pg.time.get_ticks()
-                if not self.died:
+                if not self.died_sound:
                     self.die_sound.sound.play()
                     self.start_time = current_time
-                    self.died = True
+                    self.died_sound = True
                 self.death_cover.set_alpha(self.death_alpha)
                 self.death_alpha = self.death_alpha + self.alpha_step
                 if current_time - self.start_time > 4000.0:
@@ -207,6 +190,7 @@ class Play(tools.States):
         pg.mixer.music.stop()
         self.background_music.setup(self.background_music_volume)
 
+
     def entry(self):
         pg.mixer.music.play()
         for item in reversed(self.previous_state):
@@ -219,9 +203,9 @@ class Play(tools.States):
                 self.last_action = 0
                 self.check_hurt = self.culprit.last_hurt
                 self.score = 0
-                self.died = False
+                self.died_sound = False
                 self.death_alpha = 0
-                self.reset()
+                floor.Floor.size = 3
                 return
             elif item == "SETTINGS":
                 self.next_list = ["SETTINGS"]

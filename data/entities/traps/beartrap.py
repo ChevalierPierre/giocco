@@ -28,13 +28,13 @@ class Beartrap(pg.sprite.Sprite):
         self.location = location
         self.rect = self.image.get_rect(topleft=location)
         self.beartrap_frames = self.make_frame_dict()
+        self.frame_count = 0
         self.mask = self.make_mask()
-        self.image = next(self.beartrap_frames)
+        self.image = self.beartrap_frames[self.frame_count]
 
     def make_frame_dict(self):
         frames = tools.split_sheet(self.beartrap_image, (50, 50), 4, 1)[0]
-        cycles = itertools.cycle(frames)
-        return cycles
+        return frames
 
     def adjust_images(self, now=0, touched=False):
         if touched:
@@ -42,7 +42,11 @@ class Beartrap(pg.sprite.Sprite):
         elapsed = now - self.animate_timer > 1000.0 / self.animate_fps
         if elapsed and self.animate_touched:
             if self.animate_counter != 0:
-                self.image = next(self.beartrap_frames)
+                self.animate_timer = now
+                self.frame_count += 1
+                if self.frame_count == 4:
+                    self.frame_count = 0
+                self.image = self.beartrap_frames[self.frame_count]
                 self.animate_timer = now
                 self.animate_counter -= 1
             else:
@@ -54,10 +58,7 @@ class Beartrap(pg.sprite.Sprite):
         Create a collision mask slightly smaller than our sprite so that
         the sprite's head can overlap obstacles; adding depth.
         """
-        mask_surface = pg.Surface(self.rect.size).convert_alpha()
-        mask_surface.fill((0, 0, 0, 0))
-        mask_surface.fill(pg.Color("white"), (20, 20, 5, 5))
-        mask = pg.mask.from_surface(mask_surface)
+        mask = pg.mask.from_surface(self.beartrap_frames[self.frame_count])
         return mask
 
     def render(self, screen):
