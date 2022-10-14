@@ -97,7 +97,7 @@ class Menu(tools.States):
 
 def generate_size():
     while True:
-        y = random.randint(6, 100)
+        y = random.randint(20, 60)
         if (y * 8 / 6).is_integer():
             return int(y * 8 / 6), y
 
