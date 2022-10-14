@@ -29,7 +29,7 @@ def surroundingCells(rand_wall, maze):
 
 	return s_cells
 
-def genMaze(height, width):
+def genMaze(height, width, entranceexit=False):
 	## Main code
 	random.seed(datetime.now())
 
@@ -235,4 +235,18 @@ def genMaze(height, width):
 		for j in range(0, width):
 			if (maze[i][j] == 'u'):
 				maze[i][j] = 'w'
+
+
+	if entranceexit:
+		# Set entrance and exit
+		for i in range(0, width):
+			if (maze[1][i] == 'c'):
+				maze[0][i] = 'c'
+				break
+
+		for i in range(width - 1, 0, -1):
+			if (maze[height - 2][i] == 'c'):
+				maze[height - 1][i] = 'c'
+				break
+
 	return maze

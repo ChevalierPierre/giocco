@@ -1,8 +1,8 @@
-
-
 import pygame as pg
 from .. import tools
+from .. import solver
 import random
+
 
 class Menu(tools.States):
     def __init__(self, screen_rect):
@@ -15,6 +15,17 @@ class Menu(tools.States):
         self.pre_render_options()
         self.from_bottom = 200
         self.spacer = 75
+
+        # MAZE ANIMATION
+        self.sizes = generate_size()
+        instance = solver.Solver(self.sizes[1],self.sizes[0])
+        self.maze_list = instance.maze_list
+        self.maze_counter = 0
+        self.next_maze = 1000
+        self.next_maze_step = 1000
+        self.maze_c = random.randint(35,45),random.randint(35,45),random.randint(35,45)
+        self.maze_w = random.randint(20,30),random.randint(20,30),random.randint(20,30)
+        self.maze_p = random.randint(145,155),random.randint(145,155),random.randint(70,110)
 
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
@@ -33,10 +44,23 @@ class Menu(tools.States):
         #pg.mouse.set_visible(True)
         self.mouse_hover_sound()
         self.change_selected_option()
+        if now - 5 > self.next_maze:
+            self.next_maze = now
+            self.maze_counter += 1
+            if len(self.maze_list) == self.maze_counter:
+                self.maze_counter = 0
+                self.sizes = generate_size()
+                instance = solver.Solver(self.sizes[1], self.sizes[0])
+                self.maze_list = instance.maze_list
+                self.maze_c = random.randint(35, 45), random.randint(35, 45), random.randint(35, 45)
+                self.maze_w = random.randint(20, 30), random.randint(20, 30), random.randint(20,30)
+                self.maze_p = random.randint(145, 155), random.randint(145, 155), random.randint(70, 110)
 
     def render(self, screen):
         screen.fill(self.bg_color)
+        self.render_maze(screen)
         screen.blit(self.title,self.title_rect)
+
         for i,opt in enumerate(self.rendered["des"]):
             opt[1].center = (self.screen_rect.centerx, self.from_bottom+i*self.spacer)
             if i == self.selected_index:
@@ -51,3 +75,29 @@ class Menu(tools.States):
         
     def entry(self):
         pass
+
+    def render_maze(self, screen):
+        size = (800 / self.sizes[0], 600 / self.sizes[1])
+        maze = self.maze_list[self.maze_counter]
+        for i in range(0, len(maze)):
+            for j in range(0, len(maze[0])):
+                if maze[i][j] == 'w':
+                    image = pg.Surface(size)
+                    image.fill(self.maze_w)
+                    screen.blit(image, (j*size[1],i*size[0]))
+                if maze[i][j] == 'c':
+                    image = pg.Surface(size)
+                    image.fill(self.maze_c)
+                    screen.blit(image, (j*size[1],i*size[0]))
+                if maze[i][j] == 'p':
+                    image = pg.Surface(size)
+                    image.fill(self.maze_p)
+                    screen.blit(image, (j*size[1],i*size[0]))
+
+
+def generate_size():
+    while True:
+        y = random.randint(6, 100)
+        if (y * 8 / 6).is_integer():
+            return int(y * 8 / 6), y
+
