@@ -10,8 +10,8 @@ class Floor:
     def __init__(self):
         Floor.size += 1
         random.seed(datetime.now())
-        brick_list = ["black", "dark", "light", "red"]
-        tile_list = ["blue", "green", "grey", "light"]
+        brick_list = ["black", "dark", "light", "red", "red_4"]
+        tile_list = ["blue", "green", "grey", "light", "grey_4"]
 
         self.floor_brick = random.choice(brick_list)
         if self.floor_brick == "light":

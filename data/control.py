@@ -2,6 +2,7 @@
 import os
 import pygame as pg
 from .states import menu, play, options, settings, controls, audio, splash, keybinding, getkey
+from . import tools
 
 class Control():
     def __init__(self, fullscreen, size):
@@ -9,6 +10,8 @@ class Control():
         pg.mixer.pre_init(44100, -16, 1, 512)
         pg.init()
         pg.display.set_caption("Giocco")
+        program_icon = tools.Image.load("heart.png")
+        pg.display.set_icon(program_icon)
         self.screensize = (int(size[0]), int(size[1]))
         if fullscreen:
             self.screen = pg.display.set_mode(self.screensize, pg.FULLSCREEN)

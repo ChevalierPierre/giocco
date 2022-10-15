@@ -19,6 +19,9 @@ class Solver:
         return [0, _start[0]], [len(self.maze) - 1, _end[0]]
 
     def escape(self):
+        if self.end:
+            return
+
         current_cell = self.rat_path[len(self.rat_path) - 1]
 
         if current_cell == self.finish:
