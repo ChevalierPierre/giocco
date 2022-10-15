@@ -1,4 +1,3 @@
-from colorama import Fore
 from . import maze as m
 
 
@@ -70,24 +69,3 @@ class Solver:
 def value_copy(a):
     b = [[a[x][y] for y in range(len(a[0]))] for x in range(len(a))]
     return b
-
-
-def maze_solver(selfmaze):
-    for i in range(0, len(selfmaze)):
-        for j in range(0, len(selfmaze[0])):
-            if selfmaze[i][j] == 'u':
-                print(Fore.WHITE, f'{selfmaze[i][j]}', end=" ")
-            elif selfmaze[i][j] == 'c':
-                print(Fore.GREEN, f'{selfmaze[i][j]}', end=" ")
-            elif selfmaze[i][j] == 'p':
-                print(Fore.BLUE, f'{selfmaze[i][j]}', end=" ")
-            else:
-                print(Fore.RED, f'{selfmaze[i][j]}', end=" ")
-        print('\n')
-
-
-"""insta = Solver(15,15)
-ins = insta.map_historic()
-for i in ins:
-    maze_solver(i)
-    print("\n")"""
