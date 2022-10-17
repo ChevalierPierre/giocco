@@ -16,16 +16,7 @@ class Menu(tools.States):
         self.from_bottom = 200
         self.spacer = 75
 
-        # MAZE ANIMATION
-        self.sizes = generate_size()
-        instance = solver.Solver(self.sizes[1],self.sizes[0])
-        self.maze_list = instance.maze_list
-        self.maze_counter = 0
-        self.next_maze = 1000
-        self.next_maze_step = 1000
-        self.maze_c = random.randint(35,45),random.randint(35,45),random.randint(35,45)
-        self.maze_w = random.randint(20,30),random.randint(20,30),random.randint(20,30)
-        self.maze_p = random.randint(145,155),random.randint(145,155),random.randint(70,110)
+        self.maze_instance = solver.Solver()
 
     def get_event(self, event, keys):
         if event.type == pg.QUIT:
@@ -44,21 +35,11 @@ class Menu(tools.States):
         #pg.mouse.set_visible(True)
         self.mouse_hover_sound()
         self.change_selected_option()
-        if now - 5 > self.next_maze:
-            self.next_maze = now
-            self.maze_counter += 1
-            if len(self.maze_list) == self.maze_counter:
-                self.maze_counter = 0
-                self.sizes = generate_size()
-                instance = solver.Solver(self.sizes[1], self.sizes[0])
-                self.maze_list = instance.maze_list
-                self.maze_c = random.randint(35, 45), random.randint(35, 45), random.randint(35, 45)
-                self.maze_w = random.randint(20, 30), random.randint(20, 30), random.randint(20,30)
-                self.maze_p = random.randint(145, 155), random.randint(145, 155), random.randint(70, 110)
+        self.maze_instance.update(now)
 
     def render(self, screen):
         screen.fill(self.bg_color)
-        self.render_maze(screen)
+        self.maze_instance.render(screen)
         screen.blit(self.title,self.title_rect)
 
         for i,opt in enumerate(self.rendered["des"]):

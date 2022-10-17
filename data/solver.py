@@ -1,9 +1,11 @@
+import pygame as pg
 from . import maze as m
-
+import random
 
 class Solver:
-    def __init__(self, height, width):
-        self.maze = m.genMaze(height, width, True)
+    def __init__(self):
+        self.sizes = generate_size()
+        self.maze = m.genMaze(self.sizes[1], self.sizes[0], True)
         self.maze_list = [value_copy(self.maze)]
         start, self.finish = self.get_starting_finishing_points()
         self.maze[start[0]][start[1]] = 'p'
@@ -11,6 +13,14 @@ class Solver:
         self.rat_path = [start]
         self.end = False
         self.escape()
+
+        # MAZE ANIMATION
+        self.maze_counter = 0
+        self.next_maze = 1000
+        self.next_maze_step = 1000
+        self.maze_c = random.randint(35,45),random.randint(35,45),random.randint(35,45)
+        self.maze_w = random.randint(20,30),random.randint(20,30),random.randint(20,30)
+        self.maze_p = random.randint(145,155),random.randint(145,155),random.randint(70,110)
 
     def get_starting_finishing_points(self):
         _start = [i for i in range(len(self.maze[0])) if self.maze[0][i] == 'c']
@@ -65,10 +75,51 @@ class Solver:
             if not self.end:
                 self.maze_list.append(value_copy(self.maze))
 
-    def map_historic(self):
-        return self.maze_list
+    def update(self, now):
+        if now - 5 > self.next_maze:
+            self.next_maze = now
+            self.maze_counter += 1
+            if len(self.maze_list) == self.maze_counter:
+                self.maze_counter = 0
+                self.sizes = generate_size()
+                self.maze = m.genMaze(self.sizes[1], self.sizes[0], True)
+                self.maze_list = [value_copy(self.maze)]
+                start, self.finish = self.get_starting_finishing_points()
+                self.maze[start[0]][start[1]] = 'p'
+                self.maze_list.append(value_copy(self.maze))
+                self.rat_path = [start]
+                self.end = False
+                self.escape()
+                self.maze_c = random.randint(35, 45), random.randint(35, 45), random.randint(35, 45)
+                self.maze_w = random.randint(20, 30), random.randint(20, 30), random.randint(20, 30)
+                self.maze_p = random.randint(145, 155), random.randint(145, 155), random.randint(70, 110)
+
+    def render(self, screen):
+        size = (800 / self.sizes[0], 600 / self.sizes[1])
+        maze = self.maze_list[self.maze_counter]
+        for i in range(0, len(maze)):
+            for j in range(0, len(maze[0])):
+                if maze[i][j] == 'w':
+                    image = pg.Surface(size)
+                    image.fill(self.maze_w)
+                    screen.blit(image, (j * size[1], i * size[0]))
+                if maze[i][j] == 'c':
+                    image = pg.Surface(size)
+                    image.fill(self.maze_c)
+                    screen.blit(image, (j * size[1], i * size[0]))
+                if maze[i][j] == 'p':
+                    image = pg.Surface(size)
+                    image.fill(self.maze_p)
+                    screen.blit(image, (j * size[1], i * size[0]))
 
 
 def value_copy(a):
     b = [[a[x][y] for y in range(len(a[0]))] for x in range(len(a))]
     return b
+
+
+def generate_size():
+    while True:
+        y = random.randint(20, 60)
+        if (y * 8 / 6).is_integer():
+            return int(y * 8 / 6), y
