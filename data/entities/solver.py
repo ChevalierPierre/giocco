@@ -1,5 +1,5 @@
 import pygame as pg
-from . import maze as m
+from data import maze as m
 import random
 
 class Solver:

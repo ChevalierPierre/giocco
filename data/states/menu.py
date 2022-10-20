@@ -1,6 +1,6 @@
 import pygame as pg
 from .. import tools
-from .. import solver
+from ..entities import solver
 import random
 
 

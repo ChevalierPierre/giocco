@@ -162,6 +162,7 @@ class Culprit:
             if KEY_CHANGE:
                 self.walkframe_dict = self.make_frame_dict()
                 KEY_CHANGE = False
+                print("key change")
             self.walkframes = self.walkframe_dict[self.direction]
             self.old_direction = self.direction
             self.redraw = True
