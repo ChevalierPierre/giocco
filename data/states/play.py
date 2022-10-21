@@ -60,7 +60,7 @@ class Play(tools.States):
                         self.whoosh_sound.sound.play()
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = instance.parse_map()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -95,7 +95,7 @@ class Play(tools.States):
                         self.low_whoosh_sound.sound.play()
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
+                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
             self.last_action = now
 
     def update(self, now, keys):
@@ -117,7 +117,7 @@ class Play(tools.States):
             elif self.culprit.last_hurt != self.check_hurt:
                 self.hurt_sound.sound.play()
                 self.check_hurt = self.culprit.last_hurt
-            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
+            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras)
             for do in self.doors:
                 do.update(now)
             for ft in self.fire_traps:
@@ -139,6 +139,8 @@ class Play(tools.States):
                 ptr.update(now)
             for ptl in self.push_traps_left:
                 ptl.update(now)
+            for cob in self.cobras:
+                cob.update(now, self.obstacles, self.culprit, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
@@ -172,6 +174,8 @@ class Play(tools.States):
             ptr.render(screen)
         for ptl in self.push_traps_left:
             ptl.render(screen)
+        for cob in self.cobras:
+            cob.render(screen)
         # Display HUD
         self.hud.render(screen)
         # Display Culprit
@@ -199,7 +203,7 @@ class Play(tools.States):
                 self.pause = False
                 self.culprit.reset(self.screen_rect)
                 self.floor_instance = floor.Floor()
-                self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left = self.floor_instance.entry_map.parse_map()
+                self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
                 self.check_hurt = self.culprit.last_hurt
                 self.score = 0

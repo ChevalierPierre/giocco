@@ -2,6 +2,7 @@ import pygame as pg
 from data import tools
 from data.entities import block, door, exits, tiles
 from data.entities.traps import beartrap, firetrap, pittrap, pushtrap, spiketrap
+from data.entities import cobra
 
 
 class Map:
@@ -14,6 +15,7 @@ class Map:
         self.parse_map()
 
     def parse_map(self):
+        cobras = []
         obstacles = []
         doors = []
         floor_exit = []
@@ -61,4 +63,6 @@ class Map:
                     push_traps_up.append(pushtrap.Pushtrap((j * 50, i * 50), "front", self.tile_color))
                 elif self.map[i + 1][j + 1] == "Z":
                     push_traps_down.append(pushtrap.Pushtrap((j * 50, i * 50), "bottom", self.tile_color))
-        return (pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps), pg.sprite.Group(spike_traps), pg.sprite.Group(bear_traps), pg.sprite.Group(push_traps_up), pg.sprite.Group(push_traps_down), pg.sprite.Group(push_traps_right), pg.sprite.Group(push_traps_left))
+                elif self.map[i + 1][j + 1] == "1":
+                    cobras.append(cobra.Cobra((j * 50, i * 50), self.tile_color))
+        return (pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps), pg.sprite.Group(spike_traps), pg.sprite.Group(bear_traps), pg.sprite.Group(push_traps_up), pg.sprite.Group(push_traps_down), pg.sprite.Group(push_traps_right), pg.sprite.Group(push_traps_left), pg.sprite.Group(cobras))

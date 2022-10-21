@@ -60,7 +60,7 @@ class Culprit:
             cpy = self.image.copy()
             cpy.blit(pg.Surface(self.image.get_size()).convert_alpha(), (0, 0), special_flags=pg.BLEND_RGBA_MULT)
 
-    def update(self, now, screen_rect, obstacles, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
+    def update(self, now, screen_rect, obstacles, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras):
         """
         Updates our player appropriately every frame.
         """
@@ -70,7 +70,7 @@ class Culprit:
             self.movement(obstacles, 0)
             self.movement(obstacles, 1)
         if now - 1260 > self.last_hurt:
-            self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left)
+            self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras)
         if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 600 or self.last_hurt + 660 < now < self.last_hurt + 820 or self.last_hurt + 880 < now < self.last_hurt + 1040 or self.last_hurt + 1100 < now < self.last_hurt + 1260:
             self.hurt_show = True
         else:
@@ -88,7 +88,7 @@ class Culprit:
         self.life = 3
         self.speed = 4
 
-    def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
+    def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras):
         collisions_fire = pg.sprite.spritecollide(self, fire_traps, False)
         collisions_pit = pg.sprite.spritecollide(self, pit_traps, False)
         collisions_spike = pg.sprite.spritecollide(self, spike_traps, False)
@@ -97,7 +97,10 @@ class Culprit:
         collisions_push_down = pg.sprite.spritecollide(self, push_traps_down, False)
         collisions_push_right = pg.sprite.spritecollide(self, push_traps_right, False)
         collisions_push_left = pg.sprite.spritecollide(self, push_traps_left, False)
+        collisions_cobras = pg.sprite.spritecollide(self, cobras, False)
+
         callback = pg.sprite.collide_mask
+
         self.collide_fire = pg.sprite.spritecollideany(self, collisions_fire, callback)
         self.collide_pit = pg.sprite.spritecollideany(self, collisions_pit, callback)
         self.collide_spike = pg.sprite.spritecollideany(self, collisions_spike, callback)
@@ -106,7 +109,9 @@ class Culprit:
         self.collide_push_down = pg.sprite.spritecollideany(self, collisions_push_down, callback)
         self.collide_push_right = pg.sprite.spritecollideany(self, collisions_push_right, callback)
         self.collide_push_left = pg.sprite.spritecollideany(self, collisions_push_left, callback)
-        if self.collide_fire or self.collide_pit or self.collide_spike or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right:
+        self.collide_cobras = pg.sprite.spritecollideany(self, collisions_cobras, callback)
+
+        if self.collide_fire or self.collide_pit or self.collide_spike or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right or self.collide_cobras:
             self.life -= 1
             self.last_hurt = now
 
@@ -162,7 +167,6 @@ class Culprit:
             if KEY_CHANGE:
                 self.walkframe_dict = self.make_frame_dict()
                 KEY_CHANGE = False
-                print("key change")
             self.walkframes = self.walkframe_dict[self.direction]
             self.old_direction = self.direction
             self.redraw = True
