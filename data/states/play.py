@@ -202,6 +202,7 @@ class Play(tools.States):
                 self.next_list = ["MENU"]
                 self.pause = False
                 self.culprit.reset(self.screen_rect)
+                floor.Floor.size = 10
                 self.floor_instance = floor.Floor()
                 self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
@@ -209,7 +210,6 @@ class Play(tools.States):
                 self.score = 0
                 self.died_sound = False
                 self.death_alpha = 0
-                floor.Floor.size = 3
                 return
             elif item == "SETTINGS":
                 self.next_list = ["SETTINGS"]

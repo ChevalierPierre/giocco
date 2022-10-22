@@ -2,7 +2,6 @@ import pygame as pg
 import itertools
 from data import tools
 import os
-import random
 
 
 class Cobra(pg.sprite.Sprite):
@@ -34,7 +33,7 @@ class Cobra(pg.sprite.Sprite):
         self.mask = self.make_mask()
 
         # DATA
-        self.life = 16
+        self.life = 3
         self.speed = 1
 
     def make_frame_dict(self):
