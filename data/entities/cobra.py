@@ -1,6 +1,8 @@
 import pygame as pg
 import itertools
 from data import tools
+from .. import astar
+from math import floor
 import os
 
 
@@ -69,7 +71,7 @@ class Cobra(pg.sprite.Sprite):
         Updates our player appropriately every frame.
         """
         if self.life > 0:
-            self.ai(now, obstacles, culprit)
+            self.ai(culprit)
             self.adjust_images(now)
             self.collision_direction = None
             if self.direction_stack:
@@ -82,7 +84,18 @@ class Cobra(pg.sprite.Sprite):
             else:
                 self.hurt_show = False
 
-    def ai(self, now, obstacles, culprit):
+    def astar_ai(self, map, culprit):
+        start = (floor(culprit.rect.x / 50),floor(culprit.rect.y / 50))
+        end = (floor(self.rect.x / 50),floor(self.rect.y / 50))
+        for i in range(0, len(map) - 1):
+            for j in range(0, len(map[0]) - 1):
+                if map[i][j] == "O":
+                    map[i][j] = 1
+                else:
+                    map[i][j] = 0
+        return astar.astar(map, start, end)
+
+    def ai(self, culprit):
         distance_x = culprit.rect.x - self.rect.x
         distance_y = culprit.rect.y - self.rect.y
         if abs(distance_x) >= abs(distance_y):
