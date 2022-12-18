@@ -60,7 +60,8 @@ class Play(tools.States):
                         self.whoosh_sound.sound.play()
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = instance.parse_map()
+                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = instance.parse_map()
+                        print("in take door : ", self.mapfile, " cobras : ", self.cobras)
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -95,7 +96,7 @@ class Play(tools.States):
                         self.low_whoosh_sound.sound.play()
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
-                        self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
+                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
             self.last_action = now
 
     def update(self, now, keys):
@@ -140,7 +141,7 @@ class Play(tools.States):
             for ptl in self.push_traps_left:
                 ptl.update(now)
             for cob in self.cobras:
-                cob.update(now, self.obstacles, self.culprit, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
+                cob.update(now, self.mapfile, self.obstacles, self.culprit, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
@@ -194,7 +195,6 @@ class Play(tools.States):
         pg.mixer.music.stop()
         self.background_music.setup(self.background_music_volume)
 
-
     def entry(self):
         pg.mixer.music.play()
         for item in reversed(self.previous_state):
@@ -202,9 +202,9 @@ class Play(tools.States):
                 self.next_list = ["MENU"]
                 self.pause = False
                 self.culprit.reset(self.screen_rect)
-                floor.Floor.size = 10
+                floor.Floor.size = 4
                 self.floor_instance = floor.Floor()
-                self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
+                self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
                 self.check_hurt = self.culprit.last_hurt
                 self.score = 0

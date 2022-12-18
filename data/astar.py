@@ -1,3 +1,6 @@
+from time import time
+
+
 class Node():
     """A node class for A* Pathfinding"""
 
@@ -15,7 +18,8 @@ class Node():
 
 def astar(maze, start, end):
     """Returns a list of tuples as a path from the given start to the given end in the given maze"""
-
+    # time management
+    start_time = time()
     # Create start and end node
     start_node = Node(None, start)
     start_node.g = start_node.h = start_node.f = 0
@@ -31,7 +35,11 @@ def astar(maze, start, end):
 
     # Loop until you find the end
     while len(open_list) > 0:
-
+        print("main loop")
+        end_time = time()
+        print("end time : " , end_time, " start time : ", start_time)
+        if end_time - 0.05 > start_time:
+            return []
         # Get the current node
         current_node = open_list[0]
         current_index = 0
@@ -55,7 +63,7 @@ def astar(maze, start, end):
 
         # Generate children
         children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0), (-1, -1), (-1, 1), (1, -1), (1, 1)]: # Adjacent squares
+        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]: # Adjacent squares
 
             # Get node position
             node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
@@ -76,7 +84,7 @@ def astar(maze, start, end):
 
         # Loop through children
         for child in children:
-
+            print("child : ",child.position)
             # Child is on the closed list
             for closed_child in closed_list:
                 if child == closed_child:

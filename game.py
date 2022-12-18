@@ -17,7 +17,7 @@ args = vars(parser.parse_args())
 if __name__ == '__main__':    
     if args['size']:
         size = args['size']
-        print('window size: {}'.format(size))
+        #print('window size: {}'.format(size))
         
     if args['clean']:
         data.tools.clean_files()

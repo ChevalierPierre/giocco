@@ -4,7 +4,7 @@ from data import tools
 from .. import astar
 from math import floor
 import os
-
+import random
 
 class Cobra(pg.sprite.Sprite):
     """Traps erecting fire."""
@@ -14,7 +14,7 @@ class Cobra(pg.sprite.Sprite):
         # GRAPHICS
         pg.sprite.Sprite.__init__(self)
         self.animate_timer = 0.0
-        self.animate_fps = 5
+        self.animate_fps = 7
         tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
         self.pre_image = pg.Surface((50, 50)).convert_alpha()
         self.pre_image.blit(tile, (0, 0))
@@ -33,10 +33,11 @@ class Cobra(pg.sprite.Sprite):
         self.last_hurt = 0
         self.hurt_show = False
         self.mask = self.make_mask()
+        self.parsed_map = False
 
         # DATA
         self.life = 3
-        self.speed = 1
+        self.speed = 2.5  # Must divide 50 without rest
 
     def make_frame_dict(self):
         frames = tools.split_sheet(self.enemy_mask, (50, 50), 3, 4)
@@ -66,17 +67,20 @@ class Cobra(pg.sprite.Sprite):
                 cpy = self.image.copy()
                 cpy.blit(pg.Surface(self.image.get_size()).convert_alpha(), (0, 0), special_flags=pg.BLEND_RGBA_MULT)
 
-    def update(self, now, obstacles, culprit, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
+    def update(self, now, mapfile, obstacles, culprit, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
         """
         Updates our player appropriately every frame.
         """
         if self.life > 0:
-            self.ai(culprit)
+            if not self.direction_stack:
+                self.astar_ai(mapfile, (culprit.rect.x, culprit.rect.y))
             self.adjust_images(now)
             self.collision_direction = None
             if self.direction_stack:
+                self.direction = self.direction_stack[-1]
                 self.movement(obstacles, 0)
                 self.movement(obstacles, 1)
+                self.direction_stack = self.direction_stack[:-1]
             if now - 1260 > self.last_hurt:
                 self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left)
             if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 600 or self.last_hurt + 660 < now < self.last_hurt + 820 or self.last_hurt + 880 < now < self.last_hurt + 1040 or self.last_hurt + 1100 < now < self.last_hurt + 1260:
@@ -85,15 +89,76 @@ class Cobra(pg.sprite.Sprite):
                 self.hurt_show = False
 
     def astar_ai(self, map, culprit):
-        start = (floor(culprit.rect.x / 50),floor(culprit.rect.y / 50))
-        end = (floor(self.rect.x / 50),floor(self.rect.y / 50))
-        for i in range(0, len(map) - 1):
-            for j in range(0, len(map[0]) - 1):
-                if map[i][j] == "O":
-                    map[i][j] = 1
-                else:
-                    map[i][j] = 0
-        return astar.astar(map, start, end)
+        end_y = floor((culprit[1] + 25) / 50)
+        end_x = floor((culprit[0] + 25) / 50)
+        start_y = floor((self.rect.y + 25) / 50)
+        start_x = floor((self.rect.x + 25) / 50)
+        print("pos : ", (culprit[1],culprit[0]))
+        if end_y < 0:
+            end_y = 0
+        if end_y > 11:
+            end_y = 11
+        if end_x < 0:
+            end_x = 0
+        if end_x > 15:
+            end_x = 15
+        if start_y < 0:
+            start_y = 0
+        if start_y > 11:
+            start_y = 11
+        if start_x < 0:
+            start_x = 0
+        if start_x > 15:
+            start_x = 15
+        end = (end_y,end_x)
+        start = (start_y,start_x)
+        print("after transofrmation, end : ", end, " start : ", start)
+        print("map before parsed")
+        for m in map:
+            print(m)
+        if not self.parsed_map:
+            for i in range(0,len(map)):
+                map[i] = list(map[i])
+            for i in range(0, len(map)):
+                for j in range(0, len(map[0])):
+                    if map[i][j] == "O":
+                        map[i][j] = 1
+                    else:
+                        map[i][j] = 0
+            self.parsed_map = True
+
+        dirr = astar.astar(map, start, end)
+        if not dirr:
+            odds = random.randint(1, 4)
+            if odds == 1:
+                dirr = [start, (start_y, start_x + 1)]
+            if odds == 2:
+                dirr = [start, (start_y, start_x - 1)]
+            if odds == 3:
+                dirr = [start, (start_y + 1, start_x)]
+            if odds == 4:
+                dirr = [start, (start_y - 1, start_x)]
+        print(dirr,start, end)
+        for m in map:
+            print(m)
+        print(len(map))
+        for i in range(0, len(dirr) - 1):
+            if dirr[i+1][0] > dirr[i][0]:
+                for step in range(0,int(50/self.speed)):
+                    self.direction_stack.append("down")
+                self.direction = self.direction_stack[-1]
+            if dirr[i+1][0] < dirr[i][0]:
+                for step in range(0, int(50 / self.speed)):
+                    self.direction_stack.append("up")
+                self.direction = self.direction_stack[-1]
+            if dirr[i+1][1] > dirr[i][1]:
+                for step in range(0, int(50 / self.speed)):
+                    self.direction_stack.append("right")
+                self.direction = self.direction_stack[-1]
+            if dirr[i+1][1] < dirr[i][1]:
+                for step in range(0, int(50 / self.speed)):
+                    self.direction_stack.append("left")
+                self.direction = self.direction_stack[-1]
 
     def ai(self, culprit):
         distance_x = culprit.rect.x - self.rect.x
