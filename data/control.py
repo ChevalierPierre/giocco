@@ -10,7 +10,7 @@ class Control():
         pg.mixer.pre_init(44100, -16, 1, 512)
         pg.init()
         pg.display.set_caption("Giocco")
-        program_icon = tools.Image.load("heart.png")
+        program_icon = tools.Image.load("logo.png")
         pg.display.set_icon(program_icon)
         self.screensize = (int(size[0]), int(size[1]))
         if fullscreen:

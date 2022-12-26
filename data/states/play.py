@@ -1,7 +1,7 @@
 import pygame as pg
 from .. import tools
 from ..entities import culprit as culprit_, floor
-from ..entities import hud
+from ..entities import hud, tiles
 
 
 class Play(tools.States):
@@ -61,7 +61,6 @@ class Play(tools.States):
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
                         self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = instance.parse_map()
-                        print("in take door : ", self.mapfile, " cobras : ", self.cobras)
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -142,6 +141,16 @@ class Play(tools.States):
                 ptl.update(now)
             for cob in self.cobras:
                 cob.update(now, self.mapfile, self.obstacles, self.culprit, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
+                if cob.life == 0 and cob.life != -1:
+                    print("cob pos", int((cob.location[1]+50)/50) , int((cob.location[0]+50)/50))
+                    print("current map : ", self.floor_instance.current_map)
+                    print("map pos:",self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int(cob.location[1]/50)][int(cob.location[0]/50)])
+                    print("floor pos:",self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map)
+                    map_tmp = str(self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((cob.location[1]+50)/50)]) # decale vertiaclement
+                    print("erro : ", int((cob.location[0]+50)/50))
+                    print("err [1]:", int((cob.location[1]+50)/50))
+                    self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((cob.location[1] + 50)/50)] = str(map_tmp[:int((cob.location[0]+50)/50)] + "F" + map_tmp[int((cob.location[0]+100)/50):])#decalle à droite
+                    cob.life = -1
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
@@ -177,6 +186,8 @@ class Play(tools.States):
             ptl.render(screen)
         for cob in self.cobras:
             cob.render(screen)
+        for cob in self.cobras:
+            cob.render(screen, True)
         # Display HUD
         self.hud.render(screen)
         # Display Culprit

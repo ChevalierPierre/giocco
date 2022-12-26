@@ -15,6 +15,7 @@ class Cobra(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self)
         self.animate_timer = 0.0
         self.animate_fps = 7
+        self.color = color
         tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
         self.pre_image = pg.Surface((50, 50)).convert_alpha()
         self.pre_image.blit(tile, (0, 0))
@@ -58,9 +59,10 @@ class Cobra(pg.sprite.Sprite):
         mask = pg.mask.from_surface(mask_surface)
         return mask
 
-    def render(self, screen):
-        screen.blit(self.pre_image, self.pre_rect)
-        if self.life > 0:
+    def render(self, screen, cobra_time=False):
+        if cobra_time is False:
+            screen.blit(self.pre_image, self.pre_rect)
+        if self.life > 0 and cobra_time:
             if not self.hurt_show:
                 screen.blit(self.image, self.rect)
             else:
@@ -93,7 +95,6 @@ class Cobra(pg.sprite.Sprite):
         end_x = floor((culprit[0] + 25) / 50)
         start_y = floor((self.rect.y + 25) / 50)
         start_x = floor((self.rect.x + 25) / 50)
-        print("pos : ", (culprit[1],culprit[0]))
         if end_y < 0:
             end_y = 0
         if end_y > 11:
@@ -112,10 +113,6 @@ class Cobra(pg.sprite.Sprite):
             start_x = 15
         end = (end_y,end_x)
         start = (start_y,start_x)
-        print("after transofrmation, end : ", end, " start : ", start)
-        print("map before parsed")
-        for m in map:
-            print(m)
         if not self.parsed_map:
             for i in range(0,len(map)):
                 map[i] = list(map[i])
@@ -138,10 +135,6 @@ class Cobra(pg.sprite.Sprite):
                 dirr = [start, (start_y + 1, start_x)]
             if odds == 4:
                 dirr = [start, (start_y - 1, start_x)]
-        print(dirr,start, end)
-        for m in map:
-            print(m)
-        print(len(map))
         for i in range(0, len(dirr) - 1):
             if dirr[i+1][0] > dirr[i][0]:
                 for step in range(0,int(50/self.speed)):
