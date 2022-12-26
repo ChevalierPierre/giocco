@@ -142,21 +142,21 @@ class Play(tools.States):
             for cob in self.cobras:
                 cob.update(now, self.mapfile, self.obstacles, self.culprit, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
                 if cob.life == 0 and cob.life != -1:
-                    print("cob pos", int((cob.location[1]+50)/50) , int((cob.location[0]+50)/50))
-                    print("current map : ", self.floor_instance.current_map)
-                    print("map pos:",self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int(cob.location[1]/50)][int(cob.location[0]/50)])
-                    print("floor pos:",self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map)
-                    map_tmp = str(self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((cob.location[1]+50)/50)]) # decale vertiaclement
-                    print("erro : ", int((cob.location[0]+50)/50))
-                    print("err [1]:", int((cob.location[1]+50)/50))
-                    self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((cob.location[1] + 50)/50)] = str(map_tmp[:int((cob.location[0]+50)/50)] + "F" + map_tmp[int((cob.location[0]+100)/50):])#decalle à droite
+                    self.updatemap(cob.location)
                     cob.life = -1
+
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
             self.pause_text, self.pause_rect = self.make_text("PAUSED",
                 (255,255,255), self.screen_rect.center, 50)
         pg.mouse.set_visible(False)
+
+
+    def updatemap(self, targetlocation):
+        map_tmp = self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((targetlocation[1] + 50) / 50)]  # vertical
+        self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((targetlocation[1] + 50) / 50)] = str(map_tmp[:int((targetlocation[0] + 50) / 50)] + "F" + map_tmp[int((targetlocation[0] + 100) / 50):])  # horizontal
+
 
     def render(self, screen):
         # Display Traps
