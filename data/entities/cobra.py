@@ -35,6 +35,7 @@ class Cobra(pg.sprite.Sprite):
         self.hurt_show = False
         self.mask = self.make_mask()
         self.parsed_map = False
+        self.removed = False
 
         # DATA
         self.life = 3

@@ -54,13 +54,19 @@ class Play(tools.States):
     def interact(self, keys, now):
         if keys[tools.CONTROLLER_DICT['action']]:
             if now - 500 > self.last_action:
+                for art in self.artifacts:
+                    if pg.sprite.collide_mask(self.culprit, art):
+                        self.pickup_sound.sound.play()
+                        art.used = True
+                        if art.artifact_name == "life" and self.culprit.life <7:
+                            self.culprit.life += 1
                 loop_doors = self.doors
                 for do in loop_doors:
                     if pg.sprite.collide_mask(self.culprit, do):
                         self.whoosh_sound.sound.play()
                         leads_to = do.leads_to
                         instance = self.floor_instance.change_map(leads_to)
-                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = instance.parse_map()
+                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -95,7 +101,7 @@ class Play(tools.States):
                         self.low_whoosh_sound.sound.play()
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
-                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
+                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
             self.last_action = now
 
     def update(self, now, keys):
@@ -139,11 +145,16 @@ class Play(tools.States):
                 ptr.update(now)
             for ptl in self.push_traps_left:
                 ptl.update(now)
+            for art in self.artifacts:
+                art.update(now)
+                if art.used is True and not art.removed:
+                    self.updatemap(art.location)
+                    art.removed = True
             for cob in self.cobras:
                 cob.update(now, self.mapfile, self.obstacles, self.culprit, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left)
-                if cob.life == 0 and cob.life != -1:
+                if cob.life <= 0 and not cob.removed:
                     self.updatemap(cob.location)
-                    cob.life = -1
+                    cob.removed = True
 
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
@@ -152,11 +163,9 @@ class Play(tools.States):
                 (255,255,255), self.screen_rect.center, 50)
         pg.mouse.set_visible(False)
 
-
     def updatemap(self, targetlocation):
         map_tmp = self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((targetlocation[1] + 50) / 50)]  # vertical
         self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((targetlocation[1] + 50) / 50)] = str(map_tmp[:int((targetlocation[0] + 50) / 50)] + "F" + map_tmp[int((targetlocation[0] + 100) / 50):])  # horizontal
-
 
     def render(self, screen):
         # Display Traps
@@ -184,6 +193,8 @@ class Play(tools.States):
             ptr.render(screen)
         for ptl in self.push_traps_left:
             ptl.render(screen)
+        for art in self.artifacts:
+            art.render(screen)
         for cob in self.cobras:
             cob.render(screen)
         for cob in self.cobras:
@@ -215,7 +226,7 @@ class Play(tools.States):
                 self.culprit.reset(self.screen_rect)
                 floor.Floor.size = 4
                 self.floor_instance = floor.Floor()
-                self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras = self.floor_instance.entry_map.parse_map()
+                self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
                 self.check_hurt = self.culprit.last_hurt
                 self.score = 0
