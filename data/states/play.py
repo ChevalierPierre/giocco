@@ -57,8 +57,8 @@ class Play(tools.States):
                 for art in self.artifacts:
                     if pg.sprite.collide_mask(self.culprit, art):
                         self.pickup_sound.sound.play()
-                        art.used = True
-                        if art.artifact_name == "life" and self.culprit.life <7:
+                        if art.artifact_name == "life" and self.culprit.life < 6:
+                            art.used = True
                             self.culprit.life += 1
                 loop_doors = self.doors
                 for do in loop_doors:

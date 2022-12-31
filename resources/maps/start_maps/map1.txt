@@ -1,6 +1,17 @@
 ##################
-##	  MAP N°1   ##
+##    MAP N°1   ##
 ##################
+# O = obstacle
+# D = door
+# E = exit
+# F = tile
+# T = fire trap
+# S = spike trap
+# B = bear trap
+# P = pit trap
+# R, L, A, Z = right left top bottom push trap
+# 1 = cobra
+# V = lifepoint
 OOOOOOOOOOOOOOOOOO
 OOOOOOOODOOOOOOOOO
 OOFFFFFFFFFFFFFFOO

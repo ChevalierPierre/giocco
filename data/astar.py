@@ -17,7 +17,9 @@ class Node():
 
 
 def astar(maze, start, end):
-    """Returns a list of tuples as a path from the given start to the given end in the given maze"""
+    if start == end or maze[start[0]][start[1]] == 1 or maze[end[0]][end[1]] == 1:
+        print("blocked")
+        return []
     # time management
     start_time = time()
     # Create start and end node
@@ -36,7 +38,8 @@ def astar(maze, start, end):
     # Loop until you find the end
     while len(open_list) > 0:
         end_time = time()
-        if end_time - 0.01 > start_time:
+        if end_time - 0.08 > start_time:
+            print("out of time")
             return []
         # Get the current node
         current_node = open_list[0]
@@ -99,3 +102,14 @@ def astar(maze, start, end):
 
             # Add the child to the open list
             open_list.append(child)
+    print("found none")
+    return []
+
+
+"""l = [[0,0,0,1,0],
+     [0,0,0,1,0],
+     [0,0,0,1,0],
+     [0,1,1,1,0],
+     [0,0,0,0,0]]
+
+print(astar(l,(0,0),(4,4)))"""

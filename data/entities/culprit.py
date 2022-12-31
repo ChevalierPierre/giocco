@@ -16,7 +16,7 @@ KEY_CHANGE = False
 class Culprit:
     def __init__(self, x, y, width, height, facing=tools.CONTROLLER_DICT['down']):
         # DATA
-        self.speed = 4
+        self.speed = 3
         self.life = 3
 
         # GRAPHICS
@@ -192,7 +192,7 @@ class Culprit:
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
         mask_surface.fill((0, 0, 0, 0))
-        mask_surface.fill(pg.Color("white"), (10,30,30,20))
+        mask_surface.fill(pg.Color("white"), (12,24,26,26))  # left, top, width, height
         mask = pg.mask.from_surface(mask_surface)
         return mask
 

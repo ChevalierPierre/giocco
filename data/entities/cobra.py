@@ -39,7 +39,7 @@ class Cobra(pg.sprite.Sprite):
 
         # DATA
         self.life = 3
-        self.speed = 2.5  # Must divide 50 without rest
+        self.speed = 2  # Must divide 50 without rest
 
     def make_frame_dict(self):
         frames = tools.split_sheet(self.enemy_mask, (50, 50), 3, 4)
@@ -56,7 +56,7 @@ class Cobra(pg.sprite.Sprite):
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
         mask_surface.fill((0, 0, 0, 0))
-        mask_surface.fill(pg.Color("white"), (5,30,40,20))
+        mask_surface.fill(pg.Color("white"), (10,10,30,34))  # left, top, width, height
         mask = pg.mask.from_surface(mask_surface)
         return mask
 
@@ -80,10 +80,10 @@ class Cobra(pg.sprite.Sprite):
             self.adjust_images(now)
             self.collision_direction = None
             if self.direction_stack:
-                self.direction = self.direction_stack[-1]
+                self.direction = self.direction_stack[0]
                 self.movement(obstacles, 0)
                 self.movement(obstacles, 1)
-                self.direction_stack = self.direction_stack[:-1]
+                self.direction_stack = self.direction_stack[1:]
             if now - 1260 > self.last_hurt:
                 self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left)
             if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 600 or self.last_hurt + 660 < now < self.last_hurt + 820 or self.last_hurt + 880 < now < self.last_hurt + 1040 or self.last_hurt + 1100 < now < self.last_hurt + 1260:
@@ -91,41 +91,81 @@ class Cobra(pg.sprite.Sprite):
             else:
                 self.hurt_show = False
 
-    def astar_ai(self, map, culprit):
+    def astar_ai(self, realmap, culprit):
+        #  Verifier qu'on est bien au milieu de la cellule pour le cobra avant de se deplacer
+        #  LE POINT LE PLUS À DROITE DU COBRA, CELUI LE PLUS À GAUCHE, CELUI LE PLUS EN HAUT, CELUI LE PLUS EN BAS
+        #  TOUS DOIVENT ÊTRE COMPLÈTEMENT DANS LA CELLULE DE 50x50
+        #
+        rest_y = (self.rect.y + 25) % 50
+        rest_x = (self.rect.x + 25) % 50
+        go_up, go_down, go_right, go_left = 0, 0, 0, 0
+        if rest_y > 25:
+            go_up = rest_y - 25
+            # go up
+            pass
+        elif rest_y < 25:
+            go_down = 25 - rest_y
+            # go down
+            pass
+        elif rest_y == 25:
+            # intended location
+            pass
+        if rest_x > 25:
+            go_left = rest_x - 25
+            # go left
+            pass
+        elif rest_x < 25:
+            go_right = 25 - rest_x
+            # go right
+            pass
+        elif rest_x == 25:
+            # intended location
+            pass
+        print(go_up, go_down, go_right, go_left)
         end_y = floor((culprit[1] + 25) / 50)
         end_x = floor((culprit[0] + 25) / 50)
         start_y = floor((self.rect.y + 25) / 50)
         start_x = floor((self.rect.x + 25) / 50)
         if end_y < 0:
+            print("in end_y < 0")
             end_y = 0
         if end_y > 11:
+            print("in end_y > 11")
             end_y = 11
         if end_x < 0:
+            print("in end_x < 0")
             end_x = 0
         if end_x > 15:
+            print("in end_x > 15")
             end_x = 15
         if start_y < 0:
+            print("in start_y < 0")
             start_y = 0
         if start_y > 11:
+            print("in start_y > 11")
             start_y = 11
         if start_x < 0:
+            print("in start_x < 0")
             start_x = 0
         if start_x > 15:
+            print("in start_y > 15")
             start_x = 15
         end = (end_y,end_x)
         start = (start_y,start_x)
-        if not self.parsed_map:
-            for i in range(0,len(map)):
-                map[i] = list(map[i])
-            for i in range(0, len(map)):
-                for j in range(0, len(map[0])):
-                    if map[i][j] == "O":
-                        map[i][j] = 1
-                    else:
-                        map[i][j] = 0
-            self.parsed_map = True
 
-        dirr = astar.astar(map, start, end)
+        if not self.parsed_map:
+            self.map = realmap.copy()
+            for i in range(0,len(self.map)):
+                self.map[i] = list(self.map[i])
+            for i in range(0, len(self.map)):
+                for j in range(0, len(self.map[0])):
+                    if self.map[i][j] == "O":
+                        self.map[i][j] = 1
+                    else:
+                        self.map[i][j] = 0
+            self.parsed_map = True
+        dirr = astar.astar(self.map, start, end)
+        print(dirr)
         if not dirr:
             odds = random.randint(1, 4)
             if odds == 1:
@@ -136,23 +176,41 @@ class Cobra(pg.sprite.Sprite):
                 dirr = [start, (start_y + 1, start_x)]
             if odds == 4:
                 dirr = [start, (start_y - 1, start_x)]
+        if go_up > 0:
+            for step in range(0, int(go_up / self.speed)):
+                print("up")
+                self.direction_stack.append("up")
+        if go_down > 0:
+            for step in range(0, int(go_down / self.speed)):
+                print("down")
+                self.direction_stack.append("down")
+        if go_right > 0:
+            for step in range(0, int(go_right / self.speed)):
+                print("right")
+                self.direction_stack.append("right")
+        if go_left > 0:
+            for step in range(0, int(go_left / self.speed)):
+                print("left")
+                self.direction_stack.append("left")
         for i in range(0, len(dirr) - 1):
             if dirr[i+1][0] > dirr[i][0]:
                 for step in range(0,int(50/self.speed)):
                     self.direction_stack.append("down")
-                self.direction = self.direction_stack[-1]
-            if dirr[i+1][0] < dirr[i][0]:
+                print("go down")
+            elif dirr[i+1][0] < dirr[i][0]:
                 for step in range(0, int(50 / self.speed)):
                     self.direction_stack.append("up")
-                self.direction = self.direction_stack[-1]
-            if dirr[i+1][1] > dirr[i][1]:
+                print("go up")
+            elif dirr[i+1][1] > dirr[i][1]:
                 for step in range(0, int(50 / self.speed)):
                     self.direction_stack.append("right")
-                self.direction = self.direction_stack[-1]
-            if dirr[i+1][1] < dirr[i][1]:
+                print("go right")
+            elif dirr[i+1][1] < dirr[i][1]:
                 for step in range(0, int(50 / self.speed)):
                     self.direction_stack.append("left")
-                self.direction = self.direction_stack[-1]
+                print("go left")
+        print("direction stack",len(self.direction_stack))
+
 
     def ai(self, culprit):
         distance_x = culprit.rect.x - self.rect.x
