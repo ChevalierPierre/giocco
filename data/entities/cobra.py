@@ -121,34 +121,25 @@ class Cobra(pg.sprite.Sprite):
         elif rest_x == 25:
             # intended location
             pass
-        print(go_up, go_down, go_right, go_left)
         end_y = floor((culprit[1] + 25) / 50)
         end_x = floor((culprit[0] + 25) / 50)
         start_y = floor((self.rect.y + 25) / 50)
         start_x = floor((self.rect.x + 25) / 50)
         if end_y < 0:
-            print("in end_y < 0")
             end_y = 0
         if end_y > 11:
-            print("in end_y > 11")
             end_y = 11
         if end_x < 0:
-            print("in end_x < 0")
             end_x = 0
         if end_x > 15:
-            print("in end_x > 15")
             end_x = 15
         if start_y < 0:
-            print("in start_y < 0")
             start_y = 0
         if start_y > 11:
-            print("in start_y > 11")
             start_y = 11
         if start_x < 0:
-            print("in start_x < 0")
             start_x = 0
         if start_x > 15:
-            print("in start_y > 15")
             start_x = 15
         end = (end_y,end_x)
         start = (start_y,start_x)
@@ -165,7 +156,6 @@ class Cobra(pg.sprite.Sprite):
                         self.map[i][j] = 0
             self.parsed_map = True
         dirr = astar.astar(self.map, start, end)
-        print(dirr)
         if not dirr:
             odds = random.randint(1, 4)
             if odds == 1:
@@ -178,73 +168,30 @@ class Cobra(pg.sprite.Sprite):
                 dirr = [start, (start_y - 1, start_x)]
         if go_up > 0:
             for step in range(0, int(go_up / self.speed)):
-                print("up")
                 self.direction_stack.append("up")
         if go_down > 0:
             for step in range(0, int(go_down / self.speed)):
-                print("down")
                 self.direction_stack.append("down")
         if go_right > 0:
             for step in range(0, int(go_right / self.speed)):
-                print("right")
                 self.direction_stack.append("right")
         if go_left > 0:
             for step in range(0, int(go_left / self.speed)):
-                print("left")
                 self.direction_stack.append("left")
         for i in range(0, len(dirr) - 1):
             if dirr[i+1][0] > dirr[i][0]:
                 for step in range(0,int(50/self.speed)):
                     self.direction_stack.append("down")
-                print("go down")
             elif dirr[i+1][0] < dirr[i][0]:
                 for step in range(0, int(50 / self.speed)):
                     self.direction_stack.append("up")
-                print("go up")
             elif dirr[i+1][1] > dirr[i][1]:
                 for step in range(0, int(50 / self.speed)):
                     self.direction_stack.append("right")
-                print("go right")
             elif dirr[i+1][1] < dirr[i][1]:
                 for step in range(0, int(50 / self.speed)):
                     self.direction_stack.append("left")
-                print("go left")
-        print("direction stack",len(self.direction_stack))
 
-
-    def ai(self, culprit):
-        distance_x = culprit.rect.x - self.rect.x
-        distance_y = culprit.rect.y - self.rect.y
-        if abs(distance_x) >= abs(distance_y):
-            if distance_x > 0:
-                dirr = 2
-            else:
-                dirr = 3
-        else:
-            if distance_y > 0:
-                dirr = 1
-            else:
-                dirr = 0
-        if dirr == 0:
-            if "up" in self.direction_stack:
-                self.direction_stack.remove("up")
-            self.direction_stack.append("up")
-            self.direction = self.direction_stack[-1]
-        if dirr == 1:
-            if "down" in self.direction_stack:
-                self.direction_stack.remove("down")
-            self.direction_stack.append("down")
-            self.direction = self.direction_stack[-1]
-        if dirr == 2:
-            if "right" in self.direction_stack:
-                self.direction_stack.remove("right")
-            self.direction_stack.append("right")
-            self.direction = self.direction_stack[-1]
-        if dirr == 3:
-            if "left" in self.direction_stack:
-                self.direction_stack.remove("left")
-            self.direction_stack.append("left")
-            self.direction = self.direction_stack[-1]
 
     def adjust_images(self, now=0):
         """
@@ -311,26 +258,17 @@ class Cobra(pg.sprite.Sprite):
         return first_term - second_term
 
     def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
-        collisions_fire = pg.sprite.spritecollide(self, fire_traps, False)
-        collisions_pit = pg.sprite.spritecollide(self, pit_traps, False)
-        collisions_spike = pg.sprite.spritecollide(self, spike_traps, False)
-        collisions_bear = pg.sprite.spritecollide(self, bear_traps, False)
-        collisions_push_up = pg.sprite.spritecollide(self, push_traps_up, False)
-        collisions_push_down = pg.sprite.spritecollide(self, push_traps_down, False)
-        collisions_push_right = pg.sprite.spritecollide(self, push_traps_right, False)
-        collisions_push_left = pg.sprite.spritecollide(self, push_traps_left, False)
-
         callback = pg.sprite.collide_mask
 
-        self.collide_fire = pg.sprite.spritecollideany(self, collisions_fire, callback)
-        self.collide_pit = pg.sprite.spritecollideany(self, collisions_pit, callback)
-        self.collide_spike = pg.sprite.spritecollideany(self, collisions_spike, callback)
-        self.collide_bear = pg.sprite.spritecollideany(self, collisions_bear, callback)
-        self.collide_push_up = pg.sprite.spritecollideany(self, collisions_push_up, callback)
-        self.collide_push_down = pg.sprite.spritecollideany(self, collisions_push_down, callback)
-        self.collide_push_right = pg.sprite.spritecollideany(self, collisions_push_right, callback)
-        self.collide_push_left = pg.sprite.spritecollideany(self, collisions_push_left, callback)
+        self.collide_fire = pg.sprite.spritecollideany(self, fire_traps, callback)
+        self.collide_pit = pg.sprite.spritecollideany(self, pit_traps, callback)
+        self.collide_spike = pg.sprite.spritecollideany(self, spike_traps, callback)
+        self.collide_bear = pg.sprite.spritecollideany(self, bear_traps, callback)
+        self.collide_push_up = pg.sprite.spritecollideany(self, push_traps_up, callback)
+        self.collide_push_down = pg.sprite.spritecollideany(self, push_traps_down, callback)
+        self.collide_push_right = pg.sprite.spritecollideany(self, push_traps_right, callback)
+        self.collide_push_left = pg.sprite.spritecollideany(self, push_traps_left, callback)
 
-        if self.collide_fire or self.collide_pit or self.collide_spike or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right:
+        if (self.collide_fire and self.collide_fire.damage) or self.collide_pit or (self.collide_spike and self.collide_spike.damage) or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right:
             self.life -= 1
             self.last_hurt = now

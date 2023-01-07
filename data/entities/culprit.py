@@ -89,29 +89,19 @@ class Culprit:
         self.speed = 4
 
     def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras):
-        collisions_fire = pg.sprite.spritecollide(self, fire_traps, False)
-        collisions_pit = pg.sprite.spritecollide(self, pit_traps, False)
-        collisions_spike = pg.sprite.spritecollide(self, spike_traps, False)
-        collisions_bear = pg.sprite.spritecollide(self, bear_traps, False)
-        collisions_push_up = pg.sprite.spritecollide(self, push_traps_up, False)
-        collisions_push_down = pg.sprite.spritecollide(self, push_traps_down, False)
-        collisions_push_right = pg.sprite.spritecollide(self, push_traps_right, False)
-        collisions_push_left = pg.sprite.spritecollide(self, push_traps_left, False)
-        collisions_cobras = pg.sprite.spritecollide(self, cobras, False)
-
         callback = pg.sprite.collide_mask
 
-        self.collide_fire = pg.sprite.spritecollideany(self, collisions_fire, callback)
-        self.collide_pit = pg.sprite.spritecollideany(self, collisions_pit, callback)
-        self.collide_spike = pg.sprite.spritecollideany(self, collisions_spike, callback)
-        self.collide_bear = pg.sprite.spritecollideany(self, collisions_bear, callback)
-        self.collide_push_up = pg.sprite.spritecollideany(self, collisions_push_up, callback)
-        self.collide_push_down = pg.sprite.spritecollideany(self, collisions_push_down, callback)
-        self.collide_push_right = pg.sprite.spritecollideany(self, collisions_push_right, callback)
-        self.collide_push_left = pg.sprite.spritecollideany(self, collisions_push_left, callback)
-        self.collide_cobras = pg.sprite.spritecollideany(self, collisions_cobras, callback)
+        self.collide_fire = pg.sprite.spritecollideany(self, fire_traps, callback)
+        self.collide_pit = pg.sprite.spritecollideany(self, pit_traps, callback)
+        self.collide_spike = pg.sprite.spritecollideany(self, spike_traps, callback)
+        self.collide_bear = pg.sprite.spritecollideany(self, bear_traps, callback)
+        self.collide_push_up = pg.sprite.spritecollideany(self, push_traps_up, callback)
+        self.collide_push_down = pg.sprite.spritecollideany(self, push_traps_down, callback)
+        self.collide_push_right = pg.sprite.spritecollideany(self, push_traps_right, callback)
+        self.collide_push_left = pg.sprite.spritecollideany(self, push_traps_left, callback)
+        self.collide_cobras = pg.sprite.spritecollideany(self, cobras, callback)
 
-        if self.collide_fire or self.collide_pit or self.collide_spike or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right or self.collide_cobras:
+        if (self.collide_fire and self.collide_fire.damage) or self.collide_pit or (self.collide_spike and self.collide_spike.damage) or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right or self.collide_cobras:
             self.life -= 1
             self.last_hurt = now
 

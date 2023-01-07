@@ -37,11 +37,12 @@ class Pushtrap(pg.sprite.Sprite):
     def adjust_images(self, now=0):
         elapsed = now - self.animate_timer > 1000.0 / self.animate_fps
         if elapsed:
-            self.image = self.pushtrap_frames[self.frame_count]
-            self.animate_timer = now
             self.frame_count += 1
             if self.frame_count == 4:
                 self.frame_count = 0
+            self.image = self.pushtrap_frames[self.frame_count]
+            self.animate_timer = now
+
 
     def make_mask(self):
         """

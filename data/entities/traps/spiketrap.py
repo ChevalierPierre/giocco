@@ -21,16 +21,25 @@ class Spiketrap(pg.sprite.Sprite):
         self.rect = self.image.get_rect(topleft=location)
         self.spiketrap_frames = self.make_frame_dict()
         self.mask = self.make_mask()
+        self.damage = True
+        self.frame_count = 0
+        self.image = self.spiketrap_frames[self.frame_count]
 
     def make_frame_dict(self):
         frames = tools.split_sheet(self.spiketrap_mask, (50, 50), 14, 1)[0]
-        cycles = itertools.cycle(frames)
-        return cycles
+        return frames
 
     def adjust_images(self, now=0):
         elapsed = now - self.animate_timer > 1000.0 / self.animate_fps
         if elapsed:
-            self.image = next(self.spiketrap_frames)
+            self.frame_count += 1
+            if self.frame_count == 14:
+                self.frame_count = 0
+            if self.frame_count in [0,1,2,3,4,5,6,13]:
+                self.damage = False
+            else:
+                self.damage = True
+            self.image = self.spiketrap_frames[self.frame_count]
             self.animate_timer = now
 
     def make_mask(self):
