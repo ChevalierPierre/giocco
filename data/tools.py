@@ -1,5 +1,3 @@
-
-
 import pygame as pg
 import os
 import shutil
@@ -113,9 +111,11 @@ class States:
         self.button_hover_volume = .1
         self.hurt_sound_volume = .1
         self.die_sound_volume = .1
-        self.whoosh_sound_volume = .1
-        self.low_whoosh_sound_volume = .1
+        self.whoosh_sound_volume = .4
+        self.low_whoosh_sound_volume = .4
         self.pickup_sound_volume = .1
+        self.error_sound_volume = .2
+        self.error_sound = Sound('error.mp3')
         self.pickup_sound = Sound('pickup.mp3')
         self.low_whoosh_sound = Sound('low_whoosh.mp3')
         self.whoosh_sound = Sound('whoosh.wav')
@@ -123,6 +123,7 @@ class States:
         self.die_sound = Sound('die.mp3')
         self.button_sound = Sound('button.wav')
         self.button_hover = Sound('button_hover.wav')
+        self.error_sound.sound.set_volume(self.error_sound_volume)
         self.pickup_sound.sound.set_volume(self.pickup_sound_volume)
         self.low_whoosh_sound.sound.set_volume(self.low_whoosh_sound_volume)
         self.whoosh_sound.sound.set_volume(self.whoosh_sound_volume)

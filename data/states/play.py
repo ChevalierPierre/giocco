@@ -56,10 +56,12 @@ class Play(tools.States):
             if now - 500 > self.last_action:
                 for art in self.artifacts:
                     if pg.sprite.collide_mask(self.culprit, art):
-                        self.pickup_sound.sound.play()
                         if art.artifact_name == "life" and self.culprit.life < 6:
+                            self.pickup_sound.sound.play()
                             art.used = True
                             self.culprit.life += 1
+                        else:
+                            self.error_sound.sound.play()
                 loop_doors = self.doors
                 for do in loop_doors:
                     if pg.sprite.collide_mask(self.culprit, do):
@@ -102,7 +104,10 @@ class Play(tools.States):
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
                         self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
-            self.last_action = now
+                self.last_action = now
+            else:
+                self.error_sound.sound.play()
+
 
     def update(self, now, keys):
         if not self.pause:

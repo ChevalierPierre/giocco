@@ -1,4 +1,3 @@
-
 import os
 import pygame as pg
 from .states import menu, play, options, settings, controls, audio, splash, keybinding, getkey
