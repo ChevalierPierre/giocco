@@ -1,12 +1,10 @@
 # Giocco
 
 ## To launch the game:
-## On Linux
-./game
-## On windows
+
 game
 
-## For developers
+
 ## To install packages
 pip3 install -r requirements.txt
 ## To create executable
