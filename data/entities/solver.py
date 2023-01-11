@@ -36,34 +36,17 @@ class Solver:
         if current_cell == self.finish:
             self.end = True
             return
+        alea = [[1,0],[0,1],[-1,0],[0,-1]]
+        random.shuffle(alea)
+        for i in range(4):
+            if self.maze[current_cell[0] + alea[i][0]][current_cell[1]+alea[i][1]] == 'c':
+                self.maze[current_cell[0] + alea[i][0]][current_cell[1]+alea[i][1]] = 'p'
+                self.rat_path.append([current_cell[0] + alea[i][0], current_cell[1]+alea[i][1]])
+                if not self.end:
+                    self.maze_list.append(value_copy(self.maze))
+                self.escape()
 
-        if self.maze[current_cell[0] + 1][current_cell[1]] == 'c':
-            self.maze[current_cell[0] + 1][current_cell[1]] = 'p'
-            self.rat_path.append([current_cell[0] + 1, current_cell[1]])
-            if not self.end:
-                self.maze_list.append(value_copy(self.maze))
-            self.escape()
 
-        if self.maze[current_cell[0]][current_cell[1] + 1] == 'c':
-            self.maze[current_cell[0]][current_cell[1] + 1] = 'p'
-            self.rat_path.append([current_cell[0], current_cell[1] + 1])
-            if not self.end:
-                self.maze_list.append(value_copy(self.maze))
-            self.escape()
-
-        if self.maze[current_cell[0] - 1][current_cell[1]] == 'c':
-            self.maze[current_cell[0] - 1][current_cell[1]] = 'p'
-            self.rat_path.append([current_cell[0] - 1, current_cell[1]])
-            if not self.end:
-                self.maze_list.append(value_copy(self.maze))
-            self.escape()
-
-        if self.maze[current_cell[0]][current_cell[1] - 1] == 'c':
-            self.maze[current_cell[0]][current_cell[1] - 1] = 'p'
-            self.rat_path.append([current_cell[0], current_cell[1] - 1])
-            if not self.end:
-                self.maze_list.append(value_copy(self.maze))
-            self.escape()
 
         # If we get here, this means that we made a wrong decision, so we need to
         # backtrack
@@ -76,6 +59,7 @@ class Solver:
                 self.maze_list.append(value_copy(self.maze))
 
     def update(self, now):
+
         if now - 5 > self.next_maze:
             self.next_maze = now
             self.maze_counter += 1
