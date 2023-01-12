@@ -1,10 +1,7 @@
 # Giocco
 
 ## To launch the game:
-
-game
-
-
+python3 game.py
 ## To install packages
 pip3 install -r requirements.txt
 ## To create executable
