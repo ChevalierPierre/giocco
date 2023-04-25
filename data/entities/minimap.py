@@ -5,6 +5,11 @@ class Minimap(pg.sprite.Sprite):
     def __init__(self):
         self.bsq_list = []
         self.render_list = []
+    
+    def make_room_sprite(self,i,j,room_content):
+        for index in range(0,3):
+            if room.doors[index]:
+                
 
     def make_render_list(self):
 
@@ -12,7 +17,9 @@ class Minimap(pg.sprite.Sprite):
         # make the list of rect (position where I display the picture) and image (actual color or image to display)
         # based on bsq list, 800 / number of colomns and 600/ number of rows.
         # round these values to the lower integer and pick a room picture based of the offset of the doors in this room
-        pass
+        for i in range(0, len(self.bsq_list)-1):
+            for j in range(0, len(self.bsq_list[i]) -1):
+                self.render_list.append(make_room_sprite(i,j,self.bsq_list[i][j]))
 
     def update(self, now, raw_list=None):
         vertical_index = []
