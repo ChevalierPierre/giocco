@@ -1,15 +1,16 @@
 import pygame as pg
 from data import maze as m
+from .. import tools
 import random
 
 class Solver:
     def __init__(self):
         self.sizes = generate_size()
         self.maze = m.genMaze(self.sizes[1], self.sizes[0], True)
-        self.maze_list = [value_copy(self.maze)]
+        self.maze_list = [tools.value_copy(self.maze)]
         start, self.finish = self.get_starting_finishing_points()
         self.maze[start[0]][start[1]] = 'p'
-        self.maze_list.append(value_copy(self.maze))
+        self.maze_list.append(tools.value_copy(self.maze))
         self.rat_path = [start]
         self.end = False
         self.escape()
@@ -43,7 +44,7 @@ class Solver:
                 self.maze[current_cell[0] + alea[i][0]][current_cell[1]+alea[i][1]] = 'p'
                 self.rat_path.append([current_cell[0] + alea[i][0], current_cell[1]+alea[i][1]])
                 if not self.end:
-                    self.maze_list.append(value_copy(self.maze))
+                    self.maze_list.append(tools.value_copy(self.maze))
                 self.escape()
 
 
@@ -56,7 +57,7 @@ class Solver:
             self.rat_path.remove(cell_to_remove)
             self.maze[cell_to_remove[0]][cell_to_remove[1]] = 'c'
             if not self.end:
-                self.maze_list.append(value_copy(self.maze))
+                self.maze_list.append(tools.value_copy(self.maze))
 
     def update(self, now):
 
@@ -67,10 +68,10 @@ class Solver:
                 self.maze_counter = 0
                 self.sizes = generate_size()
                 self.maze = m.genMaze(self.sizes[1], self.sizes[0], True)
-                self.maze_list = [value_copy(self.maze)]
+                self.maze_list = [tools.value_copy(self.maze)]
                 start, self.finish = self.get_starting_finishing_points()
                 self.maze[start[0]][start[1]] = 'p'
-                self.maze_list.append(value_copy(self.maze))
+                self.maze_list.append(tools.value_copy(self.maze))
                 self.rat_path = [start]
                 self.end = False
                 self.escape()
@@ -95,11 +96,6 @@ class Solver:
                     image = pg.Surface(size)
                     image.fill(self.maze_p)
                     screen.blit(image, (j * size[1], i * size[0]))
-
-
-def value_copy(a):
-    b = [[a[x][y] for y in range(len(a[0]))] for x in range(len(a))]
-    return b
 
 
 def generate_size():

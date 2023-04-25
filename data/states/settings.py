@@ -36,6 +36,7 @@ class Settings(tools.States):
         self.mouse_hover_sound()
         self.change_selected_option()
 
+
     def render(self, screen):
         screen.fill(self.bg_color)
         screen.blit(self.title, self.title_rect)
