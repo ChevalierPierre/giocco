@@ -8,7 +8,9 @@ class Minimap(pg.sprite.Sprite):
     
     def make_room_sprite(self,i,j,room_content):
         #first make room textures
-        
+        pos_x, pos_y = i * self.room_width, y * self.room_height
+        image = pg.Surface(self.room_width,self.room_height)
+        image.fill()#pick a color
         #then door textures
         if room.doors[0]:
         if room.doors[1]:
