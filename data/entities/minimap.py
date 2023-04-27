@@ -7,9 +7,13 @@ class Minimap(pg.sprite.Sprite):
         self.render_list = []
     
     def make_room_sprite(self,i,j,room_content):
-        for index in range(0,3):
-            if room.doors[index]:
-                
+        #first make room textures
+        
+        #then door textures
+        if room.doors[0]:
+        if room.doors[1]:
+        if room.doors[2]:
+        if room.doors[3]:
 
     def make_render_list(self):
 
