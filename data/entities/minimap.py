@@ -14,8 +14,8 @@ class Minimap(pg.sprite.Sprite):
         sprite_list.append((image,(pos_y,pos_x))
         if room.doors[0]:
             door_image = pg.Surface(self.door_width, self.door_height)
-            door_image.fill(150,150,150,150)
-            sprite_list.append((door_image,(door_pos_y,door_pos_x)))
+            image.fill(150,150,150,150)
+            sprite_list.append((door_image,(pos_y, pos_x + self.door_width)))
         if room.doors[1]:
         if room.doors[2]:
         if room.doors[3]:
@@ -51,8 +51,10 @@ class Minimap(pg.sprite.Sprite):
             for j in range(start_horizontal, end_horizontal):
                 new_list[i].append(raw_list[i][j].copy())
         self.bsq_list = new_list
-        self.room_width = 800/len(self.bsq_list)-4
-        self.room_height = 600/len(self.bsq_list[0])-4
+        self.room_width = 800/len(self.bsq_list)-40
+        self.room_height = 600/len(self.bsq_list[0])-40
+        self.door_width = int(self.room_width/3)
+        self.door_height = int(self.room_height/3)          
 
     def render(self, screen):
         for i in range(len(self.render_list) - 1):
