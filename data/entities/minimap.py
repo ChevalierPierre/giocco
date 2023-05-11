@@ -32,11 +32,6 @@ class Minimap(pg.sprite.Sprite):
         return sprite_list
 
     def make_render_list(self):
-
-        #x*room_weight
-        # make the list of rect (position where I display the picture) and image (actual color or image to display)
-        # based on bsq list, 800 / number of colomns and 600/ number of rows.
-        # round these values to the lower integer and pick a room picture based of the offset of the doors in this room
         for i in range(0, len(self.bsq_list)-1):
             for j in range(0, len(self.bsq_list[i]) -1):
                 self.render_list.append(make_room_sprite(i,j,self.bsq_list[i][j]))
@@ -62,9 +57,9 @@ class Minimap(pg.sprite.Sprite):
                 new_list[i].append(raw_list[i][j].copy())
         self.bsq_list = new_list
         self.room_width = 800/len(self.bsq_list)
-        self.actual_room_width = 800/len(self.bsq_list)-40                    
+        self.actual_room_width = 800/len(self.bsq_list)-20                    
         self.room_height = 600/len(self.bsq_list[0])
-        self.actual_room_height = 600/len(self.bsq_list[0])-30
+        self.actual_room_height = 600/len(self.bsq_list[0])-12
         self.door_width = int(self.actual_room_width/5)
         self.door_height = int(self.actual_room_height/5)          
 
