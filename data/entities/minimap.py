@@ -10,15 +10,25 @@ class Minimap(pg.sprite.Sprite):
         sprite_list = []
         pos_x, pos_y = i * self.room_width, y * self.room_height
         image = pg.Surface(self.room_width,self.room_height)
-        image.fill(50,50,50,50)#pick a color
+        image.fill((50,50,50,50))#pick a color
         sprite_list.append((image,(pos_y,pos_x))
         if room.doors[0]:
             door_image = pg.Surface(self.door_width, self.door_height)
-            image.fill(150,150,150,150)
-            sprite_list.append((door_image,(pos_y, pos_x + self.door_width)))
+            image.fill((150,150,150,150))
+            sprite_list.append((door_image,(pos_y, pos_x + 2 * self.door_width)))
         if room.doors[1]:
+            door_image = pg.Surface(self.door_width, self.door_height)
+            image.fill((50,50,50,50))#pick a color
+            sprite_list.append((door_image,(pos_y + 2 * self.door_height, pos_x)))
         if room.doors[2]:
+            door_image = pg.Surface(self.door_width, self.door_height)
+            image.fill((50,50,50,50))#pick a color
+            sprite_list.append((door_image,(pos_y + 4 * self.door_height, pos_x + 2 * self.door_width))
         if room.doors[3]:
+            door_image = pg.Surface(self.door_width, self.door_height)
+            image.fill((50,50,50,50))#pick a color
+            sprite_list.append((door_image,(pos_y + 2 * self.door_height, pos_x + 4 * self.door_width))
+
         return sprite_list
 
     def make_render_list(self):
@@ -52,9 +62,9 @@ class Minimap(pg.sprite.Sprite):
                 new_list[i].append(raw_list[i][j].copy())
         self.bsq_list = new_list
         self.room_width = 800/len(self.bsq_list)-40
-        self.room_height = 600/len(self.bsq_list[0])-40
-        self.door_width = int(self.room_width/3)
-        self.door_height = int(self.room_height/3)          
+        self.room_height = 600/len(self.bsq_list[0])-30
+        self.door_width = int(self.room_width/5)
+        self.door_height = int(self.room_height/5)          
 
     def render(self, screen):
         for i in range(len(self.render_list) - 1):
