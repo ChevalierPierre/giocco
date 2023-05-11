@@ -7,15 +7,19 @@ class Minimap(pg.sprite.Sprite):
         self.render_list = []
     
     def make_room_sprite(self,i,j,room_content):
-        #first make room textures
+        sprite_list = []
         pos_x, pos_y = i * self.room_width, y * self.room_height
         image = pg.Surface(self.room_width,self.room_height)
-        image.fill()#pick a color
-        #then door textures
+        image.fill(50,50,50,50)#pick a color
+        sprite_list.append((image,(pos_y,pos_x))
         if room.doors[0]:
+            door_image = pg.Surface(self.door_width, self.door_height)
+            door_image.fill(150,150,150,150)
+            sprite_list.append((door_image,(door_pos_y,door_pos_x)))
         if room.doors[1]:
         if room.doors[2]:
         if room.doors[3]:
+        return sprite_list
 
     def make_render_list(self):
 
@@ -53,4 +57,5 @@ class Minimap(pg.sprite.Sprite):
     def render(self, screen):
         for i in range(len(self.render_list) - 1):
             for j in range(len(self.render_list[0])):
-                screen.blit(self.render_list[i][j].image, self.render_list[i][j].rect)
+                for sprite, pos in self.render_list[i][j]:
+                    screen.blit(sprite, pos)
