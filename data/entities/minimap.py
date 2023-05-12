@@ -15,25 +15,22 @@ class Minimap(pg.sprite.Sprite):
         sprite_list = []
         pos_x, pos_y = i * self.room_width, j * self.room_height
         image = pg.Surface((self.actual_room_width,self.actual_room_height))
-        image.fill(self.room_color)
+        image_sprite = tools.Image.loaddir(os.path.join("maproom")).convert()
+        image_sprite = pg.transform.smoothscale(image_sprite, (self.actual_room_width,self.actual_room_height))
+        image.blit(image_sprite,(0,0))
+        door_sprite = tools.Image.loaddir(os.path.join("wooddoor")).convert()
+        door_sprite = pg.transform.smoothscale(door_sprite, (self.actual_door_width,self.actual_door_height))
+        door_image = pg.Surface((self.door_width, self.door_height))
+        door_image.blit(door_sprite,(0,0))
         sprite_list.append((image,(pos_y,pos_x)))
         if room_content["doors"][0]:
-            door_image = pg.Surface((self.door_width, self.door_height))
-            image.fill(self.door_color)
             sprite_list.append((door_image,(pos_y, pos_x + 2 * self.door_width)))
         if room_content["doors"][1]:
-            door_image = pg.Surface((self.door_width, self.door_height))
-            image.fill(self.door_color)
             sprite_list.append((door_image,(pos_y + 2 * self.door_height, pos_x)))
         if room_content["doors"][2]:
-            door_image = pg.Surface((self.door_width, self.door_height))
-            image.fill(self.door_color)
             sprite_list.append((door_image,(pos_y + 4 * self.door_height, pos_x + 2 * self.door_width)))
         if room_content["doors"][3]:
-            door_image = pg.Surface((self.door_width, self.door_height))
-            image.fill(self.door_color)
             sprite_list.append((door_image,(pos_y + 2 * self.door_height, pos_x + 4 * self.door_width)))
-
         return sprite_list
 
     def make_render_list(self):
