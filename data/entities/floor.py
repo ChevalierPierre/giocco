@@ -23,7 +23,7 @@ class Floor:
 
     def parse_floor(self):
         for i in range(len(self.maps_array)):
-            for j in range(len(self.maps_array[0]) - 1):
+            for j in range(len(self.maps_array[0])):
                 if self.maps_array[i][j] == "c":
                     doors = self.check_doors(i,j)
                     self.maps_array[i][j] = map.Map(doors, self.floor_tile, self.floor_brick, 0)

@@ -162,8 +162,7 @@ class Play(tools.States):
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
-            self.mini_map_instance.update(now, self.mini_map_data)
-            current_mini_map = tools.bsq(self.mini_map_data)
+            self.mini_map_instance.update(now, self.floor_instance.mini_map)
 
         pg.mouse.set_visible(False)
 
