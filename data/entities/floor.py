@@ -67,7 +67,7 @@ class Floor:
             return self.maps_array[self.current_map[0]][self.current_map[1]]
 
     def check_doors(self, i, j):
-        doors = [False, False, False, False]  # [top, left, bottom, right] this is still a guess
+        doors = [False, False, False, False]  # [top, left, bottom, right]
         if i == 0:
             if j == 0:
                 if self.maps_array[i + 1][j] != "w":

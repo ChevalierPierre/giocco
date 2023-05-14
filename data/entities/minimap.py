@@ -1,40 +1,40 @@
 import pygame as pg
-
+from .. import tools
+import os
 
 class Minimap(pg.sprite.Sprite):
     def __init__(self):
         self.bsq_list = []
         self.render_list = []
-        self.room_color = (50, 50, 50)
-        self.door_color = (150, 150, 50)
         self.memo_raw_list = []
 
     def make_room_sprite(self,i,j,room_content):
-        print("f      make room sprite")
-        print(room_content)
         sprite_list = []
-        pos_x, pos_y = i * self.room_width, j * self.room_height
+        pos_x, pos_y = i * self.room_height, j * self.room_width
         image = pg.Surface((self.actual_room_width,self.actual_room_height))
-        image_sprite = tools.Image.loaddir(os.path.join("maproom")).convert()
+        image_sprite = tools.Image.load(os.path.join("tiles","blue","TILE_2E.png")).convert()
         image_sprite = pg.transform.smoothscale(image_sprite, (self.actual_room_width,self.actual_room_height))
         image.blit(image_sprite,(0,0))
-        door_sprite = tools.Image.loaddir(os.path.join("wooddoor")).convert()
-        door_sprite = pg.transform.smoothscale(door_sprite, (self.actual_door_width,self.actual_door_height))
+        door_sprite = tools.Image.load(os.path.join("crates","grey","CRATE_1L.png")).convert()
+        door_sprite = pg.transform.smoothscale(door_sprite, (self.door_width,self.door_height))
         door_image = pg.Surface((self.door_width, self.door_height))
         door_image.blit(door_sprite,(0,0))
         sprite_list.append((image,(pos_y,pos_x)))
-        if room_content["doors"][0]:
-            sprite_list.append((door_image,(pos_y, pos_x + 2 * self.door_width)))
-        if room_content["doors"][1]:
-            sprite_list.append((door_image,(pos_y + 2 * self.door_height, pos_x)))
-        if room_content["doors"][2]:
-            sprite_list.append((door_image,(pos_y + 4 * self.door_height, pos_x + 2 * self.door_width)))
-        if room_content["doors"][3]:
-            sprite_list.append((door_image,(pos_y + 2 * self.door_height, pos_x + 4 * self.door_width)))
+        if room_content["tile"]:
+            if room_content["doors"][0]:
+                sprite_list.append((door_image,(pos_y + 2 * self.door_width, pos_x)))
+            if room_content["doors"][1]:
+                sprite_list.append((door_image,(pos_y, pos_x + 2 * self.door_height)))
+            if room_content["doors"][2]:
+                sprite_list.append((door_image,(pos_y + 2 * self.door_width, pos_x + 4 * self.door_height)))
+            if room_content["doors"][3]:
+                sprite_list.append((door_image,(pos_y + 4 * self.door_width, pos_x + 2 * self.door_height)))
         return sprite_list
 
     def make_render_list(self):
         print("makerenderlist")
+        print("\n", self.bsq_list, "\n")
+        self.render_list = []
         for i in range(0, len(self.bsq_list)):
             for j in range(0, len(self.bsq_list[i])):
                 self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j]))
@@ -48,7 +48,7 @@ class Minimap(pg.sprite.Sprite):
         vertical_index = []
         horizontal_index = []
         for i in range(0, len(raw_list)):
-            for j in range(0, len(raw_list[0])):
+            for j in range(0, len(raw_list[i])):
                 if raw_list[i][j]["tile"] and raw_list[i][j]["known"]:
                     vertical_index.append(i)
                     horizontal_index.append(j)
@@ -69,18 +69,21 @@ class Minimap(pg.sprite.Sprite):
 
 
         self.bsq_list = new_list
-        self.room_width = int(800/len(self.bsq_list))
-        self.actual_room_width = int(800/len(self.bsq_list))
-        self.room_height = int(600/len(self.bsq_list[0]))
-        self.actual_room_height = int(600/len(self.bsq_list[0]))
+        self.room_width = int(800/len(self.bsq_list[0]))
+        self.actual_room_width = int(800/len(self.bsq_list[0])-20)
+        self.room_height = int(600/len(self.bsq_list))
+        self.actual_room_height = int(600/len(self.bsq_list)-15)
         self.door_width = int(self.actual_room_width/5)
         self.door_height = int(self.actual_room_height/5)
         self.make_render_list()
 
     def render(self, screen):
         print("render")
-        print(self.render_list)
-        for i in range(len(self.render_list) - 1):
-            for j in range(len(self.render_list[0])):
+        print("\n", self.render_list, "\n")
+        for i in range(0,len(self.render_list)):
+            for j in range(0,len(self.render_list[i])):
+                print("i: ",i)
+                print("j: ",j)
+                print("self.render_list[i][j]: ",self.render_list[i][j])
                 screen.blit(self.render_list[i][j][0], self.render_list[i][j][1])
 
