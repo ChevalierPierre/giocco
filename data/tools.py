@@ -239,10 +239,12 @@ def split_sheet(sheet, size, columns, rows):
         subsurfaces.append(row)
     return subsurfaces
 
+
 def value_copy(a):
     b = [[a[x][y] for y in range(len(a[0]))] for x in range(len(a))]
     return b
 
+"""
 def bsq(raw_list):
     vertical_index = []
     horizontal_index = []
@@ -263,3 +265,4 @@ def bsq(raw_list):
         for j in range(start_horizontal, end_horizontal):
             new_list[i].append(raw_list[i][j].copy())
     return new_list
+"""

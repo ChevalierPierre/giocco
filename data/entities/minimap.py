@@ -2,6 +2,7 @@ import pygame as pg
 from .. import tools
 import os
 
+
 class Minimap(pg.sprite.Sprite):
     def __init__(self):
         self.bsq_list = []
@@ -32,19 +33,20 @@ class Minimap(pg.sprite.Sprite):
         return sprite_list
 
     def make_render_list(self):
-        print("makerenderlist")
-        print("\n", self.bsq_list, "\n")
         self.render_list = []
         for i in range(0, len(self.bsq_list)):
             for j in range(0, len(self.bsq_list[i])):
-                self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j]))
+                if self.bsq_list[i][j]["tile"]:
+                    self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j]))
 
     def update(self, now, raw_list=None):
-        print("update")
-        #equal = [x for x in raw_list + self.memo_raw_list if x not in raw_list or x not in self.memo_raw_list]
-        #if equal:
+        #notequal = [x for x in raw_list + self.memo_raw_list if x not in raw_list or x not in self.memo_raw_list]
+        #print("notequel :",notequal)
+        #print("memo :",len(self.memo_raw_list))
+        #print("raw :", len(raw_list[0]))
+        #if not notequal:
         #    return
-        #self.memo_raw_list = raw_list
+        #self.memo_raw_list = tools.value_copy(raw_list)
         vertical_index = []
         horizontal_index = []
         for i in range(0, len(raw_list)):
@@ -58,7 +60,6 @@ class Minimap(pg.sprite.Sprite):
         end_vertical = vertical_index[-1]
         start_horizontal = horizontal_index[0]
         end_horizontal = horizontal_index[-1]
-        print(start_vertical, end_vertical, start_horizontal, end_horizontal)
         new_list = []
         count = -1
         for i in range(start_vertical, end_vertical+1):
@@ -70,20 +71,14 @@ class Minimap(pg.sprite.Sprite):
 
         self.bsq_list = new_list
         self.room_width = int(800/len(self.bsq_list[0]))
-        self.actual_room_width = int(800/len(self.bsq_list[0])-20)
+        self.actual_room_width = int(800/len(self.bsq_list[0]))
         self.room_height = int(600/len(self.bsq_list))
-        self.actual_room_height = int(600/len(self.bsq_list)-15)
+        self.actual_room_height = int(600/len(self.bsq_list))
         self.door_width = int(self.actual_room_width/5)
         self.door_height = int(self.actual_room_height/5)
         self.make_render_list()
 
     def render(self, screen):
-        print("render")
-        print("\n", self.render_list, "\n")
         for i in range(0,len(self.render_list)):
             for j in range(0,len(self.render_list[i])):
-                print("i: ",i)
-                print("j: ",j)
-                print("self.render_list[i][j]: ",self.render_list[i][j])
                 screen.blit(self.render_list[i][j][0], self.render_list[i][j][1])
-

@@ -9,8 +9,6 @@ class Play(tools.States):
         tools.States.__init__(self)
         self.name = "PLAY"
         self.screen_rect = screen_rect
-        self.mini_map_text, self.mini_map_rect = self.make_text("MAP",
-            (255,255,255), screen_rect.center, 50)
         self.game_over_text, self.game_over_rect = self.make_text("GAME OVER",
             (255,255,255), screen_rect.center, 50)
 
@@ -212,7 +210,6 @@ class Play(tools.States):
                 screen.blit(self.game_over_text, self.game_over_rect)
         else:
             screen.blit(self.cover,(0,0))
-            screen.blit(self.mini_map_text, self.mini_map_rect)
             self.mini_map_instance.render(screen)
         
     def adjust_score(self, point):
@@ -231,7 +228,7 @@ class Play(tools.States):
                 self.culprit.reset(self.screen_rect)
                 floor.Floor.size = 4
                 self.floor_instance = floor.Floor()
-                self.mini_map_data = self.floor_instance.mini_map
+                #self.mini_map_data = self.floor_instance.mini_map
                 self.mini_map_instance = minimap.Minimap()
                 self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
