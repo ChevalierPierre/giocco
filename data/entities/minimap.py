@@ -1,7 +1,7 @@
 import pygame as pg
 from .. import tools
 import os
-
+import copy
 
 class Minimap(pg.sprite.Sprite):
     def __init__(self):
@@ -40,13 +40,10 @@ class Minimap(pg.sprite.Sprite):
                     self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j]))
 
     def update(self, now, raw_list=None):
-        #notequal = [x for x in raw_list + self.memo_raw_list if x not in raw_list or x not in self.memo_raw_list]
-        #print("notequel :",notequal)
-        #print("memo :",len(self.memo_raw_list))
-        #print("raw :", len(raw_list[0]))
-        #if not notequal:
-        #    return
-        #self.memo_raw_list = tools.value_copy(raw_list)
+        notequal = [x for x in raw_list + self.memo_raw_list if x not in raw_list or x not in self.memo_raw_list]
+        if not notequal:
+            return
+        self.memo_raw_list = copy.deepcopy(raw_list)
         vertical_index = []
         horizontal_index = []
         for i in range(0, len(raw_list)):
