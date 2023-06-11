@@ -10,9 +10,11 @@ CONTROLLER_DICT = {
     'left': pg.K_LEFT,
     'right': pg.K_RIGHT,
     'action': pg.K_f,
-    'pause': pg.K_p,
-    'back': pg.K_ESCAPE
+    'map': pg.K_m,
+    'back': pg.K_ESCAPE,
+    'mini_map': pg.K_m,
 }
+
 
 def clean_files():
     '''remove all pyc files and __pycache__ direcetories in subdirectory'''
@@ -27,7 +29,8 @@ def clean_files():
                 path = os.path.join(root, name)
                 print('removing {}'.format(os.path.abspath(path)))
                 os.remove(path)
-                    
+
+
 class Image:
     path = 'resources/graphics'
     @staticmethod
@@ -235,3 +238,31 @@ def split_sheet(sheet, size, columns, rows):
             row.append(sheet.subsurface(rect))
         subsurfaces.append(row)
     return subsurfaces
+
+"""
+def value_copy(a):
+    b = [[a[x][y] for y in range(len(a[0]))] for x in range(len(a))]
+    return b
+
+
+def bsq(raw_list):
+    vertical_index = []
+    horizontal_index = []
+    for i in range(0,len(raw_list) - 1):
+        for j in range(0, len(raw_list[0]) - 1):
+            if raw_list[i][j].tile and raw_list[i][j].known:
+                vertical_index.append(i)
+                horizontal_index.append(j)
+    vertical_index.sort()
+    horizontal_index.sort()
+    start_vertical = vertical_index[0]
+    end_vertical = vertical_index[-1]
+    start_horizontal = horizontal_index[0]
+    end_horizontal = horizontal_index[-1]
+    new_list = []
+    for i in range(start_vertical, end_vertical):
+        new_list.append([])
+        for j in range(start_horizontal, end_horizontal):
+            new_list[i].append(raw_list[i][j].copy())
+    return new_list
+"""

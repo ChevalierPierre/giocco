@@ -14,21 +14,22 @@ class Floor:
         tile_list = ["blue", "green", "grey", "light", "grey_4"]
 
         self.floor_brick = random.choice(brick_list)
-        if self.floor_brick == "light":
-            self.floor_tile = random.choice(tile_list[:-1])
-        else:
-            self.floor_tile = random.choice(tile_list)
+        self.floor_tile = random.choice(tile_list)
         self.maps_array = maze.genMaze(Floor.size, Floor.size)
+        self.mini_map = [list(range(Floor.size)) for row in range(0,Floor.size)]
         self.current_map = [None, None]
         self.parse_floor()
         self.get_existing_map()
 
     def parse_floor(self):
         for i in range(len(self.maps_array)):
-            for j in range(len(self.maps_array[0]) - 1):
+            for j in range(len(self.maps_array[0])):
                 if self.maps_array[i][j] == "c":
                     doors = self.check_doors(i,j)
                     self.maps_array[i][j] = map.Map(doors, self.floor_tile, self.floor_brick, 0)
+                    self.mini_map[i][j] = {"tile": True, "known": False, "doors": doors}  # could add several more keys
+                else:
+                    self.mini_map[i][j] = {"tile": False}
 
     def get_existing_map(self):
         condition = True
@@ -40,6 +41,7 @@ class Floor:
                 doors = self.check_doors(y, x)
                 self.maps_array[y][x] = map.Map(doors, self.floor_tile, self.floor_brick, 2)
                 self.entry_map = self.maps_array[y][x]
+                self.mini_map[y][x]["known"] = True
                 condition = False
             elif self.maps_array[y][x] != "w" and [y,x] != self.current_map and self.maps_array[y][x] != self.entry_map:
                 doors = self.check_doors(y, x)
@@ -49,19 +51,23 @@ class Floor:
     def change_map(self, leads_to):
         if leads_to == "top":
             self.current_map[0] = self.current_map[0] - 1
+            self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
         elif leads_to == "bottom":
             self.current_map[0] = self.current_map[0] + 1
+            self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
         elif leads_to == "left":
             self.current_map[1] = self.current_map[1] - 1
+            self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
         elif leads_to == "right":
             self.current_map[1] = self.current_map[1] + 1
+            self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
 
     def check_doors(self, i, j):
-        doors = [False, False, False, False]
+        doors = [False, False, False, False]  # [top, left, bottom, right]
         if i == 0:
             if j == 0:
                 if self.maps_array[i + 1][j] != "w":
