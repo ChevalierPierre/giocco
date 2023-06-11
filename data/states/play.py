@@ -1,7 +1,7 @@
 import pygame as pg
 from .. import tools
 from ..entities import culprit as culprit_, floor
-from ..entities import hud, tiles
+from ..entities import hud, tiles, minimap
 
 
 class Play(tools.States):
@@ -9,8 +9,6 @@ class Play(tools.States):
         tools.States.__init__(self)
         self.name = "PLAY"
         self.screen_rect = screen_rect
-        self.pause_text, self.pause_rect = self.make_text("PAUSED",
-            (255,255,255), screen_rect.center, 50)
         self.game_over_text, self.game_over_rect = self.make_text("GAME OVER",
             (255,255,255), screen_rect.center, 50)
 
@@ -38,11 +36,11 @@ class Play(tools.States):
                 # self.button_sound.sound.play()
                 self.done = True
                 self.next = 'SETTINGS'
-            elif event.key == tools.CONTROLLER_DICT['pause']:
-                self.pause = not self.pause
-                if self.pause:
+            elif event.key == tools.CONTROLLER_DICT['mini_map']:
+                self.mini_map = not self.mini_map
+                if self.mini_map:
                     pg.mixer.music.pause()
-                if not self.pause:
+                if not self.mini_map:
                     pg.mixer.music.unpause()
         elif event.type == self.background_music.track_end:
             self.background_music.track = (self.background_music.track+1) % len(self.background_music.tracks)
@@ -108,9 +106,8 @@ class Play(tools.States):
             else:
                 self.error_sound.sound.play()
 
-
     def update(self, now, keys):
-        if not self.pause:
+        if not self.mini_map:
             if self.culprit.life <= 0:
                 self.next = "MENU"
                 self.culprit.direction_stack = []
@@ -160,12 +157,11 @@ class Play(tools.States):
                 if cob.life <= 0 and not cob.removed:
                     self.updatemap(cob.location)
                     cob.removed = True
-
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
-            self.pause_text, self.pause_rect = self.make_text("PAUSED",
-                (255,255,255), self.screen_rect.center, 50)
+            self.mini_map_instance.update(now, self.floor_instance.mini_map)
+
         pg.mouse.set_visible(False)
 
     def updatemap(self, targetlocation):
@@ -173,47 +169,48 @@ class Play(tools.States):
         self.floor_instance.maps_array[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]].map[int((targetlocation[1] + 50) / 50)] = str(map_tmp[:int((targetlocation[0] + 50) / 50)] + "F" + map_tmp[int((targetlocation[0] + 100) / 50):])  # horizontal
 
     def render(self, screen):
-        # Display Traps
-        for ti in self.floor_tiles:
-            ti.render(screen)
-        for ob in self.obstacles:
-            ob.render(screen)
-        for do in self.doors:
-            do.render(screen)
-        for ex in self.floor_exit:
-            ex.render(screen)
-        for ft in self.fire_traps:
-            ft.render(screen)
-        for pt in self.pit_traps:
-            pt.render(screen)
-        for st in self.spike_traps:
-            st.render(screen)
-        for bt in self.bear_traps:
-            bt.render(screen)
-        for ptd in self.push_traps_down:
-            ptd.render(screen)
-        for ptu in self.push_traps_up:
-            ptu.render(screen)
-        for ptr in self.push_traps_right:
-            ptr.render(screen)
-        for ptl in self.push_traps_left:
-            ptl.render(screen)
-        for art in self.artifacts:
-            art.render(screen)
-        for cob in self.cobras:
-            cob.render(screen)
-        for cob in self.cobras:
-            cob.render(screen, True)
-        # Display HUD
-        self.hud.render(screen)
-        # Display Culprit
-        self.culprit.render(screen)
-        if self.culprit.life <= 0:
-            screen.blit(self.death_cover, (0,0))
-            screen.blit(self.game_over_text, self.game_over_rect)
-        if self.pause:
+        if not self.mini_map:
+            # Display Traps
+            for ti in self.floor_tiles:
+                ti.render(screen)
+            for ob in self.obstacles:
+                ob.render(screen)
+            for do in self.doors:
+                do.render(screen)
+            for ex in self.floor_exit:
+                ex.render(screen)
+            for ft in self.fire_traps:
+                ft.render(screen)
+            for pt in self.pit_traps:
+                pt.render(screen)
+            for st in self.spike_traps:
+                st.render(screen)
+            for bt in self.bear_traps:
+                bt.render(screen)
+            for ptd in self.push_traps_down:
+                ptd.render(screen)
+            for ptu in self.push_traps_up:
+                ptu.render(screen)
+            for ptr in self.push_traps_right:
+                ptr.render(screen)
+            for ptl in self.push_traps_left:
+                ptl.render(screen)
+            for art in self.artifacts:
+                art.render(screen)
+            for cob in self.cobras:
+                cob.render(screen)
+            for cob in self.cobras:
+                cob.render(screen, True)
+            # Display HUD
+            self.hud.render(screen)
+            # Display Culprit
+            self.culprit.render(screen)
+            if self.culprit.life <= 0:
+                screen.blit(self.death_cover, (0,0))
+                screen.blit(self.game_over_text, self.game_over_rect)
+        else:
             screen.blit(self.cover,(0,0))
-            screen.blit(self.pause_text, self.pause_rect)
+            self.mini_map_instance.render(screen)
         
     def adjust_score(self, point):
         self.score += point
@@ -227,10 +224,12 @@ class Play(tools.States):
         for item in reversed(self.previous_state):
             if item == "MENU":
                 self.next_list = ["MENU"]
-                self.pause = False
+                self.mini_map = False
                 self.culprit.reset(self.screen_rect)
                 floor.Floor.size = 4
                 self.floor_instance = floor.Floor()
+                #self.mini_map_data = self.floor_instance.mini_map
+                self.mini_map_instance = minimap.Minimap()
                 self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
                 self.check_hurt = self.culprit.last_hurt

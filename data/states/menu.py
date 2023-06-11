@@ -3,7 +3,6 @@ from .. import tools
 from ..entities import solver
 import random
 
-
 class Menu(tools.States):
     def __init__(self, screen_rect):
         tools.States.__init__(self)
@@ -56,29 +55,3 @@ class Menu(tools.States):
         
     def entry(self):
         pass
-
-    def render_maze(self, screen):
-        size = (800 / self.sizes[0], 600 / self.sizes[1])
-        maze = self.maze_list[self.maze_counter]
-        for i in range(0, len(maze)):
-            for j in range(0, len(maze[0])):
-                if maze[i][j] == 'w':
-                    image = pg.Surface(size)
-                    image.fill(self.maze_w)
-                    screen.blit(image, (j*size[1],i*size[0]))
-                if maze[i][j] == 'c':
-                    image = pg.Surface(size)
-                    image.fill(self.maze_c)
-                    screen.blit(image, (j*size[1],i*size[0]))
-                if maze[i][j] == 'p':
-                    image = pg.Surface(size)
-                    image.fill(self.maze_p)
-                    screen.blit(image, (j*size[1],i*size[0]))
-
-
-def generate_size():
-    while True:
-        y = random.randint(20, 60)
-        if (y * 8 / 6).is_integer():
-            return int(y * 8 / 6), y
-
