@@ -22,6 +22,7 @@ class KeyBinding(tools.States):
         self.key_left_text, self.key_left_text_rect = self.make_text('LEFT', (75,75,75), (self.screen_rect.centerx - 90, 210), 20)
         self.key_right_text, self.key_right_text_rect = self.make_text('RIGHT', (75,75,75), (self.screen_rect.centerx - 90, 245), 20)
         self.key_action_text, self.key_action_text_rect = self.make_text('ACTION', (75,75,75), (self.screen_rect.centerx - 90, 280), 20)
+        self.key_map_text, self.key_map_text_rect = self.make_text('MAP', (75,75,75), (self.screen_rect.centerx - 90, 315), 20)
 
         
     def set_buttons(self):
@@ -77,6 +78,17 @@ class KeyBinding(tools.States):
             'command' : self.action_bind
         }
 
+        self.map_button_settings = {
+            'text' : '{}'.format(pg.key.name(tools.CONTROLLER_DICT['map'])),
+            'hover' : (255,255,255),
+            'font' : None,
+            'fg' : (0,0,0),
+            'bg' : (155,155,155),
+            'border' : False,
+            'fontsize': 15,
+            'command' : self.map_bind
+        }
+
         btn_width = 100
         btn_height = 25
         centerX = self.screen_rect.centerx - btn_width / 2
@@ -86,7 +98,8 @@ class KeyBinding(tools.States):
         self.left_keybinding = button.Button((centerX,195,btn_width,btn_height), **self.left_button_settings)
         self.right_keybinding = button.Button((centerX,230,btn_width,btn_height), **self.right_button_settings)
         self.action_keybinding = button.Button((centerX,265,btn_width,btn_height), **self.action_button_settings)
-        self.buttons = [self.up_keybinding, self.down_keybinding, self.left_keybinding, self.right_keybinding, self.action_keybinding]
+        self.map_keybinding = button.Button((centerX,300,btn_width,btn_height), **self.map_button_settings)
+        self.buttons = [self.up_keybinding, self.down_keybinding, self.left_keybinding, self.right_keybinding, self.action_keybinding, self.map_keybinding]
 
     def up_bind(self):
         tools.KEY_ACTION = 'up'
@@ -110,6 +123,11 @@ class KeyBinding(tools.States):
 
     def action_bind(self):
         tools.KEY_ACTION = 'action'
+        self.next = 'GETKEY'
+        self.done = True
+
+    def map_bind(self):
+        tools.KEY_ACTION = 'map'
         self.next = 'GETKEY'
         self.done = True
 
@@ -153,6 +171,7 @@ class KeyBinding(tools.States):
         screen.blit(self.key_left_text,self.key_left_text_rect)
         screen.blit(self.key_right_text,self.key_right_text_rect)
         screen.blit(self.key_action_text,self.key_action_text_rect)
+        screen.blit(self.key_map_text, self.key_map_text_rect)
         for button in self.buttons:
             button.render(screen)
         for i,opt in enumerate(self.rendered["des"]):

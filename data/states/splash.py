@@ -9,7 +9,7 @@ class Splash(tools.States):
         self.name = "SPLASH"
         self.screen_rect = screen_rect
         self.next = "MENU"
-        self.timeout = 3
+        self.timeout = 20
         self.start_time = 0
 
         self.cover = pg.Surface((screen_rect.width, screen_rect.height))
@@ -17,7 +17,7 @@ class Splash(tools.States):
         self.cover_alpha = 256
         self.alpha_step = 3
 
-        self.image = pg.image.load('resources/graphics/splash_page2.png').convert_alpha()
+        self.image = pg.image.load('resources/graphics/cave.jpg').convert_alpha()
         text = ["Giocco"]
         self.rendered_text = self.make_text_list("Megadeth.ttf",150,text,(75,75,75),520,50)
 

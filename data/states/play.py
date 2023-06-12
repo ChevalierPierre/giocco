@@ -36,7 +36,7 @@ class Play(tools.States):
                 # self.button_sound.sound.play()
                 self.done = True
                 self.next = 'SETTINGS'
-            elif event.key == tools.CONTROLLER_DICT['mini_map']:
+            elif event.key == tools.CONTROLLER_DICT['map']:
                 self.mini_map = not self.mini_map
                 if self.mini_map:
                     pg.mixer.music.pause()

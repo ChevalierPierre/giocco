@@ -12,7 +12,6 @@ CONTROLLER_DICT = {
     'action': pg.K_f,
     'map': pg.K_m,
     'back': pg.K_ESCAPE,
-    'mini_map': pg.K_m,
 }
 
 
