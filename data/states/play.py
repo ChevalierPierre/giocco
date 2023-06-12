@@ -65,6 +65,7 @@ class Play(tools.States):
                     if pg.sprite.collide_mask(self.culprit, do):
                         self.whoosh_sound.sound.play()
                         leads_to = do.leads_to
+                        self.floor_instance.mini_map[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]]["active"] = False
                         instance = self.floor_instance.change_map(leads_to)
                         self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = instance.parse_map()
                         if leads_to == "top":
@@ -228,7 +229,6 @@ class Play(tools.States):
                 self.culprit.reset(self.screen_rect)
                 floor.Floor.size = 4
                 self.floor_instance = floor.Floor()
-                #self.mini_map_data = self.floor_instance.mini_map
                 self.mini_map_instance = minimap.Minimap()
                 self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0

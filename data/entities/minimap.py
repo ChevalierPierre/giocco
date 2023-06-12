@@ -10,16 +10,22 @@ class Minimap(pg.sprite.Sprite):
         self.render_list = []
         self.memo_raw_list = []
 
-    def make_room_sprite(self,i,j,room_content, empty=False, entrance=False):
+    def make_room_sprite(self,i,j,room_content, empty=False, entrance=False, active=False):
         sprite_list = []
         pos_x, pos_y = i * self.room_height, j * self.room_width
         pos_x_plus, pos_y_plus = (i + 1) * self.room_height, (j + 1) * self.room_width
         image = pg.Surface((self.actual_room_width, self.actual_room_height))
         if not empty:
             if entrance:
-                image_sprite = tools.Image.load(os.path.join("minimap", "asfault_7.png")).convert()
+                if active:
+                    image_sprite = tools.Image.load(os.path.join("minimap", "asfault_10.png")).convert()
+                else:
+                    image_sprite = tools.Image.load(os.path.join("minimap", "asfault_7.png")).convert()
             else:
-                image_sprite = tools.Image.load(os.path.join("minimap", "asfault_8.png")).convert()
+                if active:
+                    image_sprite = tools.Image.load(os.path.join("minimap", "asfault_11.png")).convert()
+                else:
+                    image_sprite = tools.Image.load(os.path.join("minimap", "asfault_8.png")).convert()
             image_sprite = pg.transform.smoothscale(image_sprite, (self.actual_room_width, self.actual_room_height))
             image.blit(image_sprite, (0, 0))
             door_sprite = tools.Image.load(os.path.join("minimap","dungeons_and_flagons5.jpg")).convert()
@@ -50,9 +56,15 @@ class Minimap(pg.sprite.Sprite):
             for j in range(0, len(self.bsq_list[i])):
                 if self.bsq_list[i][j]["tile"] and self.bsq_list[i][j]["known"]:
                     if self.bsq_list[i][j]["entrance"]:
-                        self.render_list.append(self.make_room_sprite(i, j, self.bsq_list[i][j], False, True))
+                        if self.bsq_list[i][j]["active"]:
+                            self.render_list.append(self.make_room_sprite(i, j, self.bsq_list[i][j], False, True, True))
+                        else:
+                            self.render_list.append(self.make_room_sprite(i, j, self.bsq_list[i][j], False, True))
                     else:
-                        self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j]))
+                        if self.bsq_list[i][j]["active"]:
+                            self.render_list.append(self.make_room_sprite(i, j, self.bsq_list[i][j], False, False, True))
+                        else:
+                            self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j]))
                 else:
                     self.render_list.append(self.make_room_sprite(i,j,self.bsq_list[i][j], True))
 
@@ -81,7 +93,6 @@ class Minimap(pg.sprite.Sprite):
             count += 1
             for j in range(start_horizontal, end_horizontal+1):
                 new_list[count].append(raw_list[i][j].copy())
-
 
         self.bsq_list = new_list
         self.room_width = int(800/len(self.bsq_list[0]))

@@ -30,7 +30,7 @@ class Floor:
                 if self.maps_array[i][j] == "c":
                     doors = self.check_doors(i,j)
                     self.maps_array[i][j] = map.Map(doors, self.floor_tile, self.floor_brick, 0)
-                    self.mini_map[i][j] = {"tile": True, "known": False, "doors": doors, "entrance": False}  # could add several more keys
+                    self.mini_map[i][j] = {"tile": True, "known": False, "doors": doors, "entrance": False, "active": False}  # could add several more keys
                 else:
                     self.mini_map[i][j] = {"tile": False}
 
@@ -56,18 +56,22 @@ class Floor:
         if leads_to == "top":
             self.current_map[0] = self.current_map[0] - 1
             self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
+            self.mini_map[self.current_map[0]][self.current_map[1]]["active"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
         elif leads_to == "bottom":
             self.current_map[0] = self.current_map[0] + 1
             self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
+            self.mini_map[self.current_map[0]][self.current_map[1]]["active"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
         elif leads_to == "left":
             self.current_map[1] = self.current_map[1] - 1
             self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
+            self.mini_map[self.current_map[0]][self.current_map[1]]["active"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
         elif leads_to == "right":
             self.current_map[1] = self.current_map[1] + 1
             self.mini_map[self.current_map[0]][self.current_map[1]]["known"] = True
+            self.mini_map[self.current_map[0]][self.current_map[1]]["active"] = True
             return self.maps_array[self.current_map[0]][self.current_map[1]]
 
     def check_doors(self, i, j):
