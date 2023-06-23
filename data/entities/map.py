@@ -3,6 +3,7 @@ from data import tools
 from data.entities import block, door, exits, tiles
 from data.entities.traps import beartrap, firetrap, pittrap, pushtrap, spiketrap
 from data.entities import cobra
+from data.entities import bat
 from data.entities import artifact
 
 
@@ -17,6 +18,7 @@ class Map:
 
     def parse_map(self):
         cobras = []
+        bats = []
         obstacles = []
         doors = []
         floor_exit = []
@@ -67,9 +69,11 @@ class Map:
                     push_traps_down.append(pushtrap.Pushtrap((j * 50, i * 50), "bottom", self.tile_color))
                 elif self.map[i + 1][j + 1] == "1":
                     cobras.append(cobra.Cobra((j * 50, i * 50), self.tile_color))
+                elif self.map[i + 1][j + 1] == "3":
+                    bats.append(bat.Bat((j * 50, i * 50), self.tile_color))
                 elif self.map[i + 1][j + 1] == "V":
                     artifacts.append(artifact.Artifact((j * 50, i * 50), self.tile_color))
         mapfile = []
         for row in self.map[1:-1]:
             mapfile.append(row[1:-2])
-        return (mapfile, pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps), pg.sprite.Group(spike_traps), pg.sprite.Group(bear_traps), pg.sprite.Group(push_traps_up), pg.sprite.Group(push_traps_down), pg.sprite.Group(push_traps_right), pg.sprite.Group(push_traps_left), pg.sprite.Group(cobras), pg.sprite.Group(artifacts))
+        return (mapfile, pg.sprite.Group(obstacles),pg.sprite.Group(doors), pg.sprite.Group(floor_exit), pg.sprite.Group(tile), pg.sprite.Group(fire_traps), pg.sprite.Group(pit_traps), pg.sprite.Group(spike_traps), pg.sprite.Group(bear_traps), pg.sprite.Group(push_traps_up), pg.sprite.Group(push_traps_down), pg.sprite.Group(push_traps_right), pg.sprite.Group(push_traps_left), pg.sprite.Group(cobras), pg.sprite.Group(bats), pg.sprite.Group(artifacts))

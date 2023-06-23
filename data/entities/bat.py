@@ -7,21 +7,23 @@ from math import floor
 import os
 import random
 
-class Cobra(pg.sprite.Sprite):
+
+class Bat(pg.sprite.Sprite):
     """Traps erecting fire."""
 
     def __init__(self, location, color):
         """The location argument is where I will be located."""
         # GRAPHICS
         pg.sprite.Sprite.__init__(self)
+        self.width, self.height = 50, 50
         self.animate_timer = 0.0
         self.animate_fps = 7
         self.color = color
         tile = tools.Image.loaddir(os.path.join("tiles", color)).convert()
-        self.pre_image = pg.Surface((50, 50)).convert_alpha()
+        self.pre_image = pg.Surface((self.width, self.height)).convert_alpha()
         self.pre_image.blit(tile, (0, 0))
-        self.enemy_mask = tools.Image.load(os.path.join("enemies", "king_cobra-blue.png")).convert_alpha()
-        self.image = pg.Surface((50, 50)).convert_alpha()
+        self.enemy_mask = tools.Image.load(os.path.join("enemies", "bat", "flight.png")).convert_alpha()
+        self.image = pg.Surface((self.width, self.height)).convert_alpha()
         self.location = location
         self.rect = self.image.get_rect(topleft=location)
         self.pre_rect = self.pre_image.get_rect(topleft=location)
@@ -39,15 +41,17 @@ class Cobra(pg.sprite.Sprite):
         self.removed = False
 
         # DATA
-        self.life = 3
-        self.speed = 2  # Must divide 50 without rest
+        self.life = 1
+        self.speed = 1  # Must divide 50 without rest
 
     def make_frame_dict(self):
-        frames = tools.split_sheet(self.enemy_mask, (50, 50), 3, 4)
-        walk_cycles = {'left': itertools.cycle(frames[3][0:2]),
-                       'right': itertools.cycle(frames[1][0:2]),
-                       'down': itertools.cycle(frames[2][0:2]),
-                       'up': itertools.cycle(frames[0][0:2])}
+        frames = tools.split_sheet(self.enemy_mask, (self.width, self.height), 8, 1)[0]
+        flips = [pg.transform.flip(frame, True, False) for frame in frames]
+        walk_cycles = {'left': itertools.cycle(flips[0:7]),
+                       'right': itertools.cycle(frames[0:7]),
+                       'down': itertools.cycle(frames[0:7]),
+                       'up': itertools.cycle(flips[0:7]),
+                       }
         return walk_cycles
 
     def make_mask(self):
@@ -57,27 +61,27 @@ class Cobra(pg.sprite.Sprite):
         """
         mask_surface = pg.Surface(self.rect.size).convert_alpha()
         mask_surface.fill((0, 0, 0, 0))
-        mask_surface.fill(pg.Color("white"), (10,10,30,34))  # left, top, width, height
+        mask_surface.fill(pg.Color("white"), (10,10,30,34))  # left, top, width, height. Yet to define for the bat
         mask = pg.mask.from_surface(mask_surface)
         return mask
 
-    def render(self, screen, cobra_time=False):
-        if cobra_time is False:
+    def render(self, screen, bat_time=False):
+        if bat_time is False:
             screen.blit(self.pre_image, self.pre_rect)
-        if self.life > 0 and cobra_time:
+        if self.life > 0 and bat_time:
             if not self.hurt_show:
                 screen.blit(self.image, self.rect)
             else:
                 cpy = self.image.copy()
                 cpy.blit(pg.Surface(self.image.get_size()).convert_alpha(), (0, 0), special_flags=pg.BLEND_RGBA_MULT)
 
-    def update(self, now, mapfile, obstacles, culprit, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
+    def update(self, now, mapfile, obstacles, culprit, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
         """
         Updates our player appropriately every frame.
         """
         if self.life > 0:
             if not self.direction_stack:
-                self.astar_ai(mapfile, (culprit.rect.x, culprit.rect.y))
+                self.astar_ai(mapfile)
             self.adjust_images(now)
             self.collision_direction = None
             if self.direction_stack:
@@ -86,17 +90,29 @@ class Cobra(pg.sprite.Sprite):
                 self.movement(obstacles, 1)
                 self.direction_stack = self.direction_stack[1:]
             if now - 1260 > self.last_hurt:
-                self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left)
+                self.hurt(now, push_traps_up, push_traps_down, push_traps_right, push_traps_left)
             if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 600 or self.last_hurt + 660 < now < self.last_hurt + 820 or self.last_hurt + 880 < now < self.last_hurt + 1040 or self.last_hurt + 1100 < now < self.last_hurt + 1260:
                 self.hurt_show = True
             else:
                 self.hurt_show = False
 
-    def astar_ai(self, realmap, culprit):
-        #  Verifier qu'on est bien au milieu de la cellule pour le cobra avant de se deplacer
-        #  LE POINT LE PLUS À DROITE DU COBRA, CELUI LE PLUS À GAUCHE, CELUI LE PLUS EN HAUT, CELUI LE PLUS EN BAS
-        #  TOUS DOIVENT ÊTRE COMPLÈTEMENT DANS LA CELLULE DE 50x50
-        #
+    def astar_ai(self, realmap):
+        if not self.parsed_map:
+            self.ai_doors = []
+            self.map = realmap.copy()
+            for i in range(0,len(self.map)):
+                self.map[i] = list(self.map[i])
+            for i in range(0, len(self.map)):
+                for j in range(0, len(self.map[0])):
+                    if self.map[i][j] == "D":
+                        self.ai_doors.append((j,i))
+                    pass
+                    if self.map[i][j] == "O":
+                        self.map[i][j] = 1
+                    else:
+                        self.map[i][j] = 0
+            self.parsed_map = True
+        ai_door = random.choice(self.ai_doors)
         rest_y = (self.rect.y + 25) % 50
         rest_x = (self.rect.x + 25) % 50
         go_up, go_down, go_right, go_left = 0, 0, 0, 0
@@ -122,8 +138,8 @@ class Cobra(pg.sprite.Sprite):
         elif rest_x == 25:
             # intended location
             pass
-        end_y = floor((culprit[1] + 25) / 50)
-        end_x = floor((culprit[0] + 25) / 50)
+        end_y = ai_door[1]
+        end_x = ai_door[0]
         start_y = floor((self.rect.y + 25) / 50)
         start_x = floor((self.rect.x + 25) / 50)
         if end_y < 0:
@@ -144,18 +160,6 @@ class Cobra(pg.sprite.Sprite):
             start_x = 15
         end = (end_y,end_x)
         start = (start_y,start_x)
-
-        if not self.parsed_map:
-            self.map = realmap.copy()
-            for i in range(0,len(self.map)):
-                self.map[i] = list(self.map[i])
-            for i in range(0, len(self.map)):
-                for j in range(0, len(self.map[0])):
-                    if self.map[i][j] == "O":
-                        self.map[i][j] = 1
-                    else:
-                        self.map[i][j] = 0
-            self.parsed_map = True
         dirr = astar.astar(self.map, start, end)
         if not dirr:
             odds = random.randint(1, 4)
@@ -200,11 +204,11 @@ class Cobra(pg.sprite.Sprite):
         if f.Floor.size < 5:
             return
         elif f.Floor.size < 7:
-            if len(self.direction_stack) > (int(50/self.speed) * 5) + count:
-                self.direction_stack = self.direction_stack[:(int(50/self.speed) * 5) + count]
+            if len(self.direction_stack) > (int(50/self.speed) * 12) + count:
+                self.direction_stack = self.direction_stack[:(int(50/self.speed) * 12) + count]
         else:
-            if len(self.direction_stack) > int(50/self.speed) + count:
-                self.direction_stack = self.direction_stack[:int(50/self.speed) + count]
+            if len(self.direction_stack) > int(50/self.speed) * 6 + count:
+                self.direction_stack = self.direction_stack[:int(50/self.speed) * 6 + count]
 
     def adjust_images(self, now=0):
         """
@@ -270,18 +274,14 @@ class Cobra(pg.sprite.Sprite):
         second_term = self.mask.overlap_area(other_sprite.mask, offset_low)
         return first_term - second_term
 
-    def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
+    def hurt(self, now, push_traps_up, push_traps_down, push_traps_right, push_traps_left):
         callback = pg.sprite.collide_mask
 
-        self.collide_fire = pg.sprite.spritecollideany(self, fire_traps, callback)
-        self.collide_pit = pg.sprite.spritecollideany(self, pit_traps, callback)
-        self.collide_spike = pg.sprite.spritecollideany(self, spike_traps, callback)
-        self.collide_bear = pg.sprite.spritecollideany(self, bear_traps, callback)
         self.collide_push_up = pg.sprite.spritecollideany(self, push_traps_up, callback)
         self.collide_push_down = pg.sprite.spritecollideany(self, push_traps_down, callback)
         self.collide_push_right = pg.sprite.spritecollideany(self, push_traps_right, callback)
         self.collide_push_left = pg.sprite.spritecollideany(self, push_traps_left, callback)
 
-        if (self.collide_fire and self.collide_fire.damage) or self.collide_pit or (self.collide_spike and self.collide_spike.damage) or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right:
+        if self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right:
             self.life -= 1
             self.last_hurt = now

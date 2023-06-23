@@ -5,15 +5,21 @@ import random
 from datetime import datetime
 ## Functions
 def printMaze(maze, height, width):
+	for i in range(width+2):
+		print('O',end="")
+	print("")
 	for i in range(0, height):
+		print('O',end="")
 		for j in range(0, width):
 			if (maze[i][j] == 'u'):
-				print(str(maze[i][j]), end=" ")
+				print("F", end="")
 			elif (maze[i][j] == 'c'):
-				print(str(maze[i][j]), end=" ")
+				print("F", end="")
 			else:
-				print(str(maze[i][j]), end=" ")
-		print('\n')
+				print("O", end="")
+		print('O')
+	for i in range(width+2):
+		print('O',end="")
 
 # Find number of surrounding cells
 def surroundingCells(rand_wall, maze):
@@ -250,3 +256,7 @@ def genMaze(height, width, entranceexit=False):
 				break
 
 	return maze
+
+
+"""res=genMaze(12,16)
+printMaze(res, 12, 16)"""

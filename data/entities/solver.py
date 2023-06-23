@@ -1,6 +1,5 @@
 import pygame as pg
 from data import maze as m
-from .. import tools
 import random
 import copy
 

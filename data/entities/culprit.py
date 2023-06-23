@@ -60,7 +60,7 @@ class Culprit:
             cpy = self.image.copy()
             cpy.blit(pg.Surface(self.image.get_size()).convert_alpha(), (0, 0), special_flags=pg.BLEND_RGBA_MULT)
 
-    def update(self, now, screen_rect, obstacles, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras):
+    def update(self, now, screen_rect, obstacles, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras, bats):
         """
         Updates our player appropriately every frame.
         """
@@ -70,7 +70,7 @@ class Culprit:
             self.movement(obstacles, 0)
             self.movement(obstacles, 1)
         if now - 1260 > self.last_hurt:
-            self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras)
+            self.hurt(now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras, bats)
         if self.last_hurt < now < self.last_hurt + 160 or self.last_hurt + 220 < now < self.last_hurt + 380 or self.last_hurt + 440 < now < self.last_hurt + 600 or self.last_hurt + 660 < now < self.last_hurt + 820 or self.last_hurt + 880 < now < self.last_hurt + 1040 or self.last_hurt + 1100 < now < self.last_hurt + 1260:
             self.hurt_show = True
         else:
@@ -86,9 +86,9 @@ class Culprit:
         self.rect.y = culprit_y
         self.direction = tools.CONTROLLER_DICT['down']
         self.life = 3
-        self.speed = 4
+        self.speed = 3
 
-    def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras):
+    def hurt(self, now, fire_traps, pit_traps, spike_traps, bear_traps, push_traps_up, push_traps_down, push_traps_right, push_traps_left, cobras, bats):
         callback = pg.sprite.collide_mask
 
         self.collide_fire = pg.sprite.spritecollideany(self, fire_traps, callback)
@@ -100,8 +100,9 @@ class Culprit:
         self.collide_push_right = pg.sprite.spritecollideany(self, push_traps_right, callback)
         self.collide_push_left = pg.sprite.spritecollideany(self, push_traps_left, callback)
         self.collide_cobras = pg.sprite.spritecollideany(self, cobras, callback)
+        self.collide_bats = pg.sprite.spritecollideany(self, bats, callback)
 
-        if (self.collide_fire and self.collide_fire.damage) or self.collide_pit or (self.collide_spike and self.collide_spike.damage) or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right or self.collide_cobras:
+        if (self.collide_fire and self.collide_fire.damage) or self.collide_pit or (self.collide_spike and self.collide_spike.damage) or self.collide_bear or self.collide_push_up or self.collide_push_down or self.collide_push_left or self.collide_push_right or self.collide_cobras or self.collide_bats:
             self.life -= 1
             self.last_hurt = now
 

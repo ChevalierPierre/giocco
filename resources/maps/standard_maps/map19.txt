@@ -1,0 +1,29 @@
+##################
+##    MAP N°19  ##
+##################
+# O = obstacle
+# D = door
+# E = exit
+# F = tile
+# T = fire trap
+# S = spike trap
+# B = bear trap
+# P = pit trap
+# R, L, A, Z = right left top bottom push trap
+# V = vitality
+# 1 = cobra
+# 3 = bat
+OOOOOOOOOOOOOOOOOO
+OOOODOOOOOOOOOOOOO
+OOFOFFFOOFOOF333OO
+OOFOOOFFOFOOFOOOOO
+OOFFOOOFTFOFFFFFOO
+OOFOOFOFOOOFOOOOOO
+OOFOFFFFOVOFFFOFDO
+ODFOOOOFOSOFOOOFOO
+OOFFFFOFFSFFFFOFOO
+OOOFOFOOFOOOOFOFOO
+OOOOOFOFTFFFOFFFOO
+OO333FFFOFOFOFOFOO
+OOOOOOOOODOOOOOOOO
+OOOOOOOOOOOOOOOOOO

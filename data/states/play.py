@@ -67,7 +67,7 @@ class Play(tools.States):
                         leads_to = do.leads_to
                         self.floor_instance.mini_map[self.floor_instance.current_map[0]][self.floor_instance.current_map[1]]["active"] = False
                         instance = self.floor_instance.change_map(leads_to)
-                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = instance.parse_map()
+                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.bats, self.artifacts = instance.parse_map()
                         if leads_to == "top":
                             for doo in self.doors:
                                 if doo.location[1] == self.screen_rect.height - 50:
@@ -102,7 +102,7 @@ class Play(tools.States):
                         self.low_whoosh_sound.sound.play()
                         self.adjust_score(1)
                         self.floor_instance = floor.Floor()
-                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
+                        self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.bats, self.artifacts = self.floor_instance.entry_map.parse_map()
                 self.last_action = now
             else:
                 self.error_sound.sound.play()
@@ -126,7 +126,7 @@ class Play(tools.States):
             elif self.culprit.last_hurt != self.check_hurt:
                 self.hurt_sound.sound.play()
                 self.check_hurt = self.culprit.last_hurt
-            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras)
+            self.culprit.update(now, self.screen_rect, self.obstacles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.bats)
             for do in self.doors:
                 do.update(now)
             for ft in self.fire_traps:
@@ -158,6 +158,12 @@ class Play(tools.States):
                 if cob.life <= 0 and not cob.removed:
                     self.updatemap(cob.location)
                     cob.removed = True
+            for bat in self.bats:
+                bat.update(now, self.mapfile, self.obstacles, self.culprit, self.push_traps_up, self.push_traps_down,
+                           self.push_traps_right, self.push_traps_left)
+                if bat.life <= 0 and not bat.removed:
+                    self.updatemap(bat.location)
+                    bat.removed = True
             self.hud.update(self.culprit, self.score)
             self.interact(keys, now)
         else:
@@ -202,6 +208,10 @@ class Play(tools.States):
                 cob.render(screen)
             for cob in self.cobras:
                 cob.render(screen, True)
+            for bat in self.bats:
+                bat.render(screen)
+            for bat in self.bats:
+                bat.render(screen, True)
             # Display HUD
             self.hud.render(screen)
             # Display Culprit
@@ -230,7 +240,7 @@ class Play(tools.States):
                 floor.Floor.size = 4
                 self.floor_instance = floor.Floor()
                 self.mini_map_instance = minimap.Minimap()
-                self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.artifacts = self.floor_instance.entry_map.parse_map()
+                self.mapfile, self.obstacles, self.doors, self.floor_exit, self.floor_tiles, self.fire_traps, self.pit_traps, self.spike_traps, self.bear_traps, self.push_traps_up, self.push_traps_down, self.push_traps_right, self.push_traps_left, self.cobras, self.bats, self.artifacts = self.floor_instance.entry_map.parse_map()
                 self.last_action = 0
                 self.check_hurt = self.culprit.last_hurt
                 self.score = 0
