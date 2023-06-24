@@ -116,7 +116,7 @@ class States:
         self.whoosh_sound_volume = .4
         self.low_whoosh_sound_volume = .4
         self.pickup_sound_volume = .1
-        self.error_sound_volume = .2
+        self.error_sound_volume = .6
         self.error_sound = Sound('error.mp3')
         self.pickup_sound = Sound('pickup.mp3')
         self.low_whoosh_sound = Sound('low_whoosh.mp3')
