@@ -1,5 +1,6 @@
 # Giocco
 [![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/DBMvEOULFSQ/0.jpg)](https://www.youtube.com/watch?v=DBMvEOULFSQ)
+### CLICK THE ABOVE PICTURE
 ## To install packages
 pip3 install -r requirements.txt
 ## To launch the game:
