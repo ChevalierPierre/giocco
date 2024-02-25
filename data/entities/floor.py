@@ -1,7 +1,7 @@
 from data import maze
 from data.entities import map
 import random
-from datetime import datetime
+import time
 
 
 class Floor:
@@ -9,7 +9,7 @@ class Floor:
 
     def __init__(self):
         Floor.size += 1
-        random.seed(datetime.now())
+        random.seed(time.time())
         brick_list = ["black", "dark", "light", "red", "red_4"]
         tile_list = ["blue", "green", "grey", "light", "grey_4"]
 

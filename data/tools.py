@@ -2,7 +2,7 @@ import pygame as pg
 import os
 import shutil
 import random
-from datetime import datetime
+import time
 KEY_ACTION = ''
 CONTROLLER_DICT = {
     'up': pg.K_UP,
@@ -38,7 +38,7 @@ class Image:
         return pg.image.load(os.path.abspath(p))
     @staticmethod
     def loaddir(dirname):
-        random.seed(datetime.now())
+        random.seed(time.time())
         p = os.path.join(Image.path, dirname)
         file_list = os.listdir(p)
         true_p = os.path.join(p, random.choice(file_list))
@@ -90,7 +90,7 @@ class Maps:
         self.start_map_list = os.listdir(self.start_path)
 
     def get_list(self, exit=0):
-        random.seed(datetime.now())
+        random.seed(time.time())
         if exit == 1:
             fname = os.path.join('resources', 'maps', 'exit_maps', random.choice(self.exit_map_list))
         elif exit == 0:

@@ -1,0 +1,29 @@
+##################
+##    MAP N°27  ##
+##################
+# O = obstacle
+# D = door
+# E = exit
+# F = tile
+# T = fire trap
+# S = spike trap
+# B = bear trap
+# P = pit trap
+# R, L, A, Z = right left top bottom push trap
+# V = vitality
+# 1 = cobra
+# 3 = bat
+OOOOOOOOOOOOOOOOOO
+OOOOOOOODOOOOOOOOO
+OO3O3O3OSO3OFO33OO
+OOFOFOFOSOFOFOFFOO
+OOFFFFFFFFFFFFFFOO
+OOOFOFOFOFOFOFOFOO
+ODSSFFFFFFFFFFSSDO
+OOFOFOFOFOFOFOFOOO
+OOFFFFFFFFFFFFFFOO
+OOOFOFOFOFOFOFOFOO
+OOFFFFFFSFFFFFFFOO
+OO3O3O3OSO3O3O33OO
+OOOOOOOODOOOOOOOOO
+OOOOOOOOOOOOOOOOOO

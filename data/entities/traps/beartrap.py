@@ -3,7 +3,7 @@ import itertools
 from data import tools
 import os
 import random
-from datetime import datetime
+import time
 
 
 class Beartrap(pg.sprite.Sprite):
@@ -13,7 +13,7 @@ class Beartrap(pg.sprite.Sprite):
         """The location argument is where I will be located."""
         pg.sprite.Sprite.__init__(self)
         # DATA
-        random.seed(datetime.now())
+        random.seed(time.time())
         self.id = random.randint(1,100)
         self.animate_timer = 0.0
         self.animate_fps = 7
