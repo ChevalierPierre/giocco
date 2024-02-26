@@ -258,5 +258,5 @@ def genMaze(height, width, entranceexit=False):
 	return maze
 
 
-"""res=genMaze(12,16)
-printMaze(res, 12, 16)"""
+res=genMaze(12,16)
+printMaze(res, 12, 16)
